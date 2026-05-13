@@ -24,6 +24,7 @@
   --success: #7a9e7e;
   --danger: #c97a7a;
   --warning: #c9a87c;
+  --info: #5b5b9b;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -157,6 +158,7 @@ body {
 .stat-card:nth-child(2) { border-right-color: var(--sage-green); }
 .stat-card:nth-child(3) { border-right-color: var(--pastel-blue); }
 .stat-card:nth-child(4) { border-right-color: var(--muted-pink); }
+.stat-card:nth-child(5) { border-right-color: var(--success); }
 .stat-value { font-size: 1.6rem; font-weight: 700; color: var(--warm-brown); }
 .stat-label { font-size: 0.8rem; color: var(--medium-text); margin-top: 0.2rem; }
 
@@ -164,16 +166,17 @@ body {
 .data-table th { background: linear-gradient(135deg, var(--muted-pink), var(--pale-lilac)); padding: 0.8rem 1rem; text-align: right; color: var(--warm-brown); }
 .data-table td { padding: 0.8rem 1rem; border-bottom: 1px solid var(--border); }
 .data-table tr:hover td { background: var(--soft-white); }
-.badge { padding: 0.25rem 0.7rem; border-radius: 10px; font-size: 0.75rem; font-weight: 600; }
+.badge { padding: 0.25rem 0.7rem; border-radius: 10px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
 .badge-success { background: #d4edda; color: var(--success); }
 .badge-warning { background: #fff3cd; color: #856404; }
 .badge-danger { background: #f8d7da; color: var(--danger); }
-.badge-info { background: var(--pale-lilac); color: #5b5b9b; }
+.badge-info { background: var(--pale-lilac); color: var(--info); }
 
 .action-btn { padding: 0.4rem 0.8rem; border-radius: 8px; border: none; cursor: pointer; font-family: 'Tajawal', sans-serif; font-weight: 600; font-size: 0.82rem; margin-left:0.2rem;}
 .btn-edit { background: var(--pale-yellow); color: var(--warm-brown); }
 .btn-delete { background: #fde8e8; color: var(--danger); }
-.btn-view { background: var(--pale-lilac); color: #5b5b9b; }
+.btn-view { background: var(--pale-lilac); color: var(--info); }
+.btn-success { background: #d4edda; color: var(--success); }
 
 .panel-card { background: white; border-radius: 14px; padding: 1.5rem; box-shadow: 0 2px 15px var(--shadow); margin-bottom: 1.5rem; }
 .panel-card-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--warm-brown); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--muted-pink); }
@@ -272,10 +275,12 @@ body {
             <button class="btn-primary action-btn" onclick="openAddProductModal()">➕ إضافة قطعة</button>
           </div>
         </div>
-        <div class="stats-row">
+        <div class="stats-row" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
           <div class="stat-card"><div class="stat-value" id="stat-total-products">0</div><div class="stat-label">إجمالي القطع</div></div>
           <div class="stat-card"><div class="stat-value" id="stat-low-stock">0</div><div class="stat-label">مخزون منخفض</div></div>
-          <div class="stat-card"><div class="stat-value" id="stat-stock-value">0</div><div class="stat-label">قيمة المخزون (د.ع)</div></div>
+          <div class="stat-card"><div class="stat-value" id="stat-buy-value">0</div><div class="stat-label">إجمالي الشراء (د.ع)</div></div>
+          <div class="stat-card"><div class="stat-value" id="stat-sell-value">0</div><div class="stat-label">إجمالي البيع (د.ع)</div></div>
+          <div class="stat-card" style="background:#d4edda; border-right-color:var(--success)"><div class="stat-value" style="color:var(--success)" id="stat-expected-profit">0</div><div class="stat-label">الأرباح المتوقعة (د.ع)</div></div>
         </div>
         <div class="search-bar">
           <input type="text" id="stockSearch" placeholder="بحث بالاسم أو الباركود..." oninput="renderStockTable()">
@@ -345,7 +350,7 @@ body {
         </div>
         <div class="panel-card grid-2">
           <div class="form-group"><label>مصاريف إعلانات (د.ع)</label><input type="number" id="expAds" value="0" oninput="saveExpenses()"></div>
-          <div class="form-group"><label>مصاريف شحن (د.ع)</label><input type="number" id="expShipping" value="0" oninput="saveExpenses()"></div>
+          <div class="form-group"><label>مصاريف شحن مدفوعة (د.ع)</label><input type="number" id="expShipping" value="0" oninput="saveExpenses()"></div>
           <div class="form-group"><label>مصاريف تغليف (د.ع)</label><input type="number" id="expPackaging" value="0" oninput="saveExpenses()"></div>
         </div>
       </div>
@@ -406,7 +411,7 @@ body {
 
         <div class="panel-card">
           <div class="panel-card-title">📏 إعدادات القياسات لكل فئة عمرية</div>
-          <p style="font-size:0.8rem;color:var(--medium-text)">اكتب القياسات مفصولة بفاصلة (مثال للكمبار: S,M,L | للأطفال: 2Y,4Y,6Y)</p>
+          <p style="font-size:0.8rem;color:var(--medium-text)">اكتب القياسات مفصولة بفاصلة (مثال للكبار: S,M,L | للأطفال: 2Y,4Y,6Y)</p>
           <div id="sizeConfigsContainer"></div>
           <button class="btn-primary" onclick="saveCategoriesSettings()" style="margin-top:1rem">💾 حفظ التصنيفات والقياسات</button>
         </div>
@@ -552,7 +557,6 @@ let state = {
 function init() {
   loadFromLocal();
   
-  // التعديل هنا: إجبار الكود على وضع كلمة مرور افتراضية إذا لم تكن موجودة في البيانات القديمة
   if (!state.settings.adminPassword) {
       state.settings.adminPassword = 'admin';
       saveToLocal();
@@ -946,20 +950,24 @@ function placeOrder() {
 
   const count = state.cart.reduce((a, i) => a + i.qty, 0);
   const subtotal = state.cart.reduce((a, i) => a + i.price * i.qty, 0);
+  
   let shipping = count >= state.settings.freeShippingQty ? 0 : state.settings.shippingCost;
-  let discount = count >= state.settings.giftQty ? Math.min(...state.cart.map(i => i.price)) : 0;
+  let absorbedShipping = count >= state.settings.freeShippingQty ? state.settings.shippingCost : 0; // حساب التوصيل المجاني כعروض
+  
+  let discount = count >= state.settings.giftQty ? Math.min(...state.cart.map(i => i.price)) : 0; // القطعة المجانية
   const total = subtotal + shipping - discount;
 
   const order = {
     id: Date.now(),
     customer: { name, phone, address },
     items: [...state.cart],
-    subtotal, shipping, discount, total,
+    subtotal, shipping, absorbedShipping, discount, total,
     date: new Date().toLocaleDateString('ar'),
-    status: 'pending'
+    status: 'pending' // قيد الانتظار
   };
   state.orders.push(order);
 
+  // خصم الكمية من المخزون فوراً عند الطلب
   state.cart.forEach(item => {
     const p = state.products.find(x => x.id === item.productId);
     if(p && p.sizes[item.size] !== undefined) p.sizes[item.size] -= item.qty;
@@ -973,7 +981,7 @@ function placeOrder() {
   }
 
   state.cart = []; saveToLocal(); updateCartUI(); renderProducts(); closeModal('checkoutModal');
-  syncOrderToSheets(order); // مزامنة الطلب مع Google Sheets مباشرة
+  syncOrderToSheets(order);
   showToast('تم تأكيد الطلب بنجاح ✅');
 }
 
@@ -1091,7 +1099,6 @@ function renderSizeInputsForProduct(existingSizes = {}) {
   
   saveToLocal(); renderStockTable(); renderProducts(); closeModal('addProductModal'); showToast('تم الحفظ بنجاح');
 
-  // إرسال التحديث فوراً إلى Google Sheets
   if (state.settings.sheetsUrl) {
     fetch(state.settings.sheetsUrl, { 
         method: 'POST', 
@@ -1107,7 +1114,6 @@ function deleteProduct(id) {
     
     saveToLocal(); renderStockTable(); renderProducts(); showToast('تم الحذف');
 
-    // إرسال التحديث فوراً إلى Google Sheets بعد الحذف
     if (state.settings.sheetsUrl) {
       fetch(state.settings.sheetsUrl, { 
           method: 'POST', 
@@ -1122,14 +1128,22 @@ function renderStockTable() {
   const search = (document.getElementById('stockSearch')?.value || '').toLowerCase();
   const list = state.products.filter(p => p.name.toLowerCase().includes(search) || (p.barcode&&p.barcode.includes(search)));
   
+  let totalQty = 0;
+  let lowStockCount = 0;
+  let totalBuyValue = 0;
+  let totalSellValue = 0;
+
   const tbody = document.getElementById('stockTableBody');
-  const stockVal = state.products.reduce((a,p) => a + Object.values(p.sizes).reduce((x,y)=>x+y,0)*p.buyPrice, 0);
-  document.getElementById('stat-total-products').textContent = state.products.reduce((a,p) => a + Object.values(p.sizes).reduce((x,y)=>x+y,0), 0);
-  document.getElementById('stat-low-stock').textContent = state.products.filter(p => Object.values(p.sizes).reduce((x,y)=>x+y,0) <= 3).length;
-  document.getElementById('stat-stock-value').textContent = stockVal.toLocaleString();
 
   tbody.innerHTML = list.map(p => {
       const tot = Object.values(p.sizes).reduce((a,b)=>a+b,0);
+      
+      // Calculations for the stats cards
+      totalQty += tot;
+      if(tot <= 3) lowStockCount++;
+      totalBuyValue += (tot * p.buyPrice);
+      totalSellValue += (tot * p.sellPrice);
+
       const profit = p.sellPrice - p.buyPrice;
       const imgSrc = p.image || 'https://via.placeholder.com/40';
       const sizesStr = Object.entries(p.sizes).map(([s,q])=>`${s}:${q}`).join(' | ');
@@ -1149,11 +1163,16 @@ function renderStockTable() {
         </tr>
       `;
   }).join('');
+
+  document.getElementById('stat-total-products').textContent = totalQty;
+  document.getElementById('stat-low-stock').textContent = lowStockCount;
+  document.getElementById('stat-buy-value').textContent = totalBuyValue.toLocaleString();
+  document.getElementById('stat-sell-value').textContent = totalSellValue.toLocaleString();
+  document.getElementById('stat-expected-profit').textContent = (totalSellValue - totalBuyValue).toLocaleString();
 }
 
 // ===== BATCH ======
 function addBatchRow() {
-    // إنشاء ID مميز لكل صف حتى لا تتداخل الصور مع بعضها
     const rowId = 'batch-row-' + Date.now() + Math.floor(Math.random() * 1000); 
     
     const div = document.createElement('div');
@@ -1187,6 +1206,12 @@ function addBatchRow() {
     document.getElementById('batchItemsContainer').appendChild(div);
 }
 
+function calcBatchCost() {
+    const cost = parseFloat(document.getElementById('b-cost').value)||0;
+    const qty = parseInt(document.getElementById('b-qty').value)||1;
+    document.getElementById('b-res-cost').value = (cost/qty).toLocaleString() + ' د.ع';
+}
+
 function confirmBatch() {
     const cost = parseFloat(document.getElementById('b-cost').value)||0;
     const qty = parseInt(document.getElementById('b-qty').value)||1;
@@ -1202,7 +1227,7 @@ function confirmBatch() {
         const age = r.querySelector('.br-age').value;
         const sell = parseFloat(r.querySelector('.br-sell').value)||0;
         const sizesRaw = r.querySelector('.br-sizes').value;
-        const image = r.querySelector('.br-image').value || ''; // سحب الصورة
+        const image = r.querySelector('.br-image').value || ''; 
         
         let sizes = {};
         if(sizesRaw) {
@@ -1216,7 +1241,7 @@ function confirmBatch() {
             id: Date.now() + count,
             name, barcode, category: cat, ageGroup: age,
             sellPrice: sell, buyPrice: costPerPiece,
-            image: image, sizes // حفظ الصورة مع القطعة
+            image: image, sizes
         });
         count++;
     });
@@ -1229,7 +1254,6 @@ function confirmBatch() {
     document.getElementById('b-qty').value = '';
     showToast(`تم إضافة ${count} قطعة بنجاح`);
 
-    // إرسال التحديث للكوكل شيت مباشرة بعد إضافة الـ Batch
     if (state.settings.sheetsUrl) {
         fetch(state.settings.sheetsUrl, { 
             method: 'POST', 
@@ -1238,53 +1262,29 @@ function confirmBatch() {
         });
     }
 }
-function confirmBatch() {
-    const cost = parseFloat(document.getElementById('b-cost').value)||0;
-    const qty = parseInt(document.getElementById('b-qty').value)||1;
-    const costPerPiece = cost/qty;
-
-    const rows = document.querySelectorAll('.batch-row-item');
-    let count = 0;
-    rows.forEach(r => {
-        const name = r.querySelector('.br-name').value;
-        if(!name) return;
-        const barcode = r.querySelector('.br-barcode').value;
-        const cat = r.querySelector('.br-cat').value;
-        const age = r.querySelector('.br-age').value;
-        const sell = parseFloat(r.querySelector('.br-sell').value)||0;
-        const sizesRaw = r.querySelector('.br-sizes').value;
-        
-        let sizes = {};
-        if(sizesRaw) {
-            sizesRaw.split(',').forEach(s => {
-                const [k,v] = s.split(':');
-                if(k && v) sizes[k.trim()] = parseInt(v.trim());
-            });
-        } else { sizes['M'] = 1; }
-
-        state.products.push({
-            id: Date.now() + count,
-            name, barcode, category: cat, ageGroup: age,
-            sellPrice: sell, buyPrice: costPerPiece,
-            image: '', sizes
-        });
-        count++;
-    });
-    saveToLocal(); renderStockTable(); renderProducts();
-    document.getElementById('batchItemsContainer').innerHTML = '';
-    document.getElementById('b-name').value = '';
-    document.getElementById('b-cost').value = '';
-    document.getElementById('b-qty').value = '';
-    showToast(`تم إضافة ${count} قطعة بنجاح`);
-}
 
 // ===== ORDERS =====
 function renderOrders() {
   const tbody = document.getElementById('ordersTableBody');
   tbody.innerHTML = [...state.orders].reverse().map(o => {
-    let stat = o.status==='done'?'<span class="badge badge-success">مكتمل</span>' : 
+    
+    // تحديث حالات الطلب حسب طلبك
+    let stat = o.status==='delivered'?'<span class="badge badge-success">تم الاستلام</span>' : 
+               o.status==='prepared'?'<span class="badge badge-info">تم التجهيز</span>' : 
                o.status==='rejected'?'<span class="badge badge-danger">مرفوض</span>' : 
                '<span class="badge badge-warning">قيد الانتظار</span>';
+
+    // أزرار التحكم بالحالة
+    let actionBtns = `<button class="action-btn btn-view" onclick="viewOrderDetails(${o.id})">👁️ التفاصيل</button>`;
+    
+    if(o.status === 'pending') {
+        actionBtns += `<button class="action-btn btn-edit" onclick="markOrderPrepared(${o.id})">📦 تجهيز</button>`;
+        actionBtns += `<button class="action-btn btn-delete" onclick="rejectOrder(${o.id})">❌ رفض</button>`;
+    } else if(o.status === 'prepared') {
+        actionBtns += `<button class="action-btn btn-success" onclick="markOrderDelivered(${o.id})">✅ استلام</button>`;
+        actionBtns += `<button class="action-btn btn-delete" onclick="rejectOrder(${o.id})">❌ رفض</button>`;
+    }
+
     return `
       <tr>
         <td>#${o.id.toString().slice(-4)}</td>
@@ -1292,11 +1292,7 @@ function renderOrders() {
         <td>${o.total.toLocaleString()}</td>
         <td>${o.date}</td>
         <td>${stat}</td>
-        <td>
-          <button class="action-btn btn-view" onclick="viewOrderDetails(${o.id})">👁️ التفاصيل</button>
-          ${o.status==='pending' ? `<button class="action-btn btn-delete" onclick="rejectOrder(${o.id})">❌ رفض</button>` : ''}
-          ${o.status==='pending' ? `<button class="action-btn btn-edit" onclick="markOrderDone(${o.id})">✅ إكمال</button>` : ''}
-        </td>
+        <td>${actionBtns}</td>
       </tr>
     `;
   }).join('');
@@ -1329,26 +1325,37 @@ function viewOrderDetails(id) {
         <div style="background:var(--pale-yellow);padding:1rem;border-radius:10px;">
             <p>المجموع الفرعي: ${o.subtotal.toLocaleString()}</p>
             <p>الشحن: ${o.shipping.toLocaleString()}</p>
-            <p style="color:red">الخصم/هدايا: -${o.discount.toLocaleString()}</p>
+            <p style="color:red">الخصم/هدايا: -${(o.discount || 0).toLocaleString()}</p>
             <h4 style="margin-top:0.5rem;border-top:1px solid #ccc;padding-top:0.5rem">الإجمالي: ${o.total.toLocaleString()} د.ع</h4>
         </div>
     `;
     document.getElementById('orderDetailsModal').classList.add('open');
 }
 
-function rejectOrder(id) {
-    if(!confirm('رفض الطلب وإرجاع القطع للمخزن (بمخزن الشركة)؟')) return;
-    const o = state.orders.find(x => x.id === id);
-    o.status = 'rejected';
-    o.items.forEach(item => {
-        const p = state.products.find(x => x.id === item.productId);
-        if(p) { p.sizes[item.size] = (p.sizes[item.size]||0) + item.qty; }
-    });
-    saveToLocal(); renderOrders(); renderStockTable(); showToast('تم رفض الطلب وإرجاع المخزون');
+function markOrderPrepared(id) {
+    state.orders.find(x=>x.id===id).status = 'prepared';
+    saveToLocal(); renderOrders(); renderReports(); showToast('تم تجهيز الطلب 📦');
 }
-function markOrderDone(id) {
-    state.orders.find(x=>x.id===id).status = 'done';
-    saveToLocal(); renderOrders(); renderReports(); showToast('تم إكمال الطلب');
+
+function markOrderDelivered(id) {
+    state.orders.find(x=>x.id===id).status = 'delivered';
+    saveToLocal(); renderOrders(); renderReports(); showToast('تم تسليم الطلب بنجاح ✅');
+}
+
+function rejectOrder(id) {
+    if(!confirm('هل تريد رفض الطلب وإرجاع القطع للمخزون؟')) return;
+    const o = state.orders.find(x => x.id === id);
+    
+    // إرجاع القطع للمخزون فقط إذا لم يكن مرفوضاً مسبقاً
+    if(o.status !== 'rejected') {
+        o.items.forEach(item => {
+            const p = state.products.find(x => x.id === item.productId);
+            if(p) { p.sizes[item.size] = (p.sizes[item.size]||0) + item.qty; }
+        });
+    }
+    
+    o.status = 'rejected';
+    saveToLocal(); renderOrders(); renderStockTable(); renderReports(); showToast('تم رفض الطلب وإرجاع المخزون');
 }
 
 // ===== CUSTOMERS =====
@@ -1375,7 +1382,9 @@ function viewCustomerDetails(id) {
                 <strong>طلب #${o.id.toString().slice(-4)}</strong> <span>${o.date}</span>
             </div>
             ${o.items.map(i=> `<div style="font-size:0.85rem;color:gray">- ${i.name} (${i.size} × ${i.qty})</div>`).join('')}
-            <div style="font-weight:bold;margin-top:5px;">الإجمالي: ${o.total.toLocaleString()} (${o.status})</div>
+            <div style="font-weight:bold;margin-top:5px;">الإجمالي: ${o.total.toLocaleString()} (${
+                o.status==='delivered'?'استلام':o.status==='rejected'?'مرفوض':o.status==='prepared'?'مجهز':'انتظار'
+            })</div>
         </div>
     `).join('');
 
@@ -1389,14 +1398,18 @@ function viewCustomerDetails(id) {
 // ===== REPORTS =====
 function renderReports() {
     const monthVal = document.getElementById('reportMonthFilter').value; // YYYY-MM
+    
+    // المبيعات تُحسب حصراً للطلبات التي حالتها "تم الاستلام"
     const ords = state.orders.filter(o => {
         const d = new Date(o.id);
         const m = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
-        return m === monthVal && o.status !== 'rejected';
+        return m === monthVal && o.status === 'delivered';
     });
 
+    // إجمالي المبيعات (قبل الخصومات)
     const sales = ords.reduce((a,o) => a + (o.subtotal || 0), 0);
     
+    // تكلفة البضاعة المباعة
     const cogs = ords.reduce((a,o) => {
         return a + o.items.reduce((sum, i) => {
             const p = state.products.find(x=>x.id===i.productId);
@@ -1404,14 +1417,18 @@ function renderReports() {
         }, 0);
     }, 0);
     
-    const lostToDiscounts = ords.reduce((a,o) => a + (o.discount || 0), 0); 
+    // العروض والهدايا: قيمة القطعة المجانية (o.discount) + كلفة التوصيل المجاني (o.absorbedShipping)
+    const lostToDiscounts = ords.reduce((a,o) => a + (o.discount || 0) + (o.absorbedShipping || 0), 0); 
 
+    // جلب المصاريف الأخرى (مثل الإعلانات)
     const exps = state.settings.expenses[monthVal] || {ads:0, shipping:0, packaging:0};
     document.getElementById('expAds').value = exps.ads;
     document.getElementById('expShipping').value = exps.shipping;
     document.getElementById('expPackaging').value = exps.packaging;
 
     const totalExp = exps.ads + exps.shipping + exps.packaging;
+    
+    // الربح الصافي = المبيعات الإجمالية - الكلفة - قيمة العروض والهدايا (القطعة + التوصيل) - المصاريف
     const netProfit = sales - cogs - lostToDiscounts - totalExp;
 
     document.getElementById('rep-sales').textContent = sales.toLocaleString();
