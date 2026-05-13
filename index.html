@@ -913,8 +913,53 @@ input[type=file] {
       </div>
     </div>
 
-    <!-- Content -->
-    <div class="seller-content">
+  <!-- Content -->
+<div class="seller-content">
+
+  <!-- 1. لوحة المخزون (الرئيسية) -->
+  <div id="panel-stock" class="seller-panel active">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+      <h2 class="section-title" style="margin:0">المخزون الرئيسي</h2>
+      <button class="btn-primary action-btn" onclick="openAddProductModal()">➕ إضافة قطعة</button>
+    </div>
+    <!-- هنا يظهر الجدول مالتج -->
+    <div id="stockTableContainer">
+       <p style="color:gray; text-align:center; padding:20px;">المخزون فارغ حالياً، أضيفي أول قطعة.</p>
+    </div>
+  </div>
+
+  <!-- 2. لوحة الإعدادات (اللي جنتي تدورين عليها) -->
+  <div id="panel-settings" class="seller-panel">
+    <h2 class="section-title">إعدادات المتجر</h2>
+    
+    <!-- إدارة الفئات -->
+    <div class="panel-card">
+      <div class="panel-card-title">🛍️ إدارة فئات المنتجات</div>
+      <p style="font-size: 0.8rem; color: gray; margin-bottom: 10px;">أضيفي فئات مثل (فساتين، فساتين سهرة، بناطيل، إلخ)</p>
+      <div style="display:flex; gap:10px; margin-bottom:15px;">
+        <input type="text" id="newCategoryInput" placeholder="اسم الفئة الجديدة" style="flex:1; padding:10px; border:1px solid var(--border); border-radius:10px;">
+        <button class="btn-primary action-btn" onclick="addCategory()">إضافة</button>
+      </div>
+      <div id="categoriesListSettings"></div>
+    </div>
+
+    <!-- إدارة الفئات العمرية والقياسات -->
+    <div class="panel-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <div class="panel-card-title" style="margin:0;">📏 الفئات العمرية والقياسات</div>
+        <button class="btn-edit action-btn" onclick="addAgeGroup()">➕ إضافة فئة عمرية</button>
+      </div>
+      <p style="font-size: 0.8rem; color: gray; margin-bottom: 10px;">مثال: أطفال (2,4,6) أو نسائي (S,M,L,XL)</p>
+      <div id="ageSettingsContainer"></div>
+    </div>
+  </div>
+
+  <!-- 3. لوحات إضافية (ممكن نبرمجها بعدين) -->
+  <div id="panel-orders" class="seller-panel"><h2>الطلبات</h2></div>
+  <div id="panel-reports" class="seller-panel"><h2>التقارير</h2></div>
+  <div id="panel-customers" class="seller-panel"><h2>العملاء</h2></div>
+
+</div>
 
       <!-- STOCK PANEL -->
       <div id="panel-stock" class="seller-panel active">
@@ -1108,8 +1153,128 @@ input[type=file] {
 </div>
 
 <script>
-// سأضع هنا الأكواد البرمجية لاحقاً حسب تعليماتك
-// حالياً تم تعديل جميع الرموز والمسميات لتناسب الدينار العراقي
+// 1. البيانات الأساسية (تبدأ فارغة بناءً على طلبج)
+let settings = {
+    categories: [], // انتِ تضيفيها من الإعدادات
+    ageGroups: []   // انتِ تضيفيها (مثلاً: محجبات، أطفال، إلخ) مع قياساتها
+};
+
+let products = [];
+let cart = [];
+
+// 2. وظائف التنقل (هذي اللي تخلي الموقع "يتحرك")
+function showPage(pageId) {
+    // إخفاء كل الصفحات
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // إظهار الصفحة المختارة
+    document.getElementById('page-' + pageId).classList.add('active');
+    
+    // تحديث شكل التاب النشط
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+}
+
+function showSellerPanel(panelId) {
+    // إخفاء كل لوحات البائع
+    document.querySelectorAll('.seller-panel').forEach(p => p.classList.remove('active'));
+    // إظهار اللوحة المختارة
+    document.getElementById('panel-' + panelId).classList.add('active');
+    
+    // تحديث شكل القائمة الجانبية
+    document.querySelectorAll('.seller-nav-item').forEach(item => item.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    // إذا فتحنا لوحة الإعدادات، نحدث القوائم
+    if(panelId === 'settings') {
+        renderCategorySettings();
+        renderAgeSettings();
+    }
+}
+
+function toggleCart() {
+    document.querySelector('.cart-overlay').classList.toggle('open');
+    document.querySelector('.cart-sidebar').classList.toggle('open');
+}
+
+// 3. إدارة الفئات (إضافة وحذف)
+function renderCategorySettings() {
+    const list = document.getElementById('categoriesListSettings');
+    if(!list) return;
+    if(settings.categories.length === 0) {
+        list.innerHTML = '<p style="color:gray; font-size:0.8rem;">لا توجد فئات حالياً. أضيفي أول فئة أعلاه.</p>';
+        return;
+    }
+    list.innerHTML = settings.categories.map((cat, index) => `
+        <div class="customer-card" style="margin-bottom: 0.5rem; justify-content: space-between; padding: 10px;">
+            <span>${cat}</span>
+            <button class="action-btn btn-delete" onclick="deleteCategory(${index})">حذف</button>
+        </div>
+    `).join('');
+}
+
+function addCategory() {
+    const input = document.getElementById('newCategoryInput');
+    if(input.value.trim() !== "") {
+        settings.categories.push(input.value.trim());
+        input.value = "";
+        renderCategorySettings();
+        showToast("تمت إضافة الفئة");
+    }
+}
+
+function deleteCategory(index) {
+    settings.categories.splice(index, 1);
+    renderCategorySettings();
+}
+
+// 4. إدارة الفئات العمرية والقياسات (إضافة وتعديل)
+function renderAgeSettings() {
+    const container = document.getElementById('ageSettingsContainer');
+    if(!container) return;
+    if(settings.ageGroups.length === 0) {
+        container.innerHTML = '<p style="color:gray; font-size:0.8rem;">لا توجد فئات عمرية. أضيفي فئة جديدة (مثلاً: أطفال) وابدأي بتحديد قياساتها.</p>';
+        return;
+    }
+    container.innerHTML = settings.ageGroups.map((group, index) => `
+        <div class="panel-card" style="border-right: 4px solid var(--accent); margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong>${group.name}</strong>
+                <button class="action-btn btn-delete" onclick="deleteAgeGroup(${index})">حذف الفئة</button>
+            </div>
+            <div style="margin-top:0.5rem;">
+                <label style="font-size:0.8rem; color:var(--medium-text);">القياسات (افصلي بينها بفاصلة ,):</label>
+                <input type="text" value="${group.sizes.join(',')}" 
+                       onchange="updateSizes(${index}, this.value)" 
+                       style="width:100%; padding:0.5rem; border:1px solid var(--border); border-radius:8px; margin-top:5px;"
+                       placeholder="مثال: S,M,L,XL">
+            </div>
+        </div>
+    `).join('');
+}
+
+function addAgeGroup() {
+    const name = prompt("أدخلي اسم الفئة العمرية (مثلاً: نسائي، أطفال، مواليد):");
+    if(name) {
+        settings.ageGroups.push({ name: name, sizes: [] });
+        renderAgeSettings();
+    }
+}
+
+function updateSizes(index, val) {
+    settings.ageGroups[index].sizes = val.split(',').map(s => s.trim()).filter(s => s !== "");
+    showToast("تم تحديث القياسات");
+}
+
+function deleteAgeGroup(index) {
+    if(confirm("هل أنتِ متأكدة من حذف هذه الفئة؟")) {
+        settings.ageGroups.splice(index, 1);
+        renderAgeSettings();
+    }
+}
+
+function showToast(msg) {
+    alert(msg); // كحل مؤقت لحين تفعيل الـ Toast الجمالي
+}
 </script>
 
 </body>
