@@ -1475,18 +1475,27 @@ function rejectOrder(id) {
 // ===== CUSTOMERS =====
 function renderCustomers() {
     const list = document.getElementById('customersList');
-    list.innerHTML = state.customers.sort((a,b)=>b.totalSpent-a.totalSpent).map(c => `
+    
+    // إضافة رسالة توضيحية في حال كانت قاعدة العملاء فارغة
+    if (!state.customers || state.customers.length === 0) {
+        list.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-muted); background: white; border-radius: 12px;">لا توجد بيانات للعملاء حتى الآن. سيتم إضافة العملاء تلقائياً بمجرد استلام طلبات جديدة.</div>';
+        return;
+    }
+
+    // ترتيب العملاء حسب الأكثر شراءً مع حماية (Optional Chaining) للبيانات
+    list.innerHTML = [...state.customers].sort((a,b) => (b.totalSpent || 0) - (a.totalSpent || 0)).map(c => `
       <div class="panel-card" style="display:flex;align-items:center;gap:1.5rem;cursor:pointer;margin-bottom:0;padding:1.5rem; transition:transform 0.2s;" onclick="viewCustomerDetails('${c.id}')" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='none'">
         <div style="background:var(--accent-light); color:var(--text-dark); width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.8rem; font-weight:bold;">
-           ${c.name.charAt(0)}
+           ${c.name ? c.name.charAt(0) : '👤'}
         </div>
         <div style="flex:1">
-          <strong style="font-size:1.1rem;">${c.name}</strong> <span style="font-size:0.85rem;color:var(--text-muted); margin-right:10px;">${c.phone}</span>
-          <div style="font-size:0.9rem;margin-top:8px;color:var(--text-dark);">إجمالي الطلبات: <span style="font-weight:bold;">${c.orders}</span> | المدفوعات: <span style="font-weight:bold; color:var(--success);">${c.totalSpent.toLocaleString()} د.ع</span></div>
+          <strong style="font-size:1.1rem;">${c.name || 'بدون اسم'}</strong> <span style="font-size:0.85rem;color:var(--text-muted); margin-right:10px;">${c.phone || ''}</span>
+          <div style="font-size:0.9rem;margin-top:8px;color:var(--text-dark);">إجمالي الطلبات: <span style="font-weight:bold;">${c.orders || 0}</span> | المدفوعات: <span style="font-weight:bold; color:var(--success);">${(c.totalSpent || 0).toLocaleString()} د.ع</span></div>
         </div>
       </div>
     `).join('');
 }
+
 function viewCustomerDetails(id) {
     const c = state.customers.find(x => String(x.id) === String(id));
     if(!c) return;
@@ -1508,7 +1517,7 @@ function viewCustomerDetails(id) {
 
     document.getElementById('customerDetailsContent').innerHTML = `
         <div style="display:flex;justify-content:space-between; border-bottom:2px solid var(--border); padding-bottom:1rem; margin-bottom:1.5rem;">
-            <h3 style="font-family:'Playfair Display',serif;">سجل العميل: ${c.name}</h3><button class="close-btn" onclick="closeModal('customerDetailsModal')">✕</button>
+            <h3 style="font-family:'Playfair Display',serif;">سجل العميل: ${c.name || 'بدون اسم'}</h3><button class="close-btn" onclick="closeModal('customerDetailsModal')">✕</button>
         </div>
         <div style="max-height:500px;overflow-y:auto; padding-right:5px;">${ordsHtml||'<p style="text-align:center;">لا توجد طلبات</p>'}</div>
     `;
