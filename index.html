@@ -551,11 +551,17 @@ let state = {
 // ===== INIT =====
 function init() {
   loadFromLocal();
+  
+  // التعديل هنا: إجبار الكود على وضع كلمة مرور افتراضية إذا لم تكن موجودة في البيانات القديمة
+  if (!state.settings.adminPassword) {
+      state.settings.adminPassword = 'admin';
+      saveToLocal();
+  }
+
   if (state.products.length === 0) {
     state.products = [
       { id: 1, name: 'فستان ربيعي أنيق', barcode: '1001', category: 'فساتين', ageGroup: 'كبار', sellPrice: 45000, buyPrice: 20000, image: '', sizes: {'S':3,'M':5,'L':2} }
     ];
-    if (!state.settings.adminPassword) state.settings.adminPassword = 'admin';
     state.settings.sheetsUrl = state.settings.sheetsUrl || '';
     state.settings.sheetId = state.settings.sheetId || '';
     saveToLocal();
@@ -587,7 +593,6 @@ function init() {
       }
   });
 }
-
 function saveToLocal() { localStorage.setItem('valentina_v2', JSON.stringify(state)); }
 function loadFromLocal() {
   const saved = localStorage.getItem('valentina_v2');
