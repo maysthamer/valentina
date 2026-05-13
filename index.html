@@ -1060,7 +1060,7 @@ function renderSizeInputsForProduct(existingSizes = {}) {
     `).join('');
 }
 
-function saveProduct() {
+ function saveProduct() {
   const id = document.getElementById('editProductId').value;
   const name = document.getElementById('prod-name').value.trim();
   const barcode = document.getElementById('prod-barcode').value.trim();
@@ -1088,12 +1088,33 @@ function saveProduct() {
       pObj.id = Date.now();
       state.products.push(pObj);
   }
+  
   saveToLocal(); renderStockTable(); renderProducts(); closeModal('addProductModal'); showToast('تم الحفظ بنجاح');
+
+  // إرسال التحديث فوراً إلى Google Sheets
+  if (state.settings.sheetsUrl) {
+    fetch(state.settings.sheetsUrl, { 
+        method: 'POST', 
+        mode: 'no-cors', 
+        body: JSON.stringify({ action: 'updateProducts', products: state.products }) 
+    });
+  }
 }
+
 function deleteProduct(id) {
     if(!confirm('حذف هذه القطعة نهائياً؟')) return;
     state.products = state.products.filter(p => p.id !== id);
+    
     saveToLocal(); renderStockTable(); renderProducts(); showToast('تم الحذف');
+
+    // إرسال التحديث فوراً إلى Google Sheets بعد الحذف
+    if (state.settings.sheetsUrl) {
+      fetch(state.settings.sheetsUrl, { 
+          method: 'POST', 
+          mode: 'no-cors', 
+          body: JSON.stringify({ action: 'updateProducts', products: state.products }) 
+      });
+    }
 }
 
 // ===== STOCK TABLE =====
