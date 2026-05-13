@@ -1152,12 +1152,10 @@ function renderStockTable() {
 }
 
 // ===== BATCH ======
-function calcBatchCost() {
-    const c = parseFloat(document.getElementById('b-cost').value)||0;
-    const q = parseInt(document.getElementById('b-qty').value)||1;
-    document.getElementById('b-res-cost').value = (c/q).toLocaleString();
-}
 function addBatchRow() {
+    // إنشاء ID مميز لكل صف حتى لا تتداخل الصور مع بعضها
+    const rowId = 'batch-row-' + Date.now() + Math.floor(Math.random() * 1000); 
+    
     const div = document.createElement('div');
     div.className = 'batch-row-item';
     div.style.cssText = 'border:1px solid var(--border); padding:1rem; border-radius:10px; margin-bottom:1rem; position:relative';
@@ -1175,8 +1173,70 @@ function addBatchRow() {
             <div class="form-group"><label>سعر البيع</label><input type="number" class="br-sell"></div>
             <div class="form-group"><label>القياسات (مثال: S:2, M:4)</label><input type="text" class="br-sizes" placeholder="S:2, M:4"></div>
         </div>
+        
+        <div class="form-group" style="margin-top:10px;">
+            <label>صورة القطعة (رفع من الجهاز)</label>
+            <div class="file-upload-wrapper">
+                <span class="file-upload-btn">اختر صورة 📁</span>
+                <input type="file" accept="image/*" onchange="handleImageUpload(this, 'preview-${rowId}', 'hidden-${rowId}')">
+            </div>
+            <input type="hidden" class="br-image" id="hidden-${rowId}">
+            <img id="preview-${rowId}" src="" style="width:60px;height:60px;object-fit:cover;border-radius:10px;margin-top:10px;display:none;">
+        </div>
     `;
     document.getElementById('batchItemsContainer').appendChild(div);
+}
+
+function confirmBatch() {
+    const cost = parseFloat(document.getElementById('b-cost').value)||0;
+    const qty = parseInt(document.getElementById('b-qty').value)||1;
+    const costPerPiece = cost/qty;
+
+    const rows = document.querySelectorAll('.batch-row-item');
+    let count = 0;
+    rows.forEach(r => {
+        const name = r.querySelector('.br-name').value;
+        if(!name) return;
+        const barcode = r.querySelector('.br-barcode').value;
+        const cat = r.querySelector('.br-cat').value;
+        const age = r.querySelector('.br-age').value;
+        const sell = parseFloat(r.querySelector('.br-sell').value)||0;
+        const sizesRaw = r.querySelector('.br-sizes').value;
+        const image = r.querySelector('.br-image').value || ''; // سحب الصورة
+        
+        let sizes = {};
+        if(sizesRaw) {
+            sizesRaw.split(',').forEach(s => {
+                const [k,v] = s.split(':');
+                if(k && v) sizes[k.trim()] = parseInt(v.trim());
+            });
+        } else { sizes['M'] = 1; }
+
+        state.products.push({
+            id: Date.now() + count,
+            name, barcode, category: cat, ageGroup: age,
+            sellPrice: sell, buyPrice: costPerPiece,
+            image: image, sizes // حفظ الصورة مع القطعة
+        });
+        count++;
+    });
+    
+    saveToLocal(); renderStockTable(); renderProducts();
+    
+    document.getElementById('batchItemsContainer').innerHTML = '';
+    document.getElementById('b-name').value = '';
+    document.getElementById('b-cost').value = '';
+    document.getElementById('b-qty').value = '';
+    showToast(`تم إضافة ${count} قطعة بنجاح`);
+
+    // إرسال التحديث للكوكل شيت مباشرة بعد إضافة الـ Batch
+    if (state.settings.sheetsUrl) {
+        fetch(state.settings.sheetsUrl, { 
+            method: 'POST', 
+            mode: 'no-cors', 
+            body: JSON.stringify({ action: 'updateProducts', products: state.products }) 
+        });
+    }
 }
 function confirmBatch() {
     const cost = parseFloat(document.getElementById('b-cost').value)||0;
