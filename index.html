@@ -1147,6 +1147,7 @@ function viewCustomerDetails(id) {
 }
 
 // ===== REPORTS =====
+// ===== REPORTS =====
 function renderReports() {
     const monthVal = document.getElementById('reportMonthFilter').value; // YYYY-MM
     const ords = state.orders.filter(o => {
@@ -1155,14 +1156,18 @@ function renderReports() {
         return m === monthVal && o.status !== 'rejected';
     });
 
-    const sales = ords.reduce((a,o)=>a+o.total, 0);
+    // التعديل هنا: حساب المبيعات من قيمة المنتجات فقط (subtotal) لتجاهل أجور التوصيل
+    const sales = ords.reduce((a,o) => a + (o.subtotal || 0), 0);
+    
     const cogs = ords.reduce((a,o) => {
         return a + o.items.reduce((sum, i) => {
             const p = state.products.find(x=>x.id===i.productId);
             return sum + (p ? p.buyPrice * i.qty : 0);
         }, 0);
     }, 0);
-    const lostToDiscounts = ords.reduce((a,o)=>a+o.discount, 0); // هدايا وخصومات
+    
+    // حساب المبالغ الضائعة على العروض والتوصيل المجاني
+    const lostToDiscounts = ords.reduce((a,o) => a + (o.discount || 0), 0); 
 
     const exps = state.settings.expenses[monthVal] || {ads:0, shipping:0, packaging:0};
     document.getElementById('expAds').value = exps.ads;
@@ -1170,7 +1175,9 @@ function renderReports() {
     document.getElementById('expPackaging').value = exps.packaging;
 
     const totalExp = exps.ads + exps.shipping + exps.packaging;
-    const netProfit = sales - cogs - totalExp;
+    
+    // التعديل هنا: الربح الصافي = المبيعات - تكلفة البضاعة - الخسائر من العروض - المصاريف الإضافية
+    const netProfit = sales - cogs - lostToDiscounts - totalExp;
 
     document.getElementById('rep-sales').textContent = sales.toLocaleString();
     document.getElementById('rep-cost').textContent = cogs.toLocaleString();
