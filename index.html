@@ -3,407 +3,209 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Valentina — متجر أزياء راقٍ</title>
+<title>Valentina Management System</title>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-<script src="https://unpkg.com/html5-qrcode"></script>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Tajawal:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --soft-white: #fdf8f5;
-  --pale-yellow: #f9f0d3;
-  --pale-lilac: #e8e0f0;
-  --muted-pink: #f2d5d5;
-  --sage-green: #b5c9b0;
-  --pastel-blue: #c8d8e8;
-  --warm-brown: #8b6f5e;
-  --dark-text: #3a2e2e;
-  --medium-text: #6b5555;
-  --accent: #c9a87c;
-  --accent-dark: #a8865a;
-  --border: #e8ddd8;
-  --shadow: rgba(139,111,94,0.12);
-  --success: #7a9e7e;
-  --danger: #c97a7a;
-  --warning: #c9a87c;
+  --primary: #8b6f5e; --accent: #c9a87c; --bg: #fdf8f5;
+  --white: #ffffff; --border: #e8ddd8; --text: #3a2e2e;
+  --danger: #c97a7a; --success: #7a9e7e;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Tajawal', sans-serif; background: var(--soft-white); color: var(--dark-text); min-height: 100vh; }
+body { font-family: 'Tajawal', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
 
-/* التحسينات الجمالية للمفضلات والدخول */
-.main-nav { background: white; border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 70px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 20px var(--shadow); }
-.logo { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--warm-brown); letter-spacing: 2px; }
-.logo span { font-style: italic; color: var(--accent); }
-.nav-tabs { display: flex; gap: 0.5rem; }
-.nav-tab { padding: 0.5rem 1.2rem; border: none; background: none; font-family: 'Tajawal', sans-serif; cursor: pointer; border-radius: 20px; transition: all 0.3s; font-weight: 500; }
-.nav-tab.active { background: var(--muted-pink); color: var(--warm-brown); }
+/* Navigation */
+.main-nav { 
+    background: var(--white); border-bottom: 1px solid var(--border); 
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 2rem; height: 70px; sticky: top; z-index: 1000;
+}
+.logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--primary); }
 
-.nav-actions { display: flex; gap: 1rem; align-items: center; }
-.icon-btn { background: none; border: none; cursor: pointer; font-size: 1.4rem; position: relative; color: var(--warm-brown); }
-.badge-count { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; }
+.nav-links { display: flex; gap: 10px; }
+.nav-btn { 
+    padding: 8px 20px; border: 1px solid var(--border); background: none; 
+    border-radius: 20px; cursor: pointer; transition: 0.3s; font-weight: bold;
+}
+.nav-btn.active { background: var(--primary); color: var(--white); border-color: var(--primary); }
 
-/* واجهة المتجر القابلة للتعديل */
-.hero { padding: 4rem 2rem; text-align: center; position: relative; overflow: hidden; background-size: cover; background-position: center; transition: background 0.5s; }
-.hero-edit-btn { position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.8); border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; display: none; }
-.page-seller .hero-edit-btn { display: block; }
+/* Layouts */
+.page { display: none; padding: 2rem; max-width: 1200px; margin: 0 auto; }
+.page.active { display: block; animation: fadeIn 0.3s ease; }
 
-/* التقرير المحسن */
-.profit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
-.profit-item { background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 10px; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* مودال التفاصيل */
-.order-details-modal img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; }
+/* Seller Dashboard Sidebar */
+.seller-container { display: grid; grid-template-columns: 250px 1fr; gap: 2rem; margin-top: 1rem; }
+.sidebar { background: var(--white); border-radius: 15px; padding: 1.5rem; height: fit-content; border: 1px solid var(--border); }
+.side-link { 
+    display: block; padding: 12px; margin-bottom: 8px; text-decoration: none; 
+    color: var(--text); border-radius: 8px; cursor: pointer; transition: 0.2s;
+}
+.side-link:hover { background: var(--bg); }
+.side-link.active { background: var(--accent); color: var(--white); }
 
-/* الباركود */
-#barcodeCanvas { display: none; margin-top: 10px; }
+/* Tables & Cards */
+.card { background: var(--white); border-radius: 15px; padding: 1.5rem; border: 1px solid var(--border); margin-bottom: 1.5rem; }
+table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+th, td { padding: 12px; text-align: right; border-bottom: 1px solid var(--border); }
+.status-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; }
 
-/* الحقول الجديدة */
-.settings-section { background: white; padding: 1.5rem; border-radius: 14px; margin-bottom: 1.5rem; border: 1px solid var(--border); }
-.settings-section h3 { margin-bottom: 1rem; color: var(--warm-brown); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
-
-.page { display: none; }
-.page.active { display: block; }
+/* Forms */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+input, select, button { padding: 10px; border-radius: 8px; border: 1px solid var(--border); font-family: inherit; }
+.btn-save { background: var(--success); color: white; border: none; cursor: pointer; padding: 10px 20px; }
 </style>
 </head>
 <body>
 
 <nav class="main-nav">
-  <div class="logo"><em>V</em>alentina</div>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('buyer')">🛍️ المتجر</button>
-    <button class="nav-tab" onclick="showPage('seller')">📊 لوحة البائع</button>
-  </div>
-  <div class="nav-actions">
-    <button class="icon-btn" onclick="openFavorites()">❤️ <span class="badge-count" id="favCount">0</span></button>
-    <button class="icon-btn" onclick="toggleCart()">🛒 <span class="badge-count" id="cartCount">0</span></button>
-    <button class="btn-secondary" onclick="openLoginModal()" style="padding: 5px 15px; border-radius: 15px;">دخول</button>
+  <div class="logo">VALENTINA <span>System</span></div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="switchPage('store')">المتجر</button>
+    <button class="nav-btn" onclick="switchPage('admin')">لوحة التحكم</button>
   </div>
 </nav>
 
-<div id="page-buyer" class="page active">
-  <div class="hero" id="storeHero" style="background-image: linear-gradient(135deg, var(--pale-lilac), var(--muted-pink))">
-    <h1 id="storeTitle"><em>Valentina</em> — أزياء راقية</h1>
-    <p id="storeSub">اكتشفي تشكيلتنا الحصرية من الموضة الراقية</p>
-  </div>
-  
-  <div class="section">
-    <div class="filter-chips" id="categoryFilters">
-      </div>
-    <div class="products-grid" id="productsGrid"></div>
-  </div>
+<div id="page-store" class="page active">
+  <header class="card" style="text-align:center; background: linear-gradient(to right, #f2d5d5, #e8e0f0);">
+    <h2>واجهة العرض للمتجر</h2>
+    <p>هنا تظهر القطع للعملاء بالدينار العراقي</p>
+  </header>
+  <div id="store-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+    </div>
 </div>
 
-<div id="page-seller" class="page">
-  <div class="seller-layout">
-    <div class="seller-sidebar">
-      <div class="seller-nav-item active" onclick="showSellerPanel('stock')">📦 المخزون</div>
-      <div class="seller-nav-item" onclick="showSellerPanel('orders')">🛍️ الطلبات</div>
-      <div class="seller-nav-item" onclick="showSellerPanel('reports')">📊 التقارير</div>
-      <div class="seller-nav-item" onclick="showSellerPanel('settings')">⚙️ الإعدادات</div>
-    </div>
+<div id="page-admin" class="page">
+  <div class="seller-container">
+    <aside class="sidebar">
+      <div class="side-link active" onclick="switchTab('inventory')">📦 المخزون (Batch)</div>
+      <div class="side-link" onclick="switchTab('orders')">📜 الطلبات</div>
+      <div class="side-link" onclick="switchTab('customers')">👥 العملاء</div>
+      <div class="side-link" onclick="switchTab('reports')">📊 التقارير المالية</div>
+      <div class="side-link" onclick="switchTab('settings')">⚙️ الإعدادات العامة</div>
+    </aside>
 
-    <div class="seller-content">
-      <div id="panel-stock" class="seller-panel active">
-        <div style="display:flex; justify-content:space-between; margin-bottom: 1rem;">
-          <h2>إدارة المنتجات</h2>
-          <button class="btn-primary" onclick="openProductModal()">➕ إضافة قطعة</button>
-        </div>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>الصورة</th><th>الاسم</th><th>الفئة</th><th>الباركود</th><th>السعر (د.ع)</th><th>المخزون</th><th>إجراءات</th>
-            </tr>
-          </thead>
-          <tbody id="stockTableBody"></tbody>
-        </table>
-      </div>
-
-      <div id="panel-orders" class="seller-panel">
-        <h2>الطلبات والعمليات</h2>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>رقم الطلب</th><th>العميل</th><th>الإجمالي</th><th>الحالة</th><th>إجراءات</th>
-            </tr>
-          </thead>
-          <tbody id="ordersTableBody"></tbody>
-        </table>
-      </div>
-
-      <div id="panel-reports" class="seller-panel">
-          <div class="profit-summary">
-              <h3>التقرير المالي المحسن (د.ع)</h3>
-              <div class="profit-grid" id="detailedReports">
-                  </div>
+    <main class="content">
+      <div id="tab-inventory" class="tab-content active">
+        <div class="card">
+          <h3>إضافة قطعة جديدة (Batch Mode)</h3>
+          <div class="form-grid" style="margin-top:1rem;">
+            <input type="text" id="p-name" placeholder="اسم القطعة">
+            <select id="p-cat"><option>فساتين</option></select>
+            <select id="p-age" onchange="loadSizes()"><option value="">اختر الفئة العمرية</option></select>
+            <div id="size-area" style="grid-column: span 2; display: flex; gap: 5px; flex-wrap: wrap;"></div>
+            <input type="number" id="p-price" placeholder="السعر بالدينار">
+            <div style="display:flex; gap:5px;">
+                <input type="text" id="p-barcode" placeholder="الباركود">
+                <button onclick="generateCode()">توليد</button>
+            </div>
+            <input type="file" id="p-img" accept="image/*" style="grid-column: span 2;">
           </div>
+          <button class="btn-save" style="margin-top:1rem; width:100%" onclick="addProduct()">حفظ القطعة للمخزون</button>
+        </div>
       </div>
 
-      <div id="panel-settings" class="seller-panel">
-        <h2>إعدادات المتجر المتقدمة</h2>
-        
-        <div class="settings-section">
-          <h3>📂 إدارة الفئات</h3>
-          <div id="categoryManager">
-            <input type="text" id="newCatInput" placeholder="اسم الفئة الجديدة">
-            <button onclick="addCategory()">إضافة</button>
-            <div id="categoriesList" style="margin-top:10px"></div>
+      <div id="tab-reports" class="tab-content" style="display:none;">
+        <div class="card">
+          <h3>التقارير المالية المحاسبية</h3>
+          <div class="form-grid">
+            <div class="card"><h6>مبيعات:</h6><h4 id="rep-sales">0 د.ع</h4></div>
+            <div class="card"><h6>إعلانات:</h6><input type="number" onchange="calcNet()" id="exp-ads" value="0"></div>
+            <div class="card"><h6>شحن:</h6><input type="number" onchange="calcNet()" id="exp-ship" value="0"></div>
+            <div class="card"><h6>صافي الربح:</h6><h4 id="rep-net" style="color:var(--success)">0 د.ع</h4></div>
           </div>
         </div>
-
-        <div class="settings-section">
-          <h3>👶 الفئات العمرية والقياسات</h3>
-          <div id="ageGroupManager">
-            <input type="text" id="newAgeName" placeholder="مثال: أطفال (2-5 سنوات)">
-            <input type="text" id="newAgeSizes" placeholder="القياسات مفصولة بفاصلة: 2, 4, 6">
-            <button onclick="addAgeGroup()">إضافة فئة عمرية</button>
-            <div id="ageGroupsList" style="margin-top:10px"></div>
-          </div>
-        </div>
-
-        <div class="settings-section">
-          <h3>🖼️ تخصيص الواجهة (Banners)</h3>
-          <label>صورة الهيرو الرئيسية:</label>
-          <input type="file" onchange="updateHeroImage(this)">
-          <input type="text" id="editStoreTitle" placeholder="العنوان الرئيسي" oninput="updateStoreText()">
-        </div>
       </div>
-    </div>
+
+      <div id="tab-settings" class="tab-content" style="display:none;">
+          <div class="card">
+              <h3>إدارة التصنيفات</h3>
+              <input type="text" id="new-cat" placeholder="فئة جديدة">
+              <button onclick="addCategory()">إضافة</button>
+          </div>
+          <div class="card">
+              <h3>إدارة الفئات العمرية والقياسات</h3>
+              <input type="text" id="age-name" placeholder="اسم الفئة (مثلا: أطفال)">
+              <input type="text" id="age-sizes" placeholder="القياسات (2,4,6)">
+              <button onclick="addAgeGroup()">حفظ الفئة</button>
+          </div>
+      </aside>
+    </main>
   </div>
-</div>
-
-<div id="productModal" class="modal-overlay">
-  <div class="modal">
-    <h3>بيانات القطعة</h3>
-    <div class="form-group">
-      <label>صورة المنتج (Upload)</label>
-      <input type="file" accept="image/*" onchange="previewImage(this)">
-      <img id="imgPreview" style="width:100px; display:none; margin-top:10px">
-    </div>
-    <div class="form-group">
-        <label>الفئة العمرية</label>
-        <select id="prodAgeGroup" onchange="updateSizeOptions()"></select>
-    </div>
-    <div id="sizeInputsContainer"></div>
-    <div class="form-group">
-        <label>باركود</label>
-        <input type="text" id="prodBarcode">
-        <button onclick="generateBarcode()">توليد باركود</button>
-        <canvas id="barcodeCanvas"></canvas>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-primary" onclick="saveProduct()">حفظ</button>
-      <button class="btn-secondary" onclick="closeModal('productModal')">إلغاء</button>
-    </div>
-  </div>
-</div>
-
-<div id="loginModal" class="modal-overlay">
-    <div class="modal">
-        <h3>تسجيل الدخول / اشتراك</h3>
-        <div class="form-group">
-            <label>رقم الهاتف</label>
-            <input type="tel" id="userPhone" placeholder="07XXXXXXXX">
-        </div>
-        <button class="btn-primary" onclick="loginWithPhone()">دخول</button>
-        <button class="btn-secondary" onclick="closeModal('loginModal')">إغلاق</button>
-    </div>
 </div>
 
 <script>
-// الحالة العامة للنظام
-let state = JSON.parse(localStorage.getItem('valentina_pro_v2')) || {
-  products: [],
-  orders: [],
-  categories: ['فساتين', 'بلوزات', 'بناطيل'],
-  ageGroups: [
-    {name: 'بالغين', sizes: ['S', 'M', 'L', 'XL']},
-    {name: 'أطفال', sizes: ['2', '4', '6', '8']}
-  ],
-  customers: {},
-  settings: {
-    storeTitle: 'Valentina — أزياء راقية',
-    heroBg: '',
-    currency: 'د.ع'
-  },
-  favorites: [],
-  expenses: {
-    ads: 0,
-    shipping: 0,
-    packaging: 0
-  }
+// Data Initialization
+let data = JSON.parse(localStorage.getItem('valentina_db')) || {
+    products: [],
+    categories: ['درست', 'عبايات'],
+    ageGroups: [{name: 'كبار', sizes: ['S', 'M', 'L']}],
+    orders: [],
+    expenses: { ads: 0, shipping: 0 }
 };
 
-function saveToLocal() {
-  localStorage.setItem('valentina_pro_v2', JSON.stringify(state));
-}
-
-// 1. تحويل العملة للدينار العراقي
-function formatCurrency(amount) {
-  return amount.toLocaleString() + ' ' + state.settings.currency;
-}
-
-// 2. إدارة الفئات
-function renderCategories() {
-  const list = document.getElementById('categoriesList');
-  list.innerHTML = state.categories.map((c, i) => `
-    <div class="tag">${c} <span onclick="deleteCategory(${i})" style="cursor:pointer;color:red">✕</span></div>
-  `).join('');
-  
-  // تحديث فلاتر المتجر
-  const filters = document.getElementById('categoryFilters');
-  filters.innerHTML = '<div class="filter-chip active" onclick="filterCategory(\'all\')">الكل</div>' +
-    state.categories.map(c => `<div class="filter-chip" onclick="filterCategory('${c}')">${c}</div>`).join('');
-}
-
-function addCategory() {
-  const val = document.getElementById('newCatInput').value;
-  if(val) {
-    state.categories.push(val);
-    document.getElementById('newCatInput').value = '';
-    saveToLocal();
-    renderCategories();
-  }
-}
-
-// 3. الفئة العمرية والقياسات
-function addAgeGroup() {
-  const name = document.getElementById('newAgeName').value;
-  const sizes = document.getElementById('newAgeSizes').value.split(',').map(s => s.trim());
-  if(name && sizes.length) {
-    state.ageGroups.push({name, sizes});
-    saveToLocal();
-    renderAgeGroups();
-  }
-}
-
-function renderAgeGroups() {
-    const list = document.getElementById('ageGroupsList');
-    list.innerHTML = state.ageGroups.map((g, i) => `
-        <div class="settings-section">
-            <strong>${g.name}</strong>: ${g.sizes.join(', ')}
-            <button onclick="deleteAgeGroup(${i})" style="color:red">حذف</button>
-        </div>
-    `).join('');
-}
-
-// 4. رفع الصور (Upload)
-let tempImgBase64 = '';
-function previewImage(input) {
-  if (input.files && input.files[0]) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      tempImgBase64 = e.target.result;
-      const preview = document.getElementById('imgPreview');
-      preview.src = e.target.result;
-      preview.style.display = 'block';
-    }
-    reader.readAsDataURL(input.files[0]);
-  }
-}
-
-// 5. الباركود
-function generateBarcode() {
-    const code = 'V' + Date.now();
-    document.getElementById('prodBarcode').value = code;
-    JsBarcode("#barcodeCanvas", code, { format: "CODE128", width: 1, height: 40 });
-    document.getElementById('barcodeCanvas').style.display = 'block';
-}
-
-// 6. التعامل مع الطلب المرفوض
-function rejectOrder(orderId) {
-    const order = state.orders.find(o => o.id === orderId);
-    if(order) {
-        order.status = 'rejected';
-        // إرجاع القطع للمخزون
-        order.items.forEach(item => {
-            const prod = state.products.find(p => p.id === item.productId);
-            if(prod) {
-                prod.stock[item.size] += item.qty;
-                prod.statusNote = 'راجع من الشركة (مخزن الشحن)';
-            }
-        });
-        saveToLocal();
-        renderOrders();
-        alert('تم رفض الطلب وإرجاع المنتجات للمخزون تحت حالة (راجع من الشركة)');
-    }
-}
-
-// 7. التقارير المالية المحسنة
-function renderDetailedReports() {
-    let totalSales = state.orders.filter(o => o.status === 'completed').reduce((sum, o) => sum + o.total, 0);
-    let totalPurchases = state.products.reduce((sum, p) => sum + (p.purchasePrice * p.totalStock), 0);
-    let offerLosses = state.orders.reduce((sum, o) => sum + (o.discount || 0), 0);
-    
-    const container = document.getElementById('detailedReports');
-    container.innerHTML = `
-        <div class="profit-item"><span>إجمالي المبيعات</span><strong>${formatCurrency(totalSales)}</strong></div>
-        <div class="profit-item"><span>مصاريف الإعلانات</span><input type="number" value="${state.expenses.ads}" onchange="updateExpense('ads', this.value)"></div>
-        <div class="profit-item"><span>تكلفة الشحن</span><input type="number" value="${state.expenses.shipping}" onchange="updateExpense('shipping', this.value)"></div>
-        <div class="profit-item"><span>تكلفة التغليف</span><input type="number" value="${state.expenses.packaging}" onchange="updateExpense('packaging', this.value)"></div>
-        <div class="profit-item"><span>خسائر العروض</span><strong>${formatCurrency(offerLosses)}</strong></div>
-        <div class="profit-item" style="background:var(--success)"><span>صافي الربح</span><strong>${formatCurrency(totalSales - (state.expenses.ads + state.expenses.shipping + state.expenses.packaging))}</strong></div>
-    `;
-}
-
-function updateExpense(type, val) {
-    state.expenses[type] = parseFloat(val) || 0;
-    saveToLocal();
-    renderDetailedReports();
-}
-
-// تهيئة أولية
-window.onload = () => {
-    renderCategories();
-    renderAgeGroups();
-    renderDetailedReports();
-    // تهيئة المتجر
-    document.getElementById('storeTitle').innerText = state.settings.storeTitle;
-    if(state.settings.heroBg) document.getElementById('storeHero').style.backgroundImage = `url(${state.settings.heroBg})`;
-};
-
-// وظائف مساعدة للواجهة
-function showPage(pageId) {
+// --- Navigation Logic (The Fix) ---
+function switchPage(pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-' + pageId).classList.add('active');
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     event.target.classList.add('active');
 }
 
-function showSellerPanel(panelId) {
-    document.querySelectorAll('.seller-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('panel-' + panelId).classList.add('active');
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+    document.getElementById('tab-' + tabId).style.display = 'block';
+    
+    document.querySelectorAll('.side-link').forEach(l => l.classList.remove('active'));
+    event.target.classList.add('active');
 }
 
-function openProductModal() {
-    document.getElementById('productModal').classList.add('open');
-    const ageSelect = document.getElementById('prodAgeGroup');
-    ageSelect.innerHTML = state.ageGroups.map(g => `<option value="${g.name}">${g.name}</option>`).join('');
-    updateSizeOptions();
-}
-
-function updateSizeOptions() {
-    const ageName = document.getElementById('prodAgeGroup').value;
-    const group = state.ageGroups.find(g => g.name === ageName);
-    const container = document.getElementById('sizeInputsContainer');
-    container.innerHTML = '<h4>القياسات والمخزون</h4>' + group.sizes.map(s => `
-        <div class="form-group" style="display:flex; gap:10px; align-items:center">
-            <span>قياس ${s}:</span>
-            <input type="number" placeholder="الكمية" id="size-qty-${s}" style="width:80px">
-        </div>
-    `).join('');
-}
-
-function updateHeroImage(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            state.settings.heroBg = e.target.result;
-            document.getElementById('storeHero').style.backgroundImage = `url(${e.target.result})`;
-            saveToLocal();
-        };
-        reader.readAsDataURL(input.files[0]);
+// --- Features Logic ---
+function loadSizes() {
+    const ageName = document.getElementById('p-age').value;
+    const group = data.ageGroups.find(g => g.name === ageName);
+    const area = document.getElementById('size-area');
+    area.innerHTML = '';
+    if(group) {
+        group.sizes.forEach(s => {
+            area.innerHTML += `<label style="font-size:12px; border:1px solid #ddd; padding:5px;">${s} <input type="number" style="width:40px" id="qty-${s}" value="0"></label>`;
+        });
     }
 }
+
+function generateCode() {
+    const code = 'VAL' + Math.floor(Math.random() * 1000000);
+    document.getElementById('p-barcode').value = code;
+}
+
+function addAgeGroup() {
+    const name = document.getElementById('age-name').value;
+    const sizes = document.getElementById('age-sizes').value.split(',');
+    if(name && sizes.length) {
+        data.ageGroups.push({name, sizes: sizes.map(s => s.trim())});
+        save();
+        renderSettings();
+    }
+}
+
+function save() {
+    localStorage.setItem('valentina_db', JSON.stringify(data));
+}
+
+function renderSettings() {
+    // تحديث السلكت بوكس
+    const ageSelect = document.getElementById('p-age');
+    ageSelect.innerHTML = '<option value="">اختر الفئة العمرية</option>' + 
+        data.ageGroups.map(g => `<option value="${g.name}">${g.name}</option>`).join('');
+}
+
+// Initial Run
+renderSettings();
 </script>
+
 </body>
 </html>
