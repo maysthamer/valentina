@@ -94,7 +94,7 @@ body {
 .story-text h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 1.5rem; }
 .story-text p { color: var(--text-muted); line-height: 1.8; margin-bottom: 2rem; font-size: 1.1rem; }
 .story-img-wrapper { position: relative; padding-right: 2rem; }
-.story-img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 200px 200px 0 0; } /* شكل القوس المطابق للتصميم */
+.story-img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 200px 200px 0 0; } 
 
 /* ===== PRODUCT DETAILS PAGE ===== */
 #page-product-details { padding: 4rem 2rem; }
@@ -175,7 +175,6 @@ body {
 .img-preview-box .remove-img { position: absolute; top: 2px; right: 2px; background: rgba(255,0,0,0.8); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; }
 .img-preview-box .main-lbl { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.6); color: white; text-align: center; font-size: 10px; padding: 2px 0; }
 
-/* Modals & Sidebars */
 /* ===== CART & SIDEBARS ===== */
 .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 2000; display: none; }
 .sidebar-overlay.open { display: block; }
@@ -208,6 +207,12 @@ body {
 .cart-footer { padding: 1.5rem; border-top: 2px solid var(--border); background: var(--soft-white); }
 .cart-summary-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; }
 .cart-summary-row.total { font-weight: 700; font-size: 1.1rem; color: var(--warm-brown); border-top: 1px solid var(--border); padding-top: 0.5rem; margin-top: 0.5rem; }
+
+/* MODALS */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: none; }
+.modal-overlay.open { display: flex; align-items: center; justify-content: center; }
+.modal { background: white; border-radius: 16px; padding: 2rem; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+
 .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--text-dark); color: white; padding: 1rem 2rem; border-radius: 30px; font-weight: 500; box-shadow: 0 8px 30px rgba(0,0,0,0.2); z-index: 9999; transition: transform 0.4s; }
 .toast.show { transform: translateX(-50%) translateY(0); }
 </style>
@@ -601,7 +606,6 @@ body {
       <label>صور القطعة (يمكنك اختيار عدة صور - الصورة الأولى هي الرئيسية)</label>
       <input type="file" multiple accept="image/*" id="prod-image-input" style="padding:0.5rem; background:#fff;">
       <div class="image-upload-preview-container" id="prod-images-preview-container"></div>
-      <!-- Store base64 strings array as JSON -->
       <input type="hidden" id="prod-images-data">
     </div>
 
@@ -657,7 +661,7 @@ body {
 <script>
 // ===== STATE =====
 let currentOrderFilter = 'pending';
-let uploadedImagesArr = []; // للتعامل مع صور القطعة المتعددة
+let uploadedImagesArr = []; 
 
 let state = {
   products: [],
@@ -695,7 +699,6 @@ function init() {
   if (!state.settings.adminPassword) state.settings.adminPassword = 'admin';
   if (!state.settings.topBannerText) state.settings.topBannerText = 'توصيل مجاني';
   
-  // Data Migration for new structure (multiple images, desc, date, sold)
   state.products.forEach(p => {
       if(!p.images) p.images = p.image ? [p.image] : [];
       if(!p.description) p.description = "";
@@ -714,7 +717,6 @@ function init() {
   populateCategorySettings();
   applyStoreFrontSettings();
   
-  // Render buyer sections
   renderBestSellers();
   renderNewArrivals();
 
@@ -724,7 +726,6 @@ function init() {
   updateCartUI();
   updateAuthUI();
 
-  // Price calculator listener
   document.getElementById('prod-sell-price').addEventListener('input', updateFinalCalc);
   document.getElementById('prod-discount-pct').addEventListener('input', updateFinalCalc);
 }
@@ -732,7 +733,6 @@ function init() {
 function saveToLocal() { localStorage.setItem('valentina_v3', JSON.stringify(state)); }
 function loadFromLocal() {
   const saved = localStorage.getItem('valentina_v3');
-  // fallback to old version if new doesn't exist
   if (!saved) {
       const old = localStorage.getItem('valentina_v2');
       if(old) { state = { ...state, ...JSON.parse(old) }; saveToLocal(); }
@@ -859,7 +859,6 @@ function generateProductCardHTML(p) {
 
 function renderBestSellers() {
     const grid = document.getElementById('bestSellersGrid');
-    // Sort by soldCount descending, take top 4
     let best = [...state.products].sort((a,b) => (b.soldCount || 0) - (a.soldCount || 0)).slice(0, 4);
     if(best.length === 0) best = state.products.slice(0,4);
     grid.innerHTML = best.map(p => generateProductCardHTML(p)).join('');
@@ -867,7 +866,6 @@ function renderBestSellers() {
 
 function renderNewArrivals() {
     const grid = document.getElementById('newArrivalsGrid');
-    // Sort by dateAdded descending, take top 8
     let news = [...state.products].sort((a,b) => (b.dateAdded || 0) - (a.dateAdded || 0)).slice(0, 8);
     grid.innerHTML = news.map(p => generateProductCardHTML(p)).join('');
 }
@@ -892,7 +890,6 @@ function showProductDetails(id) {
         ${hasDisc ? `<del>${p.sellPrice.toLocaleString()}</del>` : ''}
     `;
 
-    // Images
     const imgs = (p.images && p.images.length > 0) ? p.images : ['https://via.placeholder.com/400x500'];
     document.getElementById('pdMainImg').src = imgs[0];
     
@@ -905,14 +902,12 @@ function showProductDetails(id) {
         document.getElementById('pdThumbnails').style.display = 'none';
     }
 
-    // Sizes
     const sizesContainer = document.getElementById('pdSizesContainer');
     sizesContainer.innerHTML = Object.entries(p.sizes).map(([sz, qty]) => {
         const out = qty === 0;
         return `<button class="pd-size-btn" ${out?'disabled':''} onclick="selectPdSize(this, '${sz}')">${sz} ${out?'(نفد)':''}</button>`;
     }).join('');
 
-    // Update Add Cart Btn state
     const totalStock = Object.values(p.sizes).reduce((a,b) => a+b, 0);
     const btn = document.getElementById('pdAddCartBtn');
     if(totalStock === 0) {
@@ -925,7 +920,6 @@ function showProductDetails(id) {
         };
     }
 
-    // Fav Btn
     const isFav = state.favorites.includes(String(p.id));
     const favBtn = document.getElementById('pdFavBtn');
     favBtn.textContent = isFav ? '❤️' : '🤍';
@@ -970,6 +964,7 @@ function toggleFav(id, event) {
     renderFavorites();
 }
 function toggleFavorites() { document.getElementById('sidebarOverlay').classList.add('open'); document.getElementById('favSidebar').classList.add('open'); renderFavorites(); }
+
 function renderFavorites() {
     const cont = document.getElementById('favItemsContainer');
     if(state.favorites.length === 0) { cont.innerHTML = '<p style="text-align:center;padding:2rem;color:var(--text-muted);">المفضلة فارغة</p>'; return; }
@@ -991,6 +986,9 @@ function renderFavorites() {
     }).join('');
 }
 
+function removeFromCart(productId, size) { state.cart = state.cart.filter(i => !(String(i.productId) === String(productId) && i.size === size)); saveToLocal(); updateCartUI(); }
+function toggleCart() { document.getElementById('sidebarOverlay').classList.add('open'); document.getElementById('cartSidebar').classList.add('open'); }
+
 function updateCartUI() {
   const count = state.cart.reduce((a, i) => a + i.qty, 0);
   document.getElementById('cartCount').textContent = count;
@@ -1011,35 +1009,6 @@ function updateCartUI() {
           </div>
       `).join('');
   }
-
-  const subtotal = state.cart.reduce((a, i) => a + i.price * i.qty, 0);
-  let shipping = count >= state.settings.freeShippingQty ? 0 : state.settings.shippingCost;
-  let discount = count >= state.settings.giftQty ? Math.min(...state.cart.map(i => i.price)) : 0;
-  
-  document.getElementById('cartSubtotal').textContent = subtotal.toLocaleString();
-  document.getElementById('cartShipping').textContent = shipping === 0 ? 'مجاني 🚚' : shipping.toLocaleString();
-  document.getElementById('cartDiscount').textContent = discount.toLocaleString();
-  document.getElementById('cartTotal').textContent = (subtotal + shipping - discount).toLocaleString() + ' د.ع';
-}
-
-function removeFromCart(productId, size) { state.cart = state.cart.filter(i => !(String(i.productId) === String(productId) && i.size === size)); saveToLocal(); updateCartUI(); }
-function toggleCart() { document.getElementById('sidebarOverlay').classList.add('open'); document.getElementById('cartSidebar').classList.add('open'); }
-function updateCartUI() {
-  const count = state.cart.reduce((a, i) => a + i.qty, 0);
-  document.getElementById('cartCount').textContent = count;
-  const itemsEl = document.getElementById('cartItems');
-  
-  itemsEl.innerHTML = state.cart.map(item => `
-      <div class="cart-item">
-        <img src="${item.image||'https://via.placeholder.com/60'}">
-        <div class="cart-item-details">
-          <div class="cart-item-name">${item.name}</div>
-          <div class="cart-item-size">المقاس: ${item.size} | كمية: ${item.qty}</div>
-          <div class="cart-item-price">${(item.price * item.qty).toLocaleString()} د.ع</div>
-        </div>
-        <button class="remove-item-btn" onclick="removeFromCart('${item.productId}', '${item.size}')">✕</button>
-      </div>
-  `).join('');
 
   const subtotal = state.cart.reduce((a, i) => a + i.price * i.qty, 0);
   let shipping = count >= state.settings.freeShippingQty ? 0 : state.settings.shippingCost;
@@ -1076,7 +1045,6 @@ function placeOrder() {
   };
   state.orders.push(order);
 
-  // خصم الكمية من المخزون وزيادة عداد المبيعات (soldCount)
   state.cart.forEach(item => {
     const p = state.products.find(x => String(x.id) === String(item.productId));
     if(p) {
@@ -1090,7 +1058,7 @@ function placeOrder() {
   else { cust.orders++; cust.totalSpent += total; cust.name = name; }
 
   state.cart = []; saveToLocal(); updateCartUI(); 
-  renderBestSellers(); renderNewArrivals(); // Refresh lists
+  renderBestSellers(); renderNewArrivals(); 
   closeModal('checkoutModal'); showPage('buyer');
   syncOrderToSheets(order); showToast('تم تأكيد الطلب بنجاح ✅');
 }
@@ -1134,6 +1102,30 @@ function renderImagePreviews() {
 function removeUploadedImage(idx) {
     uploadedImagesArr.splice(idx, 1);
     renderImagePreviews();
+}
+
+function handleImageUpload(input, previewId, hiddenId) {
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+     const img = new Image();
+     img.onload = () => {
+       const canvas = document.createElement('canvas');
+       const ctx = canvas.getContext('2d');
+       const MAX_WIDTH = 600; 
+       const scaleSize = MAX_WIDTH / img.width;
+       canvas.width = MAX_WIDTH;
+       canvas.height = img.height * scaleSize;
+       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+       const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+       document.getElementById(hiddenId).value = dataUrl;
+       document.getElementById(previewId).src = dataUrl;
+       document.getElementById(previewId).style.display = 'block';
+     }
+     img.src = e.target.result;
+  }
+  reader.readAsDataURL(file);
 }
 
 // ===== PRODUCT MANAGEMENT =====
@@ -1225,7 +1217,6 @@ function renderSizeInputsForProduct(existingSizes = {}) {
   if(id) {
       const idx = state.products.findIndex(x => String(x.id) === String(id));
       if(idx > -1) {
-          // Keep old date and sold count
           pObj.dateAdded = state.products[idx].dateAdded;
           pObj.soldCount = state.products[idx].soldCount;
           state.products[idx] = { ...state.products[idx], ...pObj };
@@ -1379,6 +1370,7 @@ function renderOrders() {
   const monthFilter = document.getElementById('ordersMonthFilter').value;
   
   let filteredOrders = state.orders;
+
   if(monthFilter) {
       filteredOrders = filteredOrders.filter(o => {
           const d = new Date(parseInt(o.id));
@@ -1386,6 +1378,7 @@ function renderOrders() {
           return m === monthFilter;
       });
   }
+
   if(currentOrderFilter !== 'all') {
       filteredOrders = filteredOrders.filter(o => o.status === currentOrderFilter);
   }
