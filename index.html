@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Valentina — اناقة طفلتج تبدي ويانه</title>
+<title>Valentina — متجر أزياء راقٍ</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 <style>
@@ -213,7 +213,7 @@ body {
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="showPage('buyer')">🛍️ المتجر</button>
     <button class="nav-tab" onclick="toggleFavorites()">❤️ المفضلة <span id="favCount" style="background:var(--danger);color:white;border-radius:10px;padding:0 5px;font-size:0.7rem">0</span></button>
-    <button class="nav-tab" onclick="showPage('seller')">📊 لوحة البائع</button>
+    <button class="nav-tab" id="adminTabNav" style="display:none" onclick="showPage('seller')">📊 لوحة البائع</button>
     <button class="nav-tab" id="loginBtnNav" onclick="openLogin()">👤 دخول</button>
   </div>
   <button class="cart-btn" onclick="toggleCart()">
@@ -243,6 +243,11 @@ body {
     <div class="products-grid" id="productsGrid">
       </div>
   </div>
+
+  <div style="text-align:center; padding:3rem; margin-top:2rem; border-top:1px solid var(--border); color:var(--medium-text); font-size:0.9rem;">
+      &copy; 2026 Valentina. جميع الحقوق محفوظة. 
+      <br><span onclick="openAdminLogin()" style="cursor:pointer; display:inline-block; margin-top:10px; font-size:1.2rem;">🔒</span>
+  </div>
 </div>
 
 <div id="page-seller" class="page">
@@ -255,13 +260,17 @@ body {
       <div class="seller-nav-item" onclick="showSellerPanel('reports')"><span class="icon">📊</span> التقارير</div>
       <div class="seller-nav-item" onclick="showSellerPanel('offers')"><span class="icon">🎁</span> العروض</div>
       <div class="seller-nav-item" onclick="showSellerPanel('settings')"><span class="icon">⚙️</span> الإعدادات</div>
+      <div class="seller-nav-item" style="color:var(--danger)" onclick="logoutAdmin()"><span class="icon">🚪</span> خروج من الإدارة</div>
     </div>
 
     <div class="seller-content">
       <div id="panel-stock" class="seller-panel active">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
           <h2 class="section-title" style="margin:0">المخزون الرئيسي</h2>
-          <button class="btn-primary action-btn" onclick="openAddProductModal()">➕ إضافة قطعة</button>
+          <div>
+            <button class="btn-secondary action-btn" onclick="syncFromSheets()">🔄 مزامنة Sheets</button>
+            <button class="btn-primary action-btn" onclick="openAddProductModal()">➕ إضافة قطعة</button>
+          </div>
         </div>
         <div class="stats-row">
           <div class="stat-card"><div class="stat-value" id="stat-total-products">0</div><div class="stat-label">إجمالي القطع</div></div>
@@ -359,6 +368,30 @@ body {
         <h2 class="section-title">⚙️ الإعدادات المتقدمة</h2>
         
         <div class="panel-card">
+          <div class="panel-card-title">🔗 ربط Google Sheets</div>
+          <p style="font-size:0.85rem;color:var(--medium-text);margin-bottom:1rem;line-height:1.8">
+            يمكنك ربط المتجر مباشرة بـ Google Sheets لإدارة قاعدة البيانات الخاصة بك.
+          </p>
+          <div class="form-group">
+            <label>رابط الـ Web App (Google Apps Script URL)</label>
+            <input type="url" id="sheetsUrl" placeholder="https://script.google.com/macros/s/...">
+          </div>
+          <div class="form-group">
+            <label>معرف الـ Google Sheet (Sheet ID)</label>
+            <input type="text" id="sheetId" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms">
+          </div>
+          <button class="btn-primary" onclick="saveSheetsSettings()">💾 حفظ إعدادات الربط</button>
+          <button class="btn-secondary" onclick="testConnection()" style="margin-right:0.5rem">🧪 اختبار الاتصال</button>
+        </div>
+
+        <div class="panel-card">
+          <div class="panel-card-title">🔒 أمان لوحة البائع</div>
+          <div class="form-group"><label>كلمة المرور الحالية أو الجديدة للدخول إلى لوحة البائع</label>
+          <input type="text" id="setAdminPwd"></div>
+          <button class="btn-primary" onclick="saveAdminPwd()">💾 حفظ كلمة المرور</button>
+        </div>
+
+        <div class="panel-card">
           <div class="panel-card-title">🏪 إعدادات واجهة المتجر (البانر)</div>
           <div class="form-group"><label>العنوان الرئيسي</label><input type="text" id="setHeroTitle"></div>
           <div class="form-group"><label>العنوان الفرعي</label><input type="text" id="setHeroSubtitle"></div>
@@ -401,6 +434,16 @@ body {
 <div class="sidebar-panel" id="favSidebar">
   <div class="sidebar-header"><h3>❤️ المفضلة</h3><button class="close-btn" onclick="toggleFavorites()">✕</button></div>
   <div class="cart-items" id="favItemsContainer"></div>
+</div>
+
+<div class="modal-overlay" id="adminLoginModal">
+  <div class="modal" style="max-width:350px;text-align:center;">
+    <h3>🔒 دخول الإدارة</h3>
+    <p style="font-size:0.85rem; color:var(--medium-text); margin-bottom:1rem;">يرجى إدخال كلمة المرور للوصول إلى لوحة البائع.</p>
+    <div class="form-group"><input type="password" id="adminPwdInput" placeholder="كلمة المرور..."></div>
+    <button class="btn-primary" style="width:100%" onclick="verifyAdminLogin()">دخول الإدارة</button>
+    <button class="btn-secondary" style="width:100%; margin-top:0.5rem;" onclick="closeModal('adminLoginModal')">إلغاء</button>
+  </div>
 </div>
 
 <div class="modal-overlay" id="addProductModal">
@@ -484,6 +527,9 @@ let state = {
   customers: [],
   currentUser: null,
   settings: {
+    adminPassword: 'admin',
+    sheetsUrl: '',
+    sheetId: '',
     currency: 'د.ع',
     categories: ['فساتين', 'بلوزات', 'بناطيل', 'إكسسوار'],
     ageGroups: ['كبار', 'أطفال', 'مواليد'],
@@ -497,7 +543,7 @@ let state = {
     freeShippingQty: 2,
     shippingCost: 5000,
     giftQty: 4,
-    expenses: {} // Format: 'YYYY-MM': {ads:0, shipping:0, packaging:0}
+    expenses: {} 
   },
   activeCategory: 'all'
 };
@@ -509,8 +555,16 @@ function init() {
     state.products = [
       { id: 1, name: 'فستان ربيعي أنيق', barcode: '1001', category: 'فساتين', ageGroup: 'كبار', sellPrice: 45000, buyPrice: 20000, image: '', sizes: {'S':3,'M':5,'L':2} }
     ];
+    if (!state.settings.adminPassword) state.settings.adminPassword = 'admin';
+    state.settings.sheetsUrl = state.settings.sheetsUrl || '';
+    state.settings.sheetId = state.settings.sheetId || '';
     saveToLocal();
   }
+  
+  if(sessionStorage.getItem('val_admin_auth') === 'true') {
+      document.getElementById('adminTabNav').style.display = 'block';
+  }
+
   applyStoreFrontSettings();
   populateCategorySettings();
   renderProducts();
@@ -522,7 +576,6 @@ function init() {
   updateAuthUI();
   document.getElementById('reportMonthFilter').value = new Date().toISOString().slice(0,7);
   
-  // Barcode input listener
   document.getElementById('prod-barcode').addEventListener('input', function(e) {
       if(e.target.value) {
           try {
@@ -550,7 +603,7 @@ function showPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(`page-${page}`).classList.add('active');
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  if(event) event.target.classList.add('active');
+  if(event && event.target.classList.contains('nav-tab')) event.target.classList.add('active');
 }
 function showSellerPanel(panel) {
   document.querySelectorAll('.seller-panel').forEach(p => p.classList.remove('active'));
@@ -568,7 +621,104 @@ function closeAllSidebars() {
   document.getElementById('favSidebar').classList.remove('open');
 }
 
-// ===== AUTH & LOGIN =====
+// ===== ADMIN AUTHENTICATION =====
+function openAdminLogin() {
+    if(sessionStorage.getItem('val_admin_auth') === 'true') {
+        showPage('seller');
+        document.getElementById('adminTabNav').classList.add('active');
+    } else {
+        document.getElementById('adminPwdInput').value = '';
+        document.getElementById('adminLoginModal').classList.add('open');
+    }
+}
+
+function verifyAdminLogin() {
+    const pwd = document.getElementById('adminPwdInput').value;
+    if(pwd === state.settings.adminPassword) {
+        sessionStorage.setItem('val_admin_auth', 'true');
+        document.getElementById('adminTabNav').style.display = 'block';
+        closeModal('adminLoginModal');
+        showPage('seller');
+        document.getElementById('adminTabNav').classList.add('active');
+        showToast('✅ تم تسجيل الدخول كمسؤول');
+    } else {
+        showToast('❌ كلمة المرور غير صحيحة');
+    }
+}
+
+function logoutAdmin() {
+    if(confirm('هل تريد تسجيل الخروج من لوحة الإدارة؟')) {
+        sessionStorage.removeItem('val_admin_auth');
+        document.getElementById('adminTabNav').style.display = 'none';
+        showPage('buyer');
+        document.querySelector('.nav-tab').classList.add('active');
+        showToast('تم تسجيل الخروج بنجاح');
+    }
+}
+
+function saveAdminPwd() {
+    const newPwd = document.getElementById('setAdminPwd').value.trim();
+    if(newPwd) {
+        state.settings.adminPassword = newPwd;
+        saveToLocal();
+        showToast('💾 تم تغيير كلمة مرور الإدارة');
+    } else {
+        showToast('⚠️ لا يمكن ترك كلمة المرور فارغة');
+    }
+}
+
+// ===== GOOGLE SHEETS INTEGRATION =====
+function saveSheetsSettings() {
+  state.settings.sheetsUrl = document.getElementById('sheetsUrl').value.trim();
+  state.settings.sheetId = document.getElementById('sheetId').value.trim();
+  saveToLocal();
+  showToast('✅ تم حفظ إعدادات Google Sheets');
+}
+
+async function testConnection() {
+  const url = document.getElementById('sheetsUrl').value;
+  if (!url) return showToast('⚠️ أدخلي رابط الـ Web App أولاً');
+  showToast('🔄 جاري الاختبار...');
+  try {
+    await fetch(`${url}?action=test`, { mode: 'no-cors' });
+    showToast('✅ تم الاتصال بنجاح');
+  } catch(e) {
+    showToast('❌ فشل الاتصال');
+  }
+}
+
+async function syncFromSheets() {
+  if (!state.settings.sheetsUrl) return showToast('⚠️ أضيفي رابط Google Sheets في الإعدادات');
+  showToast('🔄 جاري المزامنة...');
+  try {
+    const res = await fetch(`${state.settings.sheetsUrl}?action=getData`, { mode: 'cors' });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.products) state.products = data.products;
+      if (data.orders) state.orders = data.orders;
+      if (data.customers) state.customers = data.customers;
+      saveToLocal();
+      renderProducts(); renderStockTable(); renderOrders(); renderCustomers(); renderReports();
+      showToast('✅ تمت المزامنة بنجاح');
+    }
+  } catch(e) {
+    showToast('❌ فشل الاتصال - تحققي من الإعدادات');
+  }
+}
+
+async function syncOrderToSheets(order) {
+  if (!state.settings.sheetsUrl) return;
+  try {
+    await fetch(state.settings.sheetsUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'addOrder', order })
+    });
+  } catch(e) {}
+}
+
+// ===== AUTH & LOGIN (BUYERS) =====
 function openLogin() {
     if(state.currentUser) {
         if(confirm('تسجيل الخروج؟')) { state.currentUser = null; saveToLocal(); updateAuthUI(); }
@@ -818,6 +968,7 @@ function placeOrder() {
   }
 
   state.cart = []; saveToLocal(); updateCartUI(); renderProducts(); closeModal('checkoutModal');
+  syncOrderToSheets(order); // مزامنة الطلب مع Google Sheets مباشرة
   showToast('تم تأكيد الطلب بنجاح ✅');
 }
 
@@ -825,6 +976,9 @@ function placeOrder() {
 function populateCategorySettings() {
     document.getElementById('setCategories').value = state.settings.categories.join(',');
     document.getElementById('setAgeGroups').value = state.settings.ageGroups.join(',');
+    document.getElementById('setAdminPwd').value = state.settings.adminPassword || 'admin';
+    document.getElementById('sheetsUrl').value = state.settings.sheetsUrl || '';
+    document.getElementById('sheetId').value = state.settings.sheetId || '';
     
     const cont = document.getElementById('sizeConfigsContainer');
     cont.innerHTML = state.settings.ageGroups.map(ag => {
@@ -1147,7 +1301,6 @@ function viewCustomerDetails(id) {
 }
 
 // ===== REPORTS =====
-// ===== REPORTS =====
 function renderReports() {
     const monthVal = document.getElementById('reportMonthFilter').value; // YYYY-MM
     const ords = state.orders.filter(o => {
@@ -1156,7 +1309,6 @@ function renderReports() {
         return m === monthVal && o.status !== 'rejected';
     });
 
-    // التعديل هنا: حساب المبيعات من قيمة المنتجات فقط (subtotal) لتجاهل أجور التوصيل
     const sales = ords.reduce((a,o) => a + (o.subtotal || 0), 0);
     
     const cogs = ords.reduce((a,o) => {
@@ -1166,7 +1318,6 @@ function renderReports() {
         }, 0);
     }, 0);
     
-    // حساب المبالغ الضائعة على العروض والتوصيل المجاني
     const lostToDiscounts = ords.reduce((a,o) => a + (o.discount || 0), 0); 
 
     const exps = state.settings.expenses[monthVal] || {ads:0, shipping:0, packaging:0};
@@ -1175,8 +1326,6 @@ function renderReports() {
     document.getElementById('expPackaging').value = exps.packaging;
 
     const totalExp = exps.ads + exps.shipping + exps.packaging;
-    
-    // التعديل هنا: الربح الصافي = المبيعات - تكلفة البضاعة - الخسائر من العروض - المصاريف الإضافية
     const netProfit = sales - cogs - lostToDiscounts - totalExp;
 
     document.getElementById('rep-sales').textContent = sales.toLocaleString();
@@ -1184,6 +1333,7 @@ function renderReports() {
     document.getElementById('rep-lost').textContent = lostToDiscounts.toLocaleString();
     document.getElementById('rep-net').textContent = netProfit.toLocaleString();
 }
+
 function saveExpenses() {
     const monthVal = document.getElementById('reportMonthFilter').value;
     state.settings.expenses[monthVal] = {
