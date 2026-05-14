@@ -1217,19 +1217,19 @@ async function uploadImgToDrive(file, folder='products'){
       try{
         const resp=await fetch(SHEETS_URL,{
           method:'POST',
-          headers:{'Content-Type':'application/json'},
+          // تعديل نوع المحتوى هنا أيضاً
+          headers:{'Content-Type':'text/plain;charset=utf-8'},
           body:JSON.stringify({action:'uploadImg',base64,mime,name,folder})
         });
         const d=await resp.json();
         if(d.ok&&d.url){resolve(d.url);}
         else{
-          // fallback: استخدم base64 مؤقتاً إذا فشل الرفع
           console.warn('Drive upload failed, using base64 temporarily');
           resolve(e.target.result);
         }
       }catch(err){
         console.warn('Drive upload error',err);
-        resolve(e.target.result); // base64 مؤقت
+        resolve(e.target.result); 
       }
     };
     reader.readAsDataURL(file);
@@ -1310,11 +1310,12 @@ async function pushToSheets(payload){
     try{
       await fetch(SHEETS_URL,{
         method:'POST',
-        mode:'no-cors',
-        headers:{'Content-Type':'application/json'},
+        // حذفنا mode: 'no-cors' لأنها تمنع إرسال البيانات بشكل صحيح
+        // غيرنا نوع المحتوى إلى text/plain حتى نتجاوز بلوك الحماية (CORS)
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
         body:JSON.stringify({action:'saveAll',...payload})
       });
-    }catch(e){/* صامت — يحاول مرة ثانية لاحقاً */}
+    }catch(e){console.warn('فشل الإرسال للشيت:', e);}
   },1500);
 }
 
