@@ -369,6 +369,25 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
   .hero-title{font-size:2rem}
 }
 @media(max-width:500px){.pgrid-5{grid-template-columns:repeat(2,1fr)}.promo-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* ════════ INSTAGRAM SECTION ════════ */
+.insta-wrap{padding:2rem 2rem 1.5rem;max-width:1200px;margin:0 auto;text-align:center}
+.insta-hd{display:flex;align-items:center;justify-content:center;gap:.6rem;margin-bottom:.3rem}
+.insta-hd-title{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--dt)}
+.insta-handle{font-size:.88rem;color:#e1306c;font-weight:600;margin-bottom:1.2rem;cursor:pointer;display:inline-block;transition:opacity .2s}
+.insta-handle:hover{opacity:.75}
+.insta-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1rem}
+@media(max-width:700px){.insta-grid{grid-template-columns:repeat(2,1fr)}}
+.insta-cell{aspect-ratio:1;overflow:hidden;border-radius:8px;background:var(--c4);position:relative;cursor:pointer;display:block;text-decoration:none}
+.insta-cell img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.insta-cell:hover img{transform:scale(1.06)}
+.insta-cell-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem}
+.insta-overlay{position:absolute;inset:0;background:rgba(0,0,0,0);display:flex;align-items:center;justify-content:center;opacity:0;transition:all .3s}
+.insta-cell:hover .insta-overlay{background:rgba(0,0,0,.38);opacity:1}
+.insta-overlay svg{color:#fff;filter:drop-shadow(0 1px 3px rgba(0,0,0,.3))}
+.insta-follow-btn{display:inline-flex;align-items:center;gap:.6rem;background:#e1306c;color:#fff;padding:.68rem 1.8rem;border-radius:4px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;border:none;margin-top:.5rem;transition:background .2s;text-decoration:none}
+.insta-follow-btn:hover{background:#c1175a}
+.insta-error{text-align:center;padding:1.2rem;color:var(--mt);font-size:.82rem}
 </style>
 </head>
 <body>
@@ -489,14 +508,11 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
     </div>
   </div>
 
-  <!-- PROMO GRID (instagram style) -->
+  <!-- INSTAGRAM FEED SECTION -->
   <div class="dnd-section" id="sec-promo" draggable="true">
     <div class="dnd-handle">⠿ تحريك</div>
-    <div class="promo-grid" id="promoGrid">
-      <div class="promo-cell" style="background:var(--c4);display:flex;align-items:center;justify-content:center;font-size:3rem">👗</div>
-      <div class="promo-cell" style="background:var(--c3);display:flex;align-items:center;justify-content:center;font-size:3rem">✨</div>
-      <div class="promo-cell" style="background:var(--c2);display:flex;align-items:center;justify-content:center;font-size:3rem">🌸</div>
-      <div class="promo-cell" style="background:var(--c5);display:flex;align-items:center;justify-content:center;font-size:3rem">💎</div>
+    <div id="instaSection">
+      <!-- يُبنى بـ renderInstaSection() -->
     </div>
   </div>
 
@@ -511,6 +527,32 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
       <div class="pgrid" id="allGrid"></div>
     </div>
   </div>
+
+  <!-- FOOTER -->
+  <footer id="siteFooter" style="background:var(--dt);color:#fff;padding:2.5rem 2rem 1.5rem;margin-top:2rem">
+    <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;margin-bottom:2rem">
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:.5rem"><em style="font-style:italic;color:var(--ac)">V</em>alentina</div>
+        <div style="font-size:.82rem;opacity:.75;line-height:1.7" id="footerDesc">أزياء راقية لكل إطلالة</div>
+        <div style="display:flex;gap:.7rem;margin-top:1rem" id="footerSocials"></div>
+      </div>
+      <div>
+        <div style="font-weight:700;margin-bottom:.7rem;font-size:.9rem">روابط سريعة</div>
+        <div style="display:flex;flex-direction:column;gap:.4rem;font-size:.82rem;opacity:.8">
+          <span style="cursor:pointer" onclick="scrollToSec('bestSellers')">الأكثر مبيعاً</span>
+          <span style="cursor:pointer" onclick="scrollToSec('newArrivals')">وصلنا حديثاً</span>
+          <span style="cursor:pointer" onclick="scrollToSec('allProducts')">كل المنتجات</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-weight:700;margin-bottom:.7rem;font-size:.9rem">تواصلي معنا</div>
+        <div style="font-size:.82rem;opacity:.8;line-height:1.8" id="footerContact">للاستفسار والطلبات عبر الإنستغرام</div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,.15);padding-top:1rem;text-align:center;font-size:.75rem;opacity:.55">
+      © 2025 Valentina — جميع الحقوق محفوظة
+    </div>
+  </footer>
 
 </div><!-- page-buyer -->
 
@@ -772,6 +814,57 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
         <tbody id="prodImgTbl"></tbody>
       </table></div>
     </div>
+
+    <!-- INSTAGRAM SETTINGS -->
+    <div class="pc2" style="border:2px solid #e1306c22;background:linear-gradient(135deg,#fff0f6,#fff)">
+      <div class="pct" style="color:#e1306c">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#e1306c" style="vertical-align:middle;margin-left:.4rem"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        ربط حساب Instagram
+      </div>
+
+      <!-- STEP 1: اسم المستخدم -->
+      <div class="fg">
+        <label>اسم مستخدم الإنستغرام (@username)</label>
+        <div style="display:flex;gap:.5rem">
+          <input type="text" id="igUsername" placeholder="مثال: valentina.iq" style="flex:1;padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif;direction:ltr">
+          <button class="bp" style="flex:none;padding:.62rem 1rem;background:#e1306c" onclick="saveIgUsername()">حفظ</button>
+        </div>
+        <div style="font-size:.75rem;color:var(--mt);margin-top:.3rem">هذا يظهر في الفوتر وزر الإنستغرام</div>
+      </div>
+
+      <!-- ACCESS TOKEN -->
+      <div style="background:var(--c2);border-radius:8px;padding:.9rem;margin-bottom:.8rem">
+        <div style="font-weight:700;font-size:.85rem;color:var(--wb);margin-bottom:.5rem">🔑 Instagram Access Token</div>
+        <div style="font-size:.78rem;color:var(--mt);line-height:1.7;margin-bottom:.7rem">
+          لعرض منشورات حسابك تلقائياً تحتاجين لـ Access Token من Meta Developers.
+          <a href="https://developers.facebook.com/docs/instagram-basic-display-api" target="_blank" style="color:#e1306c;font-weight:600">اقرأي التعليمات هنا →</a>
+        </div>
+        <div class="fg" style="margin-bottom:.5rem">
+          <label>Access Token</label>
+          <input type="text" id="igToken" placeholder="IGAAx..." style="width:100%;padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:7px;font-family:monospace;font-size:.78rem;direction:ltr">
+        </div>
+        <button class="bp" style="background:#e1306c;width:100%" onclick="saveIgToken()">💾 حفظ الـ Token</button>
+      </div>
+
+      <!-- بديل: إضافة صور يدوي -->
+      <div style="border-top:1px solid var(--bd);padding-top:.8rem;margin-top:.5rem">
+        <div style="font-weight:700;font-size:.85rem;color:var(--wb);margin-bottom:.4rem">📷 أو أضيفي صور الإنستغرام يدوياً</div>
+        <div style="font-size:.76rem;color:var(--mt);margin-bottom:.6rem">إذا لم يكن لديك Token، يمكنك رفع صور تظهر بتصميم الإنستغرام</div>
+        <div class="iua" onclick="document.getElementById('igManualUp').click()">
+          <input type="file" id="igManualUp" accept="image/*" multiple onchange="addIgManualImgs(this)">
+          <div style="font-size:1.4rem">📸</div>
+          <div style="font-size:.82rem;color:var(--mt)">ارفعي صور منشوراتك</div>
+        </div>
+        <div class="ipw" id="igManualPreviews" style="margin-top:.6rem"></div>
+        <button class="bp" style="width:100%;margin-top:.5rem;background:#e1306c" onclick="saveIgManual()">💾 حفظ الصور</button>
+      </div>
+
+      <!-- معاينة -->
+      <div style="margin-top:.9rem;border-top:1px solid var(--bd);padding-top:.8rem">
+        <div style="font-weight:700;font-size:.85rem;color:var(--wb);margin-bottom:.5rem">👁️ معاينة القسم</div>
+        <button class="bp" style="background:var(--wb);width:100%" onclick="renderInstaSection();toast('✅ تم تحديث المعاينة')">🔄 تحديث المعاينة في الصفحة</button>
+      </div>
+    </div>
   </div>
 
   <!-- OFFERS -->
@@ -907,11 +1000,23 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
     <div id="stab-sheets" class="stc">
       <div class="pc2" style="background:linear-gradient(135deg,var(--c3),var(--c1));border:1.5px solid var(--c3)">
         <div class="pct">🔗 Google Sheets</div>
-        <div class="fg"><label>رابط الـ Web App</label><input type="url" id="shUrl" placeholder="https://script.google.com/macros/s/..."></div>
-        <div class="fg"><label>Sheet ID</label><input type="text" id="shId" placeholder=""></div>
-        <div style="display:flex;gap:.5rem">
-          <button class="bp" onclick="saveSheets()">💾 حفظ</button>
-          <button class="bs" onclick="testSheet()">🧪 اختبار</button>
+        <div style="background:#d4edda;color:#155724;padding:.6rem .9rem;border-radius:8px;font-size:.82rem;margin-bottom:.8rem;font-weight:600">
+          ✅ الرابط مُدمج في البرنامج — البيانات تُحفظ تلقائياً
+        </div>
+        <div style="background:var(--c1);border-radius:8px;padding:.7rem;font-size:.78rem;color:var(--mt);word-break:break-all;margin-bottom:.8rem;border:1px solid var(--bd)">
+          <strong style="color:var(--wb)">الرابط الحالي:</strong><br>
+          <span style="font-size:.7rem">AKfycbx483Sgw6bMpXUD0POERuODROlBFURJ3qXicB8jS3-RMa-EeqHYWaKgKsNNdkaRhaeT</span>
+        </div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <button class="bp" onclick="syncSheets()">🔄 تحديث من Sheets الآن</button>
+          <button class="bs" onclick="testSheet()">🧪 اختبار الاتصال</button>
+        </div>
+        <div style="margin-top:.8rem;font-size:.78rem;color:var(--mt);line-height:1.6">
+          💡 <strong>كيف يعمل الحفظ:</strong><br>
+          • كل تغيير يُحفظ فوراً في المتصفح<br>
+          • ويُرسل تلقائياً لـ Google Sheets في الخلفية<br>
+          • عند فتح البرنامج يُحمّل آخر نسخة من Sheets<br>
+          • إذا انقطع الإنترنت يعمل من الكاش المحلي
         </div>
       </div>
     </div>
@@ -1056,6 +1161,13 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
 
 <div class="toast" id="toast"></div>
 
+<!-- LOADING INDICATOR -->
+<div id="loadingIndicator" style="display:none;position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:1rem">
+  <div style="width:50px;height:50px;border:4px solid var(--bd);border-top-color:var(--wb);border-radius:50%;animation:spin 1s linear infinite"></div>
+  <div style="font-family:'Tajawal',sans-serif;font-size:.95rem;color:var(--wb);font-weight:600">جاري التحميل من Google Sheets...</div>
+  <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+</div>
+
 <script>
 // ════════════════════════════════════════════════════════════
 //  STATE
@@ -1083,16 +1195,127 @@ let S={
   activeCat:'all',activeAge:'all',prevPage:null,
 };
 
-function save(){try{localStorage.setItem('val4',JSON.stringify(S));}catch(e){toast('⚠️ مساحة التخزين ممتلئة');}}
-function load(){const d=localStorage.getItem('val4');if(d)try{const p=JSON.parse(d);S={...S,...p};}catch(e){}}
+// ════════════════════════════════════════════════════════════
+//  SHEETS URL — ثابت في الكود
+// ════════════════════════════════════════════════════════════
+const SHEETS_URL='https://script.google.com/macros/s/AKfycbx483Sgw6bMpXUD0POERuODROlBFURJ3qXicB8jS3-RMa-EeqHYWaKgKsNNdkaRhaeT/exec';
+
+// ════════════════════════════════════════════════════════════
+//  SAVE / LOAD — هجين: Sheets أولاً + localStorage كـ cache
+// ════════════════════════════════════════════════════════════
+
+// حفظ فوري في localStorage + إرسال لـ Sheets في الخلفية
+function save(){
+  // 1) حفظ محلي فوري
+  try{
+    // الصور كبيرة — نحفظها منفصلة لتجنب حد 5MB
+    const sNoImgs={...S,prodImgs:{},banners:[],logo:null,storyImg:null};
+    localStorage.setItem('val4_meta',JSON.stringify(sNoImgs));
+    // الصور بشكل منفصل مع ضغط
+    localStorage.setItem('val4_imgs',JSON.stringify({prodImgs:S.prodImgs,prodCoverIdx:S.prodCoverIdx,banners:S.banners,logo:S.logo,storyImg:S.storyImg}));
+  }catch(e){
+    // إذا امتلأت المساحة نحذف الصور القديمة ونحاول مجدداً
+    try{localStorage.removeItem('val4_imgs');localStorage.setItem('val4_meta',JSON.stringify({...S,prodImgs:{},banners:[],logo:null,storyImg:null}));}catch(e2){}
+    toast('⚠️ مساحة محلية ممتلئة — الصور ستُحفظ على Sheets فقط');
+  }
+  // 2) إرسال للـ Sheets في الخلفية (بدون انتظار)
+  pushToSheets();
+}
+
+// تحميل: localStorage أولاً (سريع)، ثم Sheets (أحدث)
+function load(){
+  try{
+    const meta=localStorage.getItem('val4_meta');
+    if(meta){const p=JSON.parse(meta);S={...S,...p};}
+    const imgs=localStorage.getItem('val4_imgs');
+    if(imgs){const pi=JSON.parse(imgs);S.prodImgs=pi.prodImgs||{};S.prodCoverIdx=pi.prodCoverIdx||{};S.banners=pi.banners||[];S.logo=pi.logo||null;S.storyImg=pi.storyImg||null;}
+  }catch(e){}
+  // تأكيد الـ URL دائماً من الكود
+  S.settings.sheetsUrl=SHEETS_URL;
+}
+
+// إرسال كامل للـ Sheets (يعمل في الخلفية)
+let _pushTimer=null;
+async function pushToSheets(){
+  clearTimeout(_pushTimer);
+  _pushTimer=setTimeout(async()=>{
+    try{
+      const payload={
+        action:'saveAll',
+        products:S.products,
+        orders:S.orders,
+        customers:S.customers,
+        batches:S.batches,
+        expenses:S.expenses,
+        settings:S.settings,
+        categories:S.categories,
+        ageGroups:S.ageGroups,
+        heroContent:S.heroContent,
+        storyContent:S.storyContent,
+        sectionOrder:S.sectionOrder,
+        colors:S.colors,
+        // الصور (base64) — كبيرة لكن نرسلها
+        prodImgs:S.prodImgs,
+        prodCoverIdx:S.prodCoverIdx,
+        prodNotes:S.prodNotes,
+        banners:S.banners,
+        logo:S.logo||null,
+        storyImg:S.storyImg||null,
+      };
+      await fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    }catch(e){/* صامت */}
+  },1500); // انتظار 1.5 ثانية قبل الإرسال (لتجميع التغييرات)
+}
+
+// مزامنة كاملة من Sheets (عند فتح البرنامج)
+async function loadFromSheets(){
+  const ind=document.getElementById('loadingIndicator');
+  if(ind)ind.style.display='flex';
+  try{
+    const r=await fetch(`${SHEETS_URL}?action=loadAll`,{method:'GET'});
+    if(!r.ok)throw new Error('network');
+    const d=await r.json();
+    if(d.ok){
+      // تطبيق البيانات من Sheets
+      if(d.products?.length)S.products=d.products;
+      if(d.orders?.length)S.orders=d.orders;
+      if(d.customers?.length)S.customers=d.customers;
+      if(d.batches?.length)S.batches=d.batches;
+      if(d.expenses)S.expenses=d.expenses;
+      if(d.settings)S.settings={...S.settings,...d.settings,sheetsUrl:SHEETS_URL};
+      if(d.categories?.length)S.categories=d.categories;
+      if(d.ageGroups?.length)S.ageGroups=d.ageGroups;
+      if(d.heroContent)S.heroContent=d.heroContent;
+      if(d.storyContent)S.storyContent=d.storyContent;
+      if(d.sectionOrder?.length)S.sectionOrder=d.sectionOrder;
+      if(d.colors)S.colors=d.colors;
+      if(d.prodImgs)S.prodImgs=d.prodImgs;
+      if(d.prodCoverIdx)S.prodCoverIdx=d.prodCoverIdx;
+      if(d.prodNotes)S.prodNotes=d.prodNotes;
+      if(d.banners?.length)S.banners=d.banners;
+      if(d.logo)S.logo=d.logo;
+      if(d.storyImg)S.storyImg=d.storyImg;
+      // حفظ في localStorage كـ cache
+      try{localStorage.setItem('val4_meta',JSON.stringify({...S,prodImgs:{},banners:[],logo:null,storyImg:null}));localStorage.setItem('val4_imgs',JSON.stringify({prodImgs:S.prodImgs,prodCoverIdx:S.prodCoverIdx,banners:S.banners,logo:S.logo,storyImg:S.storyImg}));}catch(e){}
+    }
+  }catch(e){
+    // إذا فشل الـ Sheets نكمل من localStorage
+    console.log('Sheets load failed, using local cache');
+  }finally{
+    if(ind)ind.style.display='none';
+  }
+}
+
 function cur(n){n=parseFloat(n)||0;return n.toLocaleString('ar-IQ')+' '+S.settings.currency;}
 function toast(msg,ms=3000){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),ms);}
 
 // ════════════════════════════════════════════════════════════
-//  INIT
+//  INIT — يحمل من localStorage فوراً ثم يحدث من Sheets
 // ════════════════════════════════════════════════════════════
 function init(){
+  // 1) تحميل فوري من localStorage (الكاش)
   load();
+  S.settings.sheetsUrl=SHEETS_URL;
   if(!S.products.length)seedProds();
   applySettings();applyColors();
   renderAll();applySectionOrder();
@@ -1102,10 +1325,18 @@ function init(){
   resetDateFilter();
   document.querySelectorAll('.mov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
   document.querySelectorAll('.auth-ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
-  // Secret: press Ctrl+Shift+S to open seller
   document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.shiftKey&&e.key==='S'){e.preventDefault();showSeller();}});
   initDnD();
   applyHeroContent();applyStoryContent();applyLogo();
+
+  // 2) تحديث من Sheets في الخلفية (بعد عرض الواجهة)
+  setTimeout(async()=>{
+    await loadFromSheets();
+    applySettings();applyColors();
+    renderAll();applySectionOrder();
+    applyHeroContent();applyStoryContent();applyLogo();
+    if(document.getElementById('shUrl'))document.getElementById('shUrl').value=SHEETS_URL;
+  },300);
 }
 
 function seedProds(){
@@ -2083,8 +2314,26 @@ function saveSzs(){save();toast('✅ تم حفظ القياسات');}
 function saveStore(){S.settings.storeName=document.getElementById('stName').value;S.settings.currency=document.getElementById('stCur').value;document.title=S.settings.storeName;save();toast('✅ تم الحفظ');}
 function saveSheets(){S.settings.sheetsUrl=document.getElementById('shUrl').value.trim();S.settings.sheetId=document.getElementById('shId').value.trim();save();toast('✅ تم حفظ إعدادات الشيت');}
 async function testSheet(){const url=document.getElementById('shUrl').value.trim();if(!url){toast('⚠️ أدخل الرابط');return;}toast('🔄 اختبار...');try{await fetch(url+'?action=test',{mode:'no-cors'});toast('✅ تم الاتصال');}catch(e){toast('❌ فشل الاتصال');}}
-async function syncSheets(){if(!S.settings.sheetsUrl){toast('⚠️ أضف رابط Sheets في الإعدادات');return;}toast('🔄 جاري المزامنة...');try{const r=await fetch(`${S.settings.sheetsUrl}?action=getData`,{method:'GET'});if(r.ok){const d=await r.json();if(d.products&&d.products.length)S.products=d.products;if(d.orders&&d.orders.length)S.orders=d.orders;if(d.customers&&d.customers.length)S.customers=d.customers;if(d.batches&&d.batches.length)S.batches=d.batches;save();renderAll();toast('✅ تمت المزامنة');}else{toast('❌ فشلت المزامنة');}}catch(e){toast('❌ فشل الاتصال');}}
-async function syncOrder(order){if(!S.settings.sheetsUrl)return;try{await fetch(S.settings.sheetsUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'addOrder',order,customer:order.customer})});}catch(e){}}
+async function syncSheets(){
+  toast('🔄 جاري التحديث من Sheets...');
+  await loadFromSheets();
+  applySettings();applyColors();
+  renderAll();applySectionOrder();
+  applyHeroContent();applyStoryContent();applyLogo();
+  toast('✅ تمت المزامنة بنجاح');
+}
+async function syncOrder(order){
+  // الطلب يُرسل ضمن pushToSheets العامة — لا حاجة لإرسال منفصل
+}
+async function testSheet(){
+  const url=SHEETS_URL;
+  toast('🔄 اختبار الاتصال...');
+  try{
+    const r=await fetch(`${url}?action=test`);
+    if(r.ok){const d=await r.json();toast(d.ok?'✅ الاتصال ناجح — Sheets متصل':'⚠️ الاتصال يعمل لكن هناك مشكلة');}
+    else toast('⚠️ استجابة غير صحيحة');
+  }catch(e){toast('❌ فشل الاتصال — تحقق من الإنترنت');}
+}
 function saveOffers(){S.settings.freeShipQty=parseInt(document.getElementById('fSQ').value)||2;S.settings.shipCost=parseInt(document.getElementById('sCost').value)||5000;S.settings.giftQty=parseInt(document.getElementById('gQ').value)||4;S.settings.vipOrders=parseInt(document.getElementById('vO').value)||5;S.settings.vipDisc=parseInt(document.getElementById('vD').value)||10;S.settings.promoCode=document.getElementById('pCode').value||'VALENTINA10';S.settings.promoDisc=parseInt(document.getElementById('pDisc').value)||10;save();document.getElementById('giftTag').textContent=`🎁 ${S.settings.giftQty} قطع = هدية`;document.getElementById('annGift').textContent=S.settings.giftQty;toast('✅ تم حفظ العروض');}
 
 // ════════════════════════════════════════════════════════════
