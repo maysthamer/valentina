@@ -1432,7 +1432,17 @@ function orderDragStart(e,i){_dragIdx=i;e.dataTransfer.effectAllowed='move';}
 function orderDragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move';}
 function orderDrop(e,i){ e.preventDefault();if(_dragIdx===null||_dragIdx===i)return; const order=S.sectionOrder||Object.keys(SECTION_LABELS); const item=order.splice(_dragIdx,1)[0];order.splice(i,0,item); S.sectionOrder=order;_dragIdx=null; renderSectionOrderUI();applySectionOrder(); }
 function saveSectionOrder(){save();toast('✅ تم حفظ الترتيب');}
-function applySectionOrder(){ const buyer=document.getElementById('page-buyer');if(!buyer)return; const order=S.sectionOrder||['sec-hero','sec-features','sec-best','sec-new','sec-story','sec-promo','sec-all']; order.forEach(id=>{ const el=document.getElementById(id); if(el&&el.parentElement===buyer)buyer.appendChild(el); }); }
+function applySectionOrder(){ 
+  const buyer=document.getElementById('page-buyer');if(!buyer)return; 
+  const order=S.sectionOrder||['sec-hero','sec-features','sec-best','sec-new','sec-story','sec-promo','sec-all']; 
+  order.forEach(id=>{ 
+    const el=document.getElementById(id); 
+    if(el&&el.parentElement===buyer)buyer.appendChild(el); 
+  }); 
+  // هذا السطر الجديد لإجبار الفوتر على البقاء في النهاية دائماً
+  const footer = document.getElementById('siteFooter');
+  if(footer) buyer.appendChild(footer);
+}
 function initDnD(){ let dragSrc=null; document.querySelectorAll('.dnd-section[draggable]').forEach(sec=>{ sec.addEventListener('dragstart',e=>{dragSrc=sec;sec.style.opacity='.5';}); sec.addEventListener('dragend',()=>{dragSrc=null;document.querySelectorAll('.dnd-section').forEach(s=>s.style.opacity='');}); sec.addEventListener('dragover',e=>{e.preventDefault();sec.classList.add('drag-over');}); sec.addEventListener('dragleave',()=>sec.classList.remove('drag-over')); sec.addEventListener('drop',e=>{ e.preventDefault();sec.classList.remove('drag-over'); if(!dragSrc||dragSrc===sec)return; const parent=sec.parentElement; const all=[...parent.querySelectorAll('.dnd-section')]; const si=all.indexOf(sec);const di=all.indexOf(dragSrc); if(di<si)parent.insertBefore(dragSrc,sec.nextSibling);else parent.insertBefore(dragSrc,sec); S.sectionOrder=[...parent.querySelectorAll('.dnd-section')].map(el=>el.id).filter(Boolean); save(); }); }); }
 
 // ════════════════════════════════════════════════════════════
