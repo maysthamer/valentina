@@ -1207,6 +1207,13 @@ const SHEETS_URL='https://script.google.com/macros/s/AKfycbzZfZ2-hAuRjx3ZWpBn08w
 // ════════════════════════════════════════════════════════════
 
 // رفع صورة واحدة على Drive والحصول على رابطها
+// ════════════════════════════════════════════════════════════
+//  رفع صورة على Drive والحصول على رابطها (تم إزالة no-cors)
+// ════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════
+//  نظام الصور — Google Drive مباشرة
+// ════════════════════════════════════════════════════════════
+
 async function uploadImgToDrive(file, folder='products'){
   return new Promise((resolve)=>{
     const reader=new FileReader();
@@ -1217,13 +1224,14 @@ async function uploadImgToDrive(file, folder='products'){
       try{
         const resp=await fetch(SHEETS_URL,{
           method:'POST',
-          // تعديل نوع المحتوى هنا أيضاً
           headers:{'Content-Type':'text/plain;charset=utf-8'},
           body:JSON.stringify({action:'uploadImg',base64,mime,name,folder})
         });
+        
         const d=await resp.json();
-        if(d.ok&&d.url){resolve(d.url);}
-        else{
+        if(d.ok && d.url){
+          resolve(d.url);
+        } else {
           console.warn('Drive upload failed, using base64 temporarily');
           resolve(e.target.result);
         }
@@ -1236,7 +1244,6 @@ async function uploadImgToDrive(file, folder='products'){
   });
 }
 
-// رفع عدة صور دفعة واحدة مع شريط تقدم
 async function uploadMultiImgs(files, folder='products', progressCb=null){
   const urls=[];
   for(let i=0;i<files.length;i++){
@@ -1248,59 +1255,22 @@ async function uploadMultiImgs(files, folder='products', progressCb=null){
 }
 
 // ════════════════════════════════════════════════════════════
-//  SAVE — يحفظ البيانات (بدون base64) على Sheets + localStorage
-//  الصور ترفع مستقلة على Drive وتُخزّن روابطها فقط
-// ════════════════════════════════════════════════════════════
-// ════════════════════════════════════════════════════════════
-//  SAVE — النسخة المحدثة والآمنة لحفظ البيانات
+//  SAVE & PUSH TO SHEETS
 // ════════════════════════════════════════════════════════════
 function save(){
-  // نقوم بتجهيز البيانات للحفظ
   const metaOnly = buildMetaPayload();
 
-  // 1) حفظ محلي (داخل المتصفح) بطريقة آمنة
   try {
     localStorage.setItem('val4_meta', JSON.stringify(metaOnly));
   } catch (e) {
-    // التعديل هنا: أزلنا أمر المسح الكارثي (localStorage.clear)
-    // بدلاً من ذلك، نظهر رسالة تنبيه لك بأن الذاكرة ممتلئة
     console.error('خطأ في حفظ البيانات محلياً. قد تكون الذاكرة ممتلئة:', e);
     toast('⚠️ لم يتم الحفظ! مساحة التخزين ممتلئة، تأكدي من عدم وجود صور كبيرة جداً.', 5000);
   }
 
-  // 2) إرسال نسخة من البيانات إلى Google Sheets في الخلفية
   pushToSheets(metaOnly);
 }
 
-// ════════════════════════════════════════════════════════════
-//  PUSH TO SHEETS — النسخة المحدثة لحل مشكلة الاتصال (CORS)
-// ════════════════════════════════════════════════════════════
-let _pushTimer = null;
-async function pushToSheets(payload){
-  clearTimeout(_pushTimer);
-  
-  // ننتظر ثانية ونصف بعد آخر تعديل حتى لا نرسل طلبات كثيرة جداً لجوجل
-  _pushTimer = setTimeout(async () => {
-    try {
-      await fetch(SHEETS_URL, {
-        method: 'POST',
-        // التعديل الأهم: أضفنا 'no-cors' لتجاوز حظر المتصفح للطلبات الخارجية
-        mode: 'no-cors', 
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8'
-        },
-        body: JSON.stringify({ action: 'saveAll', ...payload })
-      });
-      // لن نتمكن من قراءة رد جوجل بسبب 'no-cors' لكن البيانات ستصل بأمان
-      console.log('تم إرسال البيانات السحابية بنجاح.');
-    } catch (e) {
-      console.warn('فشل الإرسال للشيت السحابي:', e);
-      toast('⚠️ تعذر إرسال النسخة الاحتياطية للسحابة، تحققي من اتصال الإنترنت.');
-    }
-  }, 1500);
-}
 function buildMetaPayload(){
-  // نتأكد إن prodImgs تحتوي روابط Drive فقط (مش base64)
   const cleanImgs={};
   Object.entries(S.prodImgs||{}).forEach(([id,imgs])=>{
     cleanImgs[id]=(imgs||[]).filter(u=>typeof u==='string');
@@ -1319,7 +1289,6 @@ function buildMetaPayload(){
     sectionOrder:S.sectionOrder,
     colors:S.colors,
     favorites:S.favorites,
-    // الصور كروابط Drive فقط
     prodImgs:cleanImgs,
     prodCoverIdx:S.prodCoverIdx||{},
     prodNotes:S.prodNotes||{},
@@ -1332,28 +1301,23 @@ function buildMetaPayload(){
   };
 }
 
-// ════════════════════════════════════════════════════════════
-//  PUSH TO SHEETS (خلفية — بعد 1.5 ثانية من آخر تغيير)
-// ════════════════════════════════════════════════════════════
-let _pushTimer=null;
+let _pushTimer = null;
 async function pushToSheets(payload){
   clearTimeout(_pushTimer);
-  _pushTimer=setTimeout(async()=>{
-    try{
-      await fetch(SHEETS_URL,{
-        method:'POST',
-        // حذفنا mode: 'no-cors' لأنها تمنع إرسال البيانات بشكل صحيح
-        // غيرنا نوع المحتوى إلى text/plain حتى نتجاوز بلوك الحماية (CORS)
-        headers:{'Content-Type':'text/plain;charset=utf-8'},
-        body:JSON.stringify({action:'saveAll',...payload})
+  _pushTimer = setTimeout(async () => {
+    try {
+      await fetch(SHEETS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'saveAll', ...payload })
       });
-    }catch(e){console.warn('فشل الإرسال للشيت:', e);}
-  },1500);
+      console.log('تم إرسال البيانات السحابية بنجاح.');
+    } catch (e) {
+      console.warn('فشل الإرسال للشيت السحابي:', e);
+      toast('⚠️ تعذر إرسال النسخة الاحتياطية للسحابة، تحققي من اتصال الإنترنت.');
+    }
+  }, 1500);
 }
-
-// ════════════════════════════════════════════════════════════
-//  LOAD FROM SHEETS (عند فتح البرنامج)
-// ════════════════════════════════════════════════════════════
 function load(){
   try{
     const meta=localStorage.getItem('val4_meta');
