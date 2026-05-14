@@ -42,8 +42,8 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
 .page{display:none}.page.active{display:block}
 
 /* ════════ HERO SECTION ════════ */
-.hero-wrap{background:var(--hero-bg);position:relative;overflow:hidden;min-height:480px;display:flex;align-items:center;justify-content:space-around;}
-.hero-content{flex:1;padding:3rem 3rem 3rem 1.5rem;max-width:520px;position:relative;z-index:2}
+.hero-wrap{background:var(--hero-bg);position:relative;overflow:hidden;min-height:480px;display:flex;align-items:center;justify-content:flex-start;}
+.hero-content{flex:1;padding:3rem 5rem 3rem 1.5rem;max-width:520px;position:relative;z-index:2}
 .hero-tag{font-family:'Dancing Script',cursive;font-size:1.3rem;color:var(--ac);margin-bottom:.4rem}
 .hero-title{font-family:'Playfair Display',serif;font-size:3rem;color:var(--wb);line-height:1.2;margin-bottom:.8rem}
 .hero-title em{font-style:italic;color:var(--ac)}
@@ -1205,8 +1205,18 @@ function showStab(t,el){
 }
 function closeM(id){document.getElementById(id).classList.remove('open');}
 function openM(id){document.getElementById(id).classList.add('open');}
-function scrollToSec(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
+function scrollToSec(id){
+  // 1. إظهار الصفحة الرئيسية وإخفاء باقي الصفحات
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-buyer').classList.add('active');
+  S.prevPage = null;
 
+  // 2. إعطاء المتصفح جزء من الثانية ليقوم بعرض الصفحة ثم النزول للقسم المطلوب بسلاسة
+  setTimeout(() => {
+    const el = document.getElementById(id);
+    if(el) el.scrollIntoView({behavior: 'smooth', block: 'start'});
+  }, 50);
+}
 // ════════════════════════════════════════════════════════════
 //  LOGO & NAV
 // ════════════════════════════════════════════════════════════
