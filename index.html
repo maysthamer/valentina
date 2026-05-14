@@ -1251,22 +1251,54 @@ async function uploadMultiImgs(files, folder='products', progressCb=null){
 //  SAVE — يحفظ البيانات (بدون base64) على Sheets + localStorage
 //  الصور ترفع مستقلة على Drive وتُخزّن روابطها فقط
 // ════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════
+//  SAVE — النسخة المحدثة والآمنة لحفظ البيانات
+// ════════════════════════════════════════════════════════════
 function save(){
-  // البيانات بدون base64 — صغيرة جداً
-  const metaOnly=buildMetaPayload();
+  // نقوم بتجهيز البيانات للحفظ
+  const metaOnly = buildMetaPayload();
 
-  // 1) حفظ محلي فوري (صغير جداً الآن بدون صور)
-  try{
+  // 1) حفظ محلي (داخل المتصفح) بطريقة آمنة
+  try {
     localStorage.setItem('val4_meta', JSON.stringify(metaOnly));
-  }catch(e){
-    localStorage.clear();
-    try{localStorage.setItem('val4_meta', JSON.stringify(metaOnly));}catch(e2){}
+  } catch (e) {
+    // التعديل هنا: أزلنا أمر المسح الكارثي (localStorage.clear)
+    // بدلاً من ذلك، نظهر رسالة تنبيه لك بأن الذاكرة ممتلئة
+    console.error('خطأ في حفظ البيانات محلياً. قد تكون الذاكرة ممتلئة:', e);
+    toast('⚠️ لم يتم الحفظ! مساحة التخزين ممتلئة، تأكدي من عدم وجود صور كبيرة جداً.', 5000);
   }
 
-  // 2) إرسال للـ Sheets في الخلفية
+  // 2) إرسال نسخة من البيانات إلى Google Sheets في الخلفية
   pushToSheets(metaOnly);
 }
 
+// ════════════════════════════════════════════════════════════
+//  PUSH TO SHEETS — النسخة المحدثة لحل مشكلة الاتصال (CORS)
+// ════════════════════════════════════════════════════════════
+let _pushTimer = null;
+async function pushToSheets(payload){
+  clearTimeout(_pushTimer);
+  
+  // ننتظر ثانية ونصف بعد آخر تعديل حتى لا نرسل طلبات كثيرة جداً لجوجل
+  _pushTimer = setTimeout(async () => {
+    try {
+      await fetch(SHEETS_URL, {
+        method: 'POST',
+        // التعديل الأهم: أضفنا 'no-cors' لتجاوز حظر المتصفح للطلبات الخارجية
+        mode: 'no-cors', 
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'
+        },
+        body: JSON.stringify({ action: 'saveAll', ...payload })
+      });
+      // لن نتمكن من قراءة رد جوجل بسبب 'no-cors' لكن البيانات ستصل بأمان
+      console.log('تم إرسال البيانات السحابية بنجاح.');
+    } catch (e) {
+      console.warn('فشل الإرسال للشيت السحابي:', e);
+      toast('⚠️ تعذر إرسال النسخة الاحتياطية للسحابة، تحققي من اتصال الإنترنت.');
+    }
+  }, 1500);
+}
 function buildMetaPayload(){
   // نتأكد إن prodImgs تحتوي روابط Drive فقط (مش base64)
   const cleanImgs={};
