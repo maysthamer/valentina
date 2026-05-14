@@ -1299,9 +1299,6 @@ function renderHeroImgs(){
   const imgs=S.banners.slice(0,3);
   col.innerHTML=imgs.map((src,i)=>`<div class="hero-img-box" ${i===0?'style="grid-row:span 2"':''}><img src="${src}" alt="banner"></div>`).join('');
 }
-  const imgs=S.banners.slice(0,3);
-  col.innerHTML=imgs.map((src,i)=>`<div class="hero-img-box" ${i===0?'style="grid-row:span 2"':''}><img src="${src}" alt="banner"></div>`).join('');
-}
 function renderBanners(){
   const sl=document.getElementById('bnSlots');if(!sl)return;
   sl.innerHTML=S.banners.length?S.banners.map((src,i)=>`
