@@ -1196,132 +1196,192 @@ let S={
 };
 
 // ════════════════════════════════════════════════════════════
-//  SHEETS URL — ثابت في الكود
+//  SHEETS + DRIVE URLs — ثابتة في الكود
 // ════════════════════════════════════════════════════════════
 const SHEETS_URL='https://script.google.com/macros/s/AKfycbx483Sgw6bMpXUD0POERuODROlBFURJ3qXicB8jS3-RMa-EeqHYWaKgKsNNdkaRhaeT/exec';
 
 // ════════════════════════════════════════════════════════════
-//  SAVE / LOAD — هجين: Sheets أولاً + localStorage كـ cache
+//  نظام الصور — Google Drive مباشرة
+//  الصور ترفع كملفات على Drive وتُرجع رابط مباشر
+//  S.prodImgs[id] = [driveUrl, driveUrl, ...]  (مش base64)
 // ════════════════════════════════════════════════════════════
 
-// حفظ فوري في localStorage + إرسال لـ Sheets في الخلفية
-function save(){
-  // 1) حفظ محلي فوري
-  try{
-    // الصور كبيرة — نحفظها منفصلة لتجنب حد 5MB
-    const sNoImgs={...S,prodImgs:{},banners:[],logo:null,storyImg:null};
-    localStorage.setItem('val4_meta',JSON.stringify(sNoImgs));
-    // الصور بشكل منفصل مع ضغط
-    localStorage.setItem('val4_imgs',JSON.stringify({prodImgs:S.prodImgs,prodCoverIdx:S.prodCoverIdx,banners:S.banners,logo:S.logo,storyImg:S.storyImg}));
-  }catch(e){
-    // إذا امتلأت المساحة نحذف الصور القديمة ونحاول مجدداً
-    try{localStorage.removeItem('val4_imgs');localStorage.setItem('val4_meta',JSON.stringify({...S,prodImgs:{},banners:[],logo:null,storyImg:null}));}catch(e2){}
-    toast('⚠️ مساحة محلية ممتلئة — الصور ستُحفظ على Sheets فقط');
+// رفع صورة واحدة على Drive والحصول على رابطها
+async function uploadImgToDrive(file, folder='products'){
+  return new Promise((resolve)=>{
+    const reader=new FileReader();
+    reader.onload=async(e)=>{
+      const base64=e.target.result.split(',')[1];
+      const mime=file.type||'image/jpeg';
+      const name=`${folder}_${Date.now()}_${Math.random().toString(36).slice(2)}.${file.name.split('.').pop()||'jpg'}`;
+      try{
+        const resp=await fetch(SHEETS_URL,{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({action:'uploadImg',base64,mime,name,folder})
+        });
+        const d=await resp.json();
+        if(d.ok&&d.url){resolve(d.url);}
+        else{
+          // fallback: استخدم base64 مؤقتاً إذا فشل الرفع
+          console.warn('Drive upload failed, using base64 temporarily');
+          resolve(e.target.result);
+        }
+      }catch(err){
+        console.warn('Drive upload error',err);
+        resolve(e.target.result); // base64 مؤقت
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// رفع عدة صور دفعة واحدة مع شريط تقدم
+async function uploadMultiImgs(files, folder='products', progressCb=null){
+  const urls=[];
+  for(let i=0;i<files.length;i++){
+    if(progressCb)progressCb(i+1,files.length);
+    const url=await uploadImgToDrive(files[i],folder);
+    urls.push(url);
   }
-  // 2) إرسال للـ Sheets في الخلفية (بدون انتظار)
-  pushToSheets();
+  return urls;
 }
 
-// تحميل: localStorage أولاً (سريع)، ثم Sheets (أحدث)
-function load(){
+// ════════════════════════════════════════════════════════════
+//  SAVE — يحفظ البيانات (بدون base64) على Sheets + localStorage
+//  الصور ترفع مستقلة على Drive وتُخزّن روابطها فقط
+// ════════════════════════════════════════════════════════════
+function save(){
+  // البيانات بدون base64 — صغيرة جداً
+  const metaOnly=buildMetaPayload();
+
+  // 1) حفظ محلي فوري (صغير جداً الآن بدون صور)
   try{
-    const meta=localStorage.getItem('val4_meta');
-    if(meta){const p=JSON.parse(meta);S={...S,...p};}
-    const imgs=localStorage.getItem('val4_imgs');
-    if(imgs){const pi=JSON.parse(imgs);S.prodImgs=pi.prodImgs||{};S.prodCoverIdx=pi.prodCoverIdx||{};S.banners=pi.banners||[];S.logo=pi.logo||null;S.storyImg=pi.storyImg||null;}
-  }catch(e){}
-  // تأكيد الـ URL دائماً من الكود
-  S.settings.sheetsUrl=SHEETS_URL;
+    localStorage.setItem('val4_meta', JSON.stringify(metaOnly));
+  }catch(e){
+    localStorage.clear();
+    try{localStorage.setItem('val4_meta', JSON.stringify(metaOnly));}catch(e2){}
+  }
+
+  // 2) إرسال للـ Sheets في الخلفية
+  pushToSheets(metaOnly);
 }
 
-// إرسال كامل للـ Sheets (يعمل في الخلفية)
+function buildMetaPayload(){
+  // نتأكد إن prodImgs تحتوي روابط Drive فقط (مش base64)
+  const cleanImgs={};
+  Object.entries(S.prodImgs||{}).forEach(([id,imgs])=>{
+    cleanImgs[id]=(imgs||[]).filter(u=>typeof u==='string');
+  });
+  return {
+    products:S.products,
+    orders:S.orders,
+    customers:S.customers,
+    batches:S.batches,
+    expenses:S.expenses,
+    settings:{...S.settings,sheetsUrl:undefined},
+    categories:S.categories,
+    ageGroups:S.ageGroups,
+    heroContent:S.heroContent,
+    storyContent:S.storyContent,
+    sectionOrder:S.sectionOrder,
+    colors:S.colors,
+    favorites:S.favorites,
+    // الصور كروابط Drive فقط
+    prodImgs:cleanImgs,
+    prodCoverIdx:S.prodCoverIdx||{},
+    prodNotes:S.prodNotes||{},
+    banners:S.banners||[],
+    logo:S.logo||null,
+    storyImg:S.storyImg||null,
+    igSettings:S.igSettings||{},
+    igManualImgs:S.igManualImgs||[],
+    savedAt:new Date().toISOString(),
+  };
+}
+
+// ════════════════════════════════════════════════════════════
+//  PUSH TO SHEETS (خلفية — بعد 1.5 ثانية من آخر تغيير)
+// ════════════════════════════════════════════════════════════
 let _pushTimer=null;
-async function pushToSheets(){
+async function pushToSheets(payload){
   clearTimeout(_pushTimer);
   _pushTimer=setTimeout(async()=>{
     try{
-      const payload={
-        action:'saveAll',
-        products:S.products,
-        orders:S.orders,
-        customers:S.customers,
-        batches:S.batches,
-        expenses:S.expenses,
-        settings:S.settings,
-        categories:S.categories,
-        ageGroups:S.ageGroups,
-        heroContent:S.heroContent,
-        storyContent:S.storyContent,
-        sectionOrder:S.sectionOrder,
-        colors:S.colors,
-        // الصور (base64) — كبيرة لكن نرسلها
-        prodImgs:S.prodImgs,
-        prodCoverIdx:S.prodCoverIdx,
-        prodNotes:S.prodNotes,
-        banners:S.banners,
-        logo:S.logo||null,
-        storyImg:S.storyImg||null,
-      };
-      await fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    }catch(e){/* صامت */}
-  },1500); // انتظار 1.5 ثانية قبل الإرسال (لتجميع التغييرات)
+      await fetch(SHEETS_URL,{
+        method:'POST',
+        mode:'no-cors',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({action:'saveAll',...payload})
+      });
+    }catch(e){/* صامت — يحاول مرة ثانية لاحقاً */}
+  },1500);
 }
 
-// مزامنة كاملة من Sheets (عند فتح البرنامج)
+// ════════════════════════════════════════════════════════════
+//  LOAD FROM SHEETS (عند فتح البرنامج)
+// ════════════════════════════════════════════════════════════
+function load(){
+  try{
+    const meta=localStorage.getItem('val4_meta');
+    if(meta){
+      const p=JSON.parse(meta);
+      // نطبق كل الحقول
+      Object.keys(p).forEach(k=>{if(k in S)S[k]=p[k];});
+    }
+  }catch(e){}
+  S.settings.sheetsUrl=SHEETS_URL;
+  if(!S.igSettings)S.igSettings={};
+  if(!S.igManualImgs)S.igManualImgs=[];
+}
+
 async function loadFromSheets(){
   const ind=document.getElementById('loadingIndicator');
   if(ind)ind.style.display='flex';
   try{
-    const r=await fetch(`${SHEETS_URL}?action=loadAll`,{method:'GET'});
-    if(!r.ok)throw new Error('network');
+    const r=await fetch(`${SHEETS_URL}?action=loadAll`);
+    if(!r.ok)throw new Error('http '+r.status);
     const d=await r.json();
     if(d.ok){
-      // تطبيق البيانات من Sheets
-      if(d.products?.length)S.products=d.products;
-      if(d.orders?.length)S.orders=d.orders;
-      if(d.customers?.length)S.customers=d.customers;
-      if(d.batches?.length)S.batches=d.batches;
-      if(d.expenses)S.expenses=d.expenses;
-      if(d.settings)S.settings={...S.settings,...d.settings,sheetsUrl:SHEETS_URL};
-      if(d.categories?.length)S.categories=d.categories;
-      if(d.ageGroups?.length)S.ageGroups=d.ageGroups;
-      if(d.heroContent)S.heroContent=d.heroContent;
-      if(d.storyContent)S.storyContent=d.storyContent;
-      if(d.sectionOrder?.length)S.sectionOrder=d.sectionOrder;
-      if(d.colors)S.colors=d.colors;
-      if(d.prodImgs)S.prodImgs=d.prodImgs;
-      if(d.prodCoverIdx)S.prodCoverIdx=d.prodCoverIdx;
-      if(d.prodNotes)S.prodNotes=d.prodNotes;
-      if(d.banners?.length)S.banners=d.banners;
-      if(d.logo)S.logo=d.logo;
-      if(d.storyImg)S.storyImg=d.storyImg;
-      // حفظ في localStorage كـ cache
-      try{localStorage.setItem('val4_meta',JSON.stringify({...S,prodImgs:{},banners:[],logo:null,storyImg:null}));localStorage.setItem('val4_imgs',JSON.stringify({prodImgs:S.prodImgs,prodCoverIdx:S.prodCoverIdx,banners:S.banners,logo:S.logo,storyImg:S.storyImg}));}catch(e){}
+      // تطبيق البيانات
+      const fields=['products','orders','customers','batches','expenses','settings',
+        'categories','ageGroups','heroContent','storyContent','sectionOrder','colors',
+        'favorites','prodImgs','prodCoverIdx','prodNotes','banners','logo','storyImg',
+        'igSettings','igManualImgs'];
+      fields.forEach(k=>{
+        if(d[k]!==undefined&&d[k]!==null){
+          if(k==='settings')S.settings={...S.settings,...d[k],sheetsUrl:SHEETS_URL};
+          else if(Array.isArray(d[k])&&d[k].length)S[k]=d[k];
+          else if(!Array.isArray(d[k]))S[k]=d[k];
+        }
+      });
+      // تحديث localStorage
+      try{localStorage.setItem('val4_meta',JSON.stringify(buildMetaPayload()));}catch(e){}
+      return true;
     }
   }catch(e){
-    // إذا فشل الـ Sheets نكمل من localStorage
-    console.log('Sheets load failed, using local cache');
+    console.warn('loadFromSheets failed:',e.message);
   }finally{
     if(ind)ind.style.display='none';
   }
+  return false;
 }
 
 function cur(n){n=parseFloat(n)||0;return n.toLocaleString('ar-IQ')+' '+S.settings.currency;}
 function toast(msg,ms=3000){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),ms);}
 
 // ════════════════════════════════════════════════════════════
-//  INIT — يحمل من localStorage فوراً ثم يحدث من Sheets
+//  INIT
 // ════════════════════════════════════════════════════════════
 function init(){
-  // 1) تحميل فوري من localStorage (الكاش)
   load();
   S.settings.sheetsUrl=SHEETS_URL;
   if(!S.products.length)seedProds();
   applySettings();applyColors();
   renderAll();applySectionOrder();
   const now=new Date();
-  document.getElementById('repM').value=now.getMonth();
-  document.getElementById('repY').value=now.getFullYear();
+  const repM=document.getElementById('repM');const repY=document.getElementById('repY');
+  if(repM)repM.value=now.getMonth();if(repY)repY.value=now.getFullYear();
   resetDateFilter();
   document.querySelectorAll('.mov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
   document.querySelectorAll('.auth-ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
@@ -1329,14 +1389,15 @@ function init(){
   initDnD();
   applyHeroContent();applyStoryContent();applyLogo();
 
-  // 2) تحديث من Sheets في الخلفية (بعد عرض الواجهة)
+  // تحميل من Sheets بعد عرض الواجهة
   setTimeout(async()=>{
-    await loadFromSheets();
-    applySettings();applyColors();
-    renderAll();applySectionOrder();
-    applyHeroContent();applyStoryContent();applyLogo();
-    if(document.getElementById('shUrl'))document.getElementById('shUrl').value=SHEETS_URL;
-  },300);
+    const ok=await loadFromSheets();
+    if(ok){
+      applySettings();applyColors();
+      renderAll();applySectionOrder();
+      applyHeroContent();applyStoryContent();applyLogo();
+    }
+  },200);
 }
 
 function seedProds(){
@@ -1451,12 +1512,13 @@ function scrollToSec(id){
 // ════════════════════════════════════════════════════════════
 //  LOGO & NAV
 // ════════════════════════════════════════════════════════════
-function handleLogoUpload(input){
+async function handleLogoUpload(input){
   const f=input.files[0];if(!f)return;
-  const r=new FileReader();r.onload=e=>{
-    S.logo=e.target.result;save();applyLogo();
-    toast('✅ تم رفع الشعار');
-  };r.readAsDataURL(f);input.value='';
+  toast('⬆️ جاري رفع الشعار...');
+  const url=await uploadImgToDrive(f,'logo');
+  S.logo=url;save();applyLogo();
+  toast('✅ تم رفع الشعار على Drive');
+  input.value='';
 }
 function applyLogo(){
   const img=document.getElementById('navLogoImg');
@@ -1503,13 +1565,14 @@ function liveUpdateStory(){
   const st=document.getElementById('storyTitle');const sb=document.getElementById('storyBody');
   if(st)st.textContent=title;if(sb)sb.textContent=body;
 }
-function handleStoryImg(input){
+async function handleStoryImg(input){
   const f=input.files[0];if(!f)return;
-  const r=new FileReader();r.onload=e=>{
-    S.storyImg=e.target.result;
-    const ib=document.getElementById('storyImgBox');if(ib)ib.innerHTML=`<img src="${S.storyImg}" alt="">`;
-    toast('✅ تم رفع صورة قصتنا');
-  };r.readAsDataURL(f);input.value='';
+  toast('⬆️ جاري رفع الصورة...');
+  const url=await uploadImgToDrive(f,'story');
+  S.storyImg=url;
+  const ib=document.getElementById('storyImgBox');if(ib)ib.innerHTML=`<img src="${url}" alt="">`;
+  save();toast('✅ تم رفع صورة قصتنا على Drive');
+  input.value='';
 }
 function saveHeroContent(){
   S.heroContent={tag:document.getElementById('heroTagEdit').value,title:document.getElementById('heroTitleEdit').value,desc:document.getElementById('heroDescEdit').value};
@@ -1561,10 +1624,16 @@ function renderBanners(){
   sl.innerHTML=S.banners.length?S.banners.map((src,i)=>`
     <div class="bn-slot"><img src="${src}"><button class="rm" onclick="rmBanner(${i})">✕</button></div>`).join(''):'<div style="text-align:center;color:var(--mt);padding:1rem">لا توجد بنرات</div>';
 }
-function addBanners(input){
-  Array.from(input.files).forEach(f=>{
-    const r=new FileReader();r.onload=e=>{S.banners.push(e.target.result);save();renderBanners();renderHeroImgs();};r.readAsDataURL(f);
-  });input.value='';
+async function addBanners(input){
+  const files=Array.from(input.files);if(!files.length)return;
+  toast(`⬆️ جاري رفع ${files.length} بنر على Drive...`);
+  for(const f of files){
+    const url=await uploadImgToDrive(f,'banners');
+    S.banners.push(url);
+  }
+  save();renderBanners();renderHeroImgs();
+  toast('✅ تم رفع البنرات — محفوظة على Drive');
+  input.value='';
 }
 function rmBanner(i){if(!confirm('حذف؟'))return;S.banners.splice(i,1);save();renderBanners();renderHeroImgs();}
 
@@ -2048,7 +2117,24 @@ function openEditProd(id){
   renderProdImgPrev();renderNotesArea();openM('prodModal');
 }
 function toggleDiscInputs(){const t=document.getElementById('pmDiscType').value;const w=document.getElementById('discValWrap');w.style.display=t==='none'?'none':'block';document.getElementById('discValLabel').textContent=t==='percent'?'نسبة الخصم (%)':'مبلغ الخصم (د.ع)';}
-function handleProdImgs(input){Array.from(input.files).forEach(f=>{const r=new FileReader();r.onload=e=>{S.tempImgs.push(e.target.result);renderProdImgPrev();};r.readAsDataURL(f);});input.value='';}
+async function handleProdImgs(input){
+  const files=Array.from(input.files);
+  if(!files.length)return;
+  // شريط تقدم
+  const prevWrap=document.getElementById('pmPreviews');
+  prevWrap.innerHTML=`<div style="width:100%;padding:.5rem;font-size:.82rem;color:var(--mt)">⬆️ جاري الرفع على Google Drive... (0/${files.length})</div>`;
+  const uploaded=[];
+  for(let i=0;i<files.length;i++){
+    prevWrap.querySelector('div').textContent=`⬆️ جاري الرفع ${i+1}/${files.length}...`;
+    const url=await uploadImgToDrive(files[i],'products');
+    uploaded.push(url);
+    S.tempImgs.push(url);
+    renderProdImgPrev();
+  }
+  input.value='';
+  prevWrap.querySelector('div')&&(prevWrap.querySelector('div').style.display='none');
+  toast(`✅ تم رفع ${uploaded.length} صورة على Drive`);
+}
 function renderProdImgPrev(){
   document.getElementById('pmPreviews').innerHTML=S.tempImgs.map((src,i)=>`
     <div class="ip ${i===S.tempCoverIdx?'cover':''}">
@@ -2128,7 +2214,22 @@ function addBRow(){
   container.appendChild(div);loadBRowSz(div.querySelector('.br-a'));
 }
 function loadBRowSz(sel){const row=sel.closest('.brow');const ag=S.ageGroups.find(a=>a.name===sel.value);const sizes=ag?.sizes||['XS','S','M','L','XL','XXL'];row.querySelector('.br-sz').innerHTML=sizes.map(sz=>`<div class="szbox"><label>${sz}</label><input type="number" min="0" placeholder="0" data-sz="${sz}" value="0"></div>`).join('');}
-function handleBRowImg(input){const row=input.closest('.brow');const prev=row.querySelector('.br-imgs');Array.from(input.files).forEach(f=>{const r=new FileReader();r.onload=e=>{const d=document.createElement('div');d.className='ip';d.innerHTML=`<img src="${e.target.result}" class="imgd"><button onclick="this.parentElement.remove()">✕</button>`;d.querySelector('img').dataset.b64=e.target.result;prev.appendChild(d);};r.readAsDataURL(f);});input.value='';}
+async function handleBRowImg(input){
+  const row=input.closest('.brow');const prev=row.querySelector('.br-imgs');
+  const files=Array.from(input.files);if(!files.length)return;
+  prev.innerHTML=`<div style="font-size:.75rem;color:var(--mt)">⬆️ جاري الرفع 0/${files.length}...</div>`;
+  for(let i=0;i<files.length;i++){
+    prev.querySelector('div').textContent=`⬆️ جاري الرفع ${i+1}/${files.length}...`;
+    const url=await uploadImgToDrive(files[i],'products');
+    const d=document.createElement('div');d.className='ip';
+    d.innerHTML=`<img src="${url}" class="imgd"><button onclick="this.parentElement.remove()">✕</button>`;
+    d.querySelector('img').dataset.driveUrl=url;
+    prev.appendChild(d);
+  }
+  prev.querySelector('div')&&prev.querySelector('div').remove();
+  input.value='';
+  toast('✅ تم رفع الصور على Drive');
+}
 function confirmBatch(){
   const bN=document.getElementById('bN').value.trim();const bQ=parseInt(document.getElementById('bQ').value)||0;
   const bC=parseFloat(document.getElementById('bC').value)||0;const bSh=parseFloat(document.getElementById('bS').value)||0;
@@ -2137,7 +2238,7 @@ function confirmBatch(){
   document.querySelectorAll('.brow').forEach(row=>{
     const name=row.querySelector('.br-n').value.trim();if(!name)return;
     const sizes={};row.querySelectorAll('.br-sz [data-sz]').forEach(inp=>{const v=parseInt(inp.value)||0;if(v>0)sizes[inp.dataset.sz]=v;});if(!Object.keys(sizes).length)return;
-    const imgs=[...row.querySelectorAll('.br-imgs .imgd')].map(i=>i.dataset.b64).filter(Boolean);
+    const imgs=[...row.querySelectorAll('.br-imgs .imgd')].map(i=>i.dataset.driveUrl||i.dataset.b64).filter(Boolean);
     const newId=Date.now()+added;
     S.products.push({id:newId,name,category:row.querySelector('.br-c').value,ageGroup:row.querySelector('.br-a').value||null,
       sellPrice:parseFloat(row.querySelector('.br-s').value)||0,buyPrice:costPer,sizes,
