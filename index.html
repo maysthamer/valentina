@@ -1235,82 +1235,144 @@ async function uploadMultiImgs(files, folder='products', progressCb=null){
 // ════════════════════════════════════════════════════════════
 //  SAVE & PUSH TO SHEETS
 // ════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════
+//  SAVE & PUSH TO SHEETS (محدث: إرسال سحابي مباشر وبدون تخزين محلي)
+// ════════════════════════════════════════════════════════════
 function save(){
+  // بناء البيانات البرمجية لإرسالها مباشرة للسحاب
   const metaOnly = buildMetaPayload();
-  try { localStorage.setItem('val4_meta', JSON.stringify(metaOnly)); } 
-  catch (e) { toast('⚠️ لم يتم الحفظ! مساحة التخزين ممتلئة.', 5000); }
   pushToSheets(metaOnly);
 }
 
 function buildMetaPayload(){
   const cleanImgs={};
-  Object.entries(S.prodImgs||{}).forEach(([id,imgs])=>{ cleanImgs[id]=(imgs||[]).filter(u=>typeof u==='string'); });
+  if(S.prodImgs) {
+    Object.entries(S.prodImgs).forEach(([id,imgs])=>{ cleanImgs[id]=(imgs||[]).filter(u=>typeof u==='string'); });
+  }
   return {
-    products:S.products, orders:S.orders, customers:S.customers, batches:S.batches, expenses:S.expenses, settings:{...S.settings,sheetsUrl:undefined}, categories:S.categories, ageGroups:S.ageGroups, heroContent:S.heroContent, storyContent:S.storyContent, sectionOrder:S.sectionOrder, colors:S.colors, favorites:S.favorites, prodImgs:cleanImgs, prodCoverIdx:S.prodCoverIdx||{}, prodNotes:S.prodNotes||{}, banners:S.banners||[], logo:S.logo||null, storyImg:S.storyImg||null, igSettings:S.igSettings||{}, igManualImgs:S.igManualImgs||[], savedAt:new Date().toISOString()
+    products: S.products || [], 
+    orders: S.orders || [], 
+    customers: S.customers || [], 
+    batches: S.batches || [], 
+    expenses: S.expenses || {}, 
+    settings: {...S.settings, sheetsUrl:undefined}, 
+    categories: S.categories || [], 
+    ageGroups: S.ageGroups || [], 
+    heroContent: S.heroContent || {}, 
+    storyContent: S.storyContent || {}, 
+    sectionOrder: S.sectionOrder || [], 
+    colors: S.colors || {}, 
+    favorites: S.favorites || [], 
+    prodImgs: cleanImgs, 
+    prodCoverIdx: S.prodCoverIdx || {}, 
+    prodNotes: S.prodNotes || {}, 
+    banners: S.banners || [], 
+    logo: S.logo || null, 
+    storyImg: S.storyImg || null, 
+    igSettings: S.igSettings || {}, 
+    igManualImgs: S.igManualImgs || [], 
+    savedAt: new Date().toISOString()
   };
 }
 
 let _pushTimer = null;
 async function pushToSheets(payload){
   clearTimeout(_pushTimer);
+  // تأخير بسيط لدمج المدخلات السريعة وتقليل الضغط على السيرفر
   _pushTimer = setTimeout(async () => {
     try {
-      await fetch(SHEETS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'saveAll', ...payload }) });
-    } catch (e) { console.warn(e); }
-  }, 1500);
+      const response = await fetch(SHEETS_URL, { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+        body: JSON.stringify({ action: 'saveAll', ...payload }) 
+      });
+      const resData = await response.json();
+      if(resData.ok) {
+        toast('▲ تم حفظ التغييرات ومزامنتها سحابياً');
+      } else {
+        toast('❌ فشل الحفظ في السحاب: ' + (resData.msg || 'خطأ غير معروف'));
+      }
+    } catch (e) { 
+      console.warn(e); 
+      toast('❌ فشل الاتصال بالسحاب. تحقق من شبكة الإنترنت');
+    }
+  }, 1000);
 }
 
-function load(){
-  try{ const meta=localStorage.getItem('val4_meta'); if(meta){ const p=JSON.parse(meta); Object.keys(p).forEach(k=>{if(k in S)S[k]=p[k];}); } }catch(e){}
-  S.settings.sheetsUrl=SHEETS_URL;
-  if(!S.igSettings)S.igSettings={};
-  if(!S.igManualImgs)S.igManualImgs=[];
-}
+// تم حذف دالة load() القديمة بالكامل لمنع القراءة من ذاكرة الجهاز الافتراضية
 
 async function loadFromSheets(){
-  const ind=document.getElementById('loadingIndicator'); if(ind)ind.style.display='flex';
+  const ind=document.getElementById('loadingIndicator'); 
+  if(ind) ind.style.display='flex'; // إظهار مؤشر التحميل البرمجي لتعطيل الشاشة
   try{
     const r=await fetch(`${SHEETS_URL}?action=loadAll`);
-    if(!r.ok)throw new Error('http '+r.status);
+    if(!r.ok) throw new Error('http '+r.status);
     const d=await r.json();
     if(d.ok){
       const fields=['products','orders','customers','batches','expenses','settings','categories','ageGroups','heroContent','storyContent','sectionOrder','colors','favorites','prodImgs','prodCoverIdx','prodNotes','banners','logo','storyImg','igSettings','igManualImgs'];
       fields.forEach(k=>{
-        if(d[k]!==undefined&&d[k]!==null){
-          if(k==='settings')S.settings={...S.settings,...d[k],sheetsUrl:SHEETS_URL};
-          else if(Array.isArray(d[k])&&d[k].length)S[k]=d[k];
-          else if(!Array.isArray(d[k]))S[k]=d[k];
+        if(d[k]!==undefined && d[k]!==null){
+          if(k==='settings') S.settings={...S.settings,...d[k],sheetsUrl:SHEETS_URL};
+          else S[k]=d[k];
         }
       });
-      try{localStorage.setItem('val4_meta',JSON.stringify(buildMetaPayload()));}catch(e){}
       return true;
     }
-  }catch(e){}finally{ if(ind)ind.style.display='none'; }
+  }catch(e){
+    console.error("خطأ في جلب البيانات:", e);
+  }finally{ 
+    if(ind) ind.style.display='none'; 
+  }
   return false;
 }
 
 function cur(n){n=parseFloat(n)||0;return n.toLocaleString('ar-IQ')+' '+S.settings.currency;}
-function toast(msg,ms=3000){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),ms);}
+function toast(msg,ms=3000){const t=document.getElementById('toast');if(t){t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),ms);}}
 
 // ════════════════════════════════════════════════════════════
-//  INIT
+//  INIT & START (محدث للتزامن البرمجي المطلق)
 // ════════════════════════════════════════════════════════════
-function init(){
-  load(); S.settings.sheetsUrl=SHEETS_URL;
-  if(!S.products.length)seedProds();
-  applySettings();applyColors(); renderAll();applySectionOrder();
+async function init(){
+  S.settings.sheetsUrl=SHEETS_URL;
+  
+  // إعداد الفلاتر الافتراضية والمستندات قبل الجلب
   const now=new Date();
   if(document.getElementById('repM'))document.getElementById('repM').value=now.getMonth();
   if(document.getElementById('repY'))document.getElementById('repY').value=now.getFullYear();
   resetDateFilter();
+  
   document.querySelectorAll('.mov,.auth-ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
   document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.shiftKey&&e.key==='S'){e.preventDefault();showSeller();}});
-  initDnD(); applyHeroContent();applyStoryContent();applyLogo();
-  setTimeout(async()=>{
-    if(await loadFromSheets()){ applySettings();applyColors(); renderAll();applySectionOrder(); applyHeroContent();applyStoryContent();applyLogo(); }
-  },200);
+  
+  // جلب البيانات الإجباري من جوجل شيت لمنع تصفير البرنامج
+  const isLoaded = await loadFromSheets();
+  if(isLoaded){
+    toast('✅ تم تحميل أحدث بضاعة من السحاب الحقيقي');
+  } else {
+    toast('⚠️ تحذير: لم نتمكن من جلب بيانات السحاب. يرجى إعادة تحديث الصفحة');
+  }
+  
+  // رندرة البيانات وبناء الواجهات بناءً على القادم من السحاب فقط
+  applySettings();
+  applyColors(); 
+  renderAll();
+  applySectionOrder();
+  applyHeroContent();
+  applyStoryContent();
+  applyLogo();
+  initDnD(); 
 }
 
+document.addEventListener('DOMContentLoaded',()=>{
+  init();
+  addBRow();
+  let clicks=0;
+  document.querySelector('.nav-logo-wrap').addEventListener('click',()=>{
+    clicks++;
+    if(clicks>=3){clicks=0;showSeller();}
+    setTimeout(()=>clicks=0,600);
+  });
+});
 function seedProds(){
   S.products=[
     {id:1,name:'فستان ربيعي أنيق',category:'فساتين',ageGroup:'نساء',sellPrice:85000,buyPrice:35000,sizes:{S:3,M:5,L:2},barcode:'VAL001',desc:'فستان أنيق للمناسبات الربيعية',discType:'none',discVal:0,createdAt:Date.now()-86400000*2,salesCount:12},
