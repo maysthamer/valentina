@@ -20,7 +20,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
 .hidden{display:none!important}
 
 /* ════════ TOP ANNOUNCEMENT BAR ════════ */
-.ann-bar{background:var(--wb);color:#fff;text-align:center;padding:.4rem 1rem;font-size:.8rem;font-weight:500;letter-spacing:.5px}
+.ann-bar{background:var(--wb);color:#fff;text-align:center;padding:.4rem 1rem;font-size Rama;.8rem;font-weight:500;letter-spacing:.5px}
 
 /* ════════ NAV ════════ */
 .main-nav{background:var(--nav-bg);border-bottom:1px solid var(--bd);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:70px;position:sticky;top:0;z-index:900;box-shadow:0 1px 12px var(--sh)}
@@ -54,7 +54,6 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
 .hero-img-box{border-radius:12px;overflow:hidden;aspect-ratio:3/4;background:var(--c4)}
 .hero-img-box img{width:100%;height:100%;object-fit:cover}
 .hero-img-box:first-child{grid-row:span 2;aspect-ratio:auto}
-/* single banner mode */
 .hero-banner-single{width:100%;height:420px;object-fit:cover;display:block}
 
 /* ════════ CATEGORY QUICK LINKS ════════ */
@@ -392,9 +391,6 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
 </head>
 <body>
 
-<!-- ════════════════════════════════════════════
-     SELLER LOCK SCREEN
-════════════════════════════════════════════ -->
 <div class="lock-screen" id="lockScreen">
   <div class="lock-box">
     <div class="lock-logo"><em>V</em>alentina</div>
@@ -408,14 +404,8 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
   </div>
 </div>
 
-<!-- ════════════════════════════════════════════
-     ANNOUNCEMENT BAR
-════════════════════════════════════════════ -->
 <div class="ann-bar" id="annBar">🚚 قطعتان = توصيل مجاني &nbsp;|&nbsp; 🎁 <span id="annGift">4</span> قطع = القطعة الأرخص هدية</div>
 
-<!-- ════════════════════════════════════════════
-     MAIN NAV
-════════════════════════════════════════════ -->
 <nav class="main-nav">
   <div class="nav-logo-wrap" onclick="goHome()">
     <img id="navLogoImg" class="nav-logo-img" src="" style="display:none" alt="logo">
@@ -434,11 +424,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
   </div>
 </nav>
 
-<!-- ════════════════════════════════════════════
-     BUYER PAGE
-════════════════════════════════════════════ -->
 <div id="page-buyer" class="page active">
-
   <div class="hero-wrap dnd-section" id="sec-hero" draggable="true">
     <div class="dnd-handle" onclick="event.stopPropagation()">⠿ تحريك</div>
     <div class="hero-content">
@@ -480,7 +466,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
     </div>
   </div>
 
-  <div class="story-sec dnd-section" id="sec-story storySection" draggable="true">
+  <div class="story-sec dnd-section" id="sec-story" draggable="true">
     <div class="dnd-handle">⠿ تحريك</div>
     <div class="story-text">
       <div class="story-tag" id="storyTag">قصتنا</div>
@@ -528,15 +514,11 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
       </div>
     </div>
     <div style="border-top:1px solid rgba(255,255,255,.15);padding-top:1rem;text-align:center;font-size:.75rem;opacity:.55">
-      © 2025 Valentina — جميع الحقوق محفوظة
+      © 2026 Valentina — جميع الحقوق محفوظة
     </div>
   </footer>
-
 </div>
 
-<!-- ════════════════════════════════════════════
-     ITEM DETAIL PAGE
-════════════════════════════════════════════ -->
 <div id="page-item" class="page">
   <div class="item-detail">
     <button class="id-back" onclick="goBack()">← رجوع</button>
@@ -551,7 +533,6 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
   </div>
 </div>
 
-<!-- FAVS PAGE -->
 <div id="page-favs" class="page">
   <div class="favs-page">
     <button class="id-back" onclick="goHome()">← رجوع</button>
@@ -560,9 +541,6 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
   </div>
 </div>
 
-<!-- ════════════════════════════════════════════
-     SELLER PAGE
-════════════════════════════════════════════ -->
 <div id="page-seller" class="page">
 <div class="sl">
   <div class="ssb">
@@ -578,522 +556,425 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
   </div>
 
   <div class="sc">
-
-  <!-- STOCK -->
-  <div id="panel-stock" class="sp active">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.1rem;flex-wrap:wrap;gap:.5rem">
-      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb)">📦 المخزون</div>
-      <div style="display:flex;gap:.4rem;flex-wrap:wrap">
-        <button class="ab ao" onclick="syncSheets()">🔄 مزامنة</button>
-        <button class="ab ae" style="background:var(--wb);color:#fff" onclick="openAddProd()">➕ إضافة قطعة</button>
-      </div>
-    </div>
-    <div class="srow" id="stockStats"></div>
-    <input class="srch" id="stockSrch" placeholder="ابحث..." oninput="renderStock()" style="width:100%;padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:8px;font-family:'Tajawal',sans-serif;margin-bottom:.8rem;direction:rtl">
-    <div style="overflow-x:auto"><table class="tbl">
-      <thead><tr><th>صورة</th><th>الاسم</th><th>الفئة</th><th>العمر</th><th>الأحجام</th><th>سعر البيع</th><th>سعر الشراء</th><th>الخصم</th><th>الربح</th><th>الكمية</th><th>إجراءات</th></tr></thead>
-      <tbody id="stockBody"></tbody>
-    </table></div>
-  </div>
-
-  <!-- BATCH -->
-  <div id="panel-batch" class="sp">
-    <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb);margin-bottom:1.1rem">🧾 إضافة Batch</div>
-    <div class="bcalc">
-      <div class="pct">🧮 حساب تكلفة الـ Batch</div>
-      <div class="g2">
-        <div class="fg"><label>اسم الـ Batch</label><input type="text" id="bN" placeholder="Batch يناير"></div>
-        <div class="fg"><label>تاريخ الاستلام</label><input type="date" id="bD"></div>
-        <div class="fg"><label>تكلفة الشراء (د.ع)</label><input type="number" id="bC" placeholder="0" oninput="calcB()"></div>
-        <div class="fg"><label>مصاريف الشحن (د.ع)</label><input type="number" id="bS" placeholder="0" oninput="calcB()"></div>
-        <div class="fg"><label>عدد القطع</label><input type="number" id="bQ" placeholder="0" oninput="calcB()"></div>
-        <div class="fg"><label>ملاحظات</label><input type="text" id="bNo" placeholder=""></div>
-      </div>
-      <div class="bres" id="bRes"><strong>📊 نتائج</strong>
-        <div class="rg">
-          <div class="ri"><strong id="rC">0</strong><span>تكلفة/قطعة</span></div>
-          <div class="ri"><strong id="rS">0</strong><span>شحن/قطعة</span></div>
-          <div class="ri"><strong id="rT">0</strong><span>الكلي/قطعة</span></div>
+    <div id="panel-stock" class="sp active">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.1rem;flex-wrap:wrap;gap:.5rem">
+        <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb)">📦 المخزون</div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+          <button class="ab ao" onclick="syncSheets()">🔄 مزامنة</button>
+          <button class="ab ae" style="background:var(--wb);color:#fff" onclick="openAddProd()">➕ إضافة قطعة</button>
         </div>
       </div>
-    </div>
-    <div class="pc2">
-      <div class="pct">📷 باركود</div>
-      <div class="g2">
-        <div>
-          <div class="fg"><label>مسح أو إدخال</label>
-            <div style="display:flex;gap:.4rem">
-              <input type="text" id="bcIn" placeholder="باركود..." style="flex:1;padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif" onchange="bcLookup()">
-              <button onclick="startScan()" style="background:var(--c6);border:none;padding:.5rem .8rem;border-radius:7px;cursor:pointer;font-size:1rem">📷</button>
-            </div>
-          </div>
-          <div class="fg"><label>توليد باركود</label>
-            <div style="display:flex;gap:.4rem">
-              <input type="text" id="bcGen" placeholder="رقم أو نص" style="flex:1;padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif">
-              <button onclick="genBC()" style="background:var(--c2);border:none;padding:.5rem .9rem;border-radius:7px;cursor:pointer;color:var(--wb);font-weight:600;font-family:'Tajawal',sans-serif">توليد</button>
-            </div>
-          </div>
-          <div id="bcResult" style="font-size:.8rem;margin-top:.4rem"></div>
-        </div>
-        <div class="bc-sec"><canvas id="bcCanvas"></canvas><br>
-          <button onclick="printBC()" style="margin-top:.5rem;background:var(--c5);color:#fff;border:none;padding:.36rem .85rem;border-radius:6px;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:600;font-size:.76rem">🖨️ طباعة</button>
-        </div>
-      </div>
-      <div id="scanOv" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:5000;align-items:center;justify-content:center;flex-direction:column;gap:1rem">
-        <video id="scanVid" style="width:90%;max-width:400px;border-radius:12px"></video>
-        <button onclick="stopScan()" style="background:var(--er);color:#fff;border:none;padding:.55rem 1.4rem;border-radius:9px;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700">إغلاق</button>
-      </div>
-    </div>
-    <div class="pc2">
-      <div class="pct">📝 قطع الـ Batch</div>
-      <div id="bRows"></div>
-      <button class="ab ae" onclick="addBRow()" style="margin-top:.5rem">➕ إضافة قطعة</button>
-      <div style="display:flex;gap:.6rem;margin-top:1rem">
-        <button class="bp" style="flex:1" onclick="confirmBatch()">✅ تأكيد وإضافة للمخزون</button>
-        <button class="bs" onclick="clearBatch()">🗑️ مسح</button>
-      </div>
-    </div>
-    <div class="pc2">
-      <div class="pct">📋 سجل الـ Batches</div>
+      <div class="srow" id="stockStats"></div>
+      <input class="srch" id="stockSrch" placeholder="ابحث..." oninput="renderStock()" style="width:100%;padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:8px;font-family:'Tajawal',sans-serif;margin-bottom:.8rem;direction:rtl">
       <div style="overflow-x:auto"><table class="tbl">
-        <thead><tr><th>#</th><th>الاسم</th><th>التاريخ</th><th>القطع</th><th>التكلفة</th><th>الشحن</th><th>التكلفة/قطعة</th><th>الحالة</th></tr></thead>
-        <tbody id="bHist"></tbody>
-      </table></div>
-    </div>
-  </div>
-
-  <!-- ORDERS -->
-  <div id="panel-orders" class="sp">
-    <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb);margin-bottom:1rem">🛍️ الطلبات</div>
-    <div class="date-filter">
-      <label>من:</label><input type="date" id="oFrom">
-      <label>إلى:</label><input type="date" id="oTo">
-      <select id="oStatus" onchange="renderOrders()" style="padding:.38rem .65rem;border:1.5px solid var(--bd);border-radius:6px;font-family:'Tajawal',sans-serif;direction:rtl">
-        <option value="all">كل الحالات</option>
-        <option value="preparing">قيد التجهيز</option>
-        <option value="delivering">قيد التوصيل</option>
-        <option value="done">تم الاستلام</option>
-        <option value="rejected">تم الرفض</option>
-        <option value="returned">راجع للمخزن</option>
-      </select>
-      <button class="ab ao" onclick="renderOrders()">🔍 بحث</button>
-      <button class="ab ae" onclick="resetDateFilter()">↩️ هذا الشهر</button>
-    </div>
-    <div class="srow" id="orderStats"></div>
-    <div style="overflow-x:auto"><table class="tbl">
-      <thead><tr><th>#</th><th>العميل</th><th>القطع</th><th>الإجمالي</th><th>العرض</th><th>التاريخ</th><th>الحالة</th><th>إجراءات</th></tr></thead>
-      <tbody id="ordersBody"></tbody>
-    </table></div>
-  </div>
-
-  <!-- CUSTOMERS -->
-  <div id="panel-customers" class="sp">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb)">👥 العملاء</div>
-      <span id="custCnt" style="color:var(--mt);font-size:.85rem">0 عميل</span>
-    </div>
-    <input class="srch" id="custSrch" placeholder="ابحث..." oninput="renderCustomers()" style="width:100%;padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:8px;font-family:'Tajawal',sans-serif;margin-bottom:.8rem;direction:rtl">
-    <div id="custList"></div>
-  </div>
-
-  <!-- REPORTS -->
-  <div id="panel-reports" class="sp">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
-      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb)">📊 التقارير</div>
-      <div style="display:flex;gap:.4rem">
-        <select id="repM" onchange="renderReports()" style="padding:.4rem .65rem;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif;direction:rtl">
-          <option value="0">يناير</option><option value="1">فبراير</option><option value="2">مارس</option>
-          <option value="3">أبريل</option><option value="4">مايو</option><option value="5">يونيو</option>
-          <option value="6">يوليو</option><option value="7">أغسطس</option><option value="8">سبتمبر</option>
-          <option value="9">أكتوبر</option><option value="10">نوفمبر</option><option value="11">ديسمبر</option>
-        </select>
-        <select id="repY" onchange="renderReports()" style="padding:.4rem .65rem;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif">
-          <option>2024</option><option selected>2025</option><option>2026</option>
-        </select>
-      </div>
-    </div>
-    <div class="rep-sum"><h3>💰 ملخص الشهر</h3>
-      <div class="rep-grid">
-        <div class="ri2"><strong id="rpS">0</strong><span>المبيعات</span></div>
-        <div class="ri2"><strong id="rpC">0</strong><span>تكلفة البضاعة</span></div>
-        <div class="ri2"><strong id="rpA">0</strong><span>إعلانات</span></div>
-        <div class="ri2"><strong id="rpSh">0</strong><span>شحن</span></div>
-        <div class="ri2"><strong id="rpPk">0</strong><span>تغليف</span></div>
-        <div class="ri2"><strong id="rpOf">0</strong><span>خسائر العروض</span></div>
-        <div class="ri2"><strong id="rpN">0</strong><span>الربح الصافي</span></div>
-      </div>
-    </div>
-    <div class="g2">
-      <div class="pc2">
-        <div class="pct">📢 المصاريف</div>
-        <div class="fg"><label>إعلانات (د.ع)</label><input type="number" id="eA" placeholder="0"></div>
-        <div class="fg"><label>شحن (د.ع)</label><input type="number" id="eS" placeholder="0"></div>
-        <div class="fg"><label>تغليف (د.ع)</label><input type="number" id="eP" placeholder="0"></div>
-        <button class="bp" onclick="saveExp()">💾 حفظ</button>
-      </div>
-      <div class="pc2"><div class="pct">📦 مبيعات حسب الفئة</div><div id="catSales"></div></div>
-    </div>
-    <div class="pc2">
-      <div class="pct">📋 تفاصيل المبيعات</div>
-      <div style="overflow-x:auto"><table class="tbl">
-        <thead><tr><th>القطعة</th><th>الكمية</th><th>الإيراد</th><th>التكلفة</th><th>الربح</th></tr></thead>
-        <tbody id="saleDetail"></tbody>
-      </table></div>
-    </div>
-  </div>
-
-  <!-- BANNERS / IMAGES -->
-  <div id="panel-banners" class="sp">
-    <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb);margin-bottom:1.1rem">🖼️ الصور والبنرات</div>
-    
-    <div class="pc2">
-      <div class="pct">بنرات Hero / صور الخلفية</div>
-      <div id="bnSlots"></div>
-      
-      <!-- إضافة البنرات بالرابط أو الرفع -->
-      <div style="display:flex;gap:.4rem;margin-top:.6rem">
-        <input type="text" id="bnLinkInp" placeholder="لصق رابط درايف للبنر..." style="flex:1;padding:.5rem;border:1px solid var(--bd);border-radius:7px;direction:ltr">
-        <button class="bp" style="flex:none;padding:.5rem" onclick="addBannerFromLink()">➕ إضافة رابط</button>
-      </div>
-      <div class="iua" onclick="document.getElementById('bnUp').click()" style="margin-top:.5rem">
-        <input type="file" id="bnUp" accept="image/*" multiple onchange="addBanners(this)">
-        <div style="font-size:1.6rem">🖼️</div>
-        <div style="font-weight:600;color:var(--wb);font-size:.85rem">ارفع بنر من الجهاز</div>
-      </div>
-    </div>
-
-    <div class="pc2">
-      <div class="pct">الشعار (Logo)</div>
-      <div style="display:flex;gap:1rem;align-items:center;margin-bottom:.8rem;flex-wrap:wrap">
-        <img id="logoPreviewImg" src="" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:2px solid var(--bd);display:none">
-        <div style="flex:1">
-          <!-- إضافة الشعار بالرابط أو الرفع -->
-          <div style="display:flex;gap:.4rem;margin-bottom:.5rem">
-            <input type="text" id="logoLinkInp" placeholder="رابط درايف للشعار..." style="flex:1;padding:.5rem;border:1px solid var(--bd);border-radius:7px;direction:ltr">
-            <button class="bp" style="flex:none;padding:.5rem" onclick="addLogoFromLink()">إضافة رابط</button>
-          </div>
-          <div class="iua" onclick="document.getElementById('logoUp').click()" style="padding:.6rem 1rem;display:inline-flex;align-items:center;gap:.5rem;width:100%;justify-content:center">
-            <input type="file" id="logoUp" accept="image/*" onchange="handleLogoUpload(this)">
-            <span>📸 رفع شعار من الجهاز</span>
-          </div>
-          <button class="ab ad" onclick="removeLogo()" style="margin-top:.5rem;width:100%">🗑️ إزالة الشعار</button>
-        </div>
-      </div>
-      <div class="fg"><label>اسم المتجر في الـ Nav</label>
-        <input type="text" id="storeNameNav" placeholder="Valentina" oninput="updateNavName()">
-      </div>
-    </div>
-
-    <div class="pc2">
-      <div class="pct">محتوى Hero</div>
-      <div class="fg"><label>العلامة الصغيرة</label><input type="text" id="heroTagEdit" placeholder="أزياء راقية" oninput="liveUpdateHero()"></div>
-      <div class="fg"><label>العنوان الرئيسي</label><input type="text" id="heroTitleEdit" placeholder="مرحباً بك في Valentina" oninput="liveUpdateHero()"></div>
-      <div class="fg"><label>الوصف</label><textarea id="heroDescEdit" rows="2" oninput="liveUpdateHero()"></textarea></div>
-      <div class="fg"><label>قصتنا — العنوان</label><input type="text" id="storyTitleEdit" oninput="liveUpdateStory()"></div>
-      <div class="fg"><label>قصتنا — النص</label><textarea id="storyBodyEdit" rows="3" oninput="liveUpdateStory()"></textarea></div>
-      <div class="fg"><label>صورة قصتنا</label>
-        <!-- إضافة صورة القصة بالرابط أو الرفع -->
-        <div style="display:flex;gap:.4rem;margin-bottom:.5rem">
-          <input type="text" id="storyLinkInp" placeholder="رابط درايف للصورة..." style="flex:1;padding:.5rem;border:1px solid var(--bd);border-radius:7px;direction:ltr">
-          <button class="bp" style="flex:none;padding:.5rem" onclick="addStoryImgFromLink()">إضافة رابط</button>
-        </div>
-        <div class="iua" onclick="document.getElementById('storyImgUp').click()">
-          <input type="file" id="storyImgUp" accept="image/*" onchange="handleStoryImg(this)">
-          <span style="font-size:.82rem;color:var(--mt)">📸 رفع صورة من الجهاز</span>
-        </div>
-      </div>
-      <button class="bp" onclick="saveHeroContent()">💾 حفظ</button>
-    </div>
-
-    <div class="pc2">
-      <div class="pct">📸 صور المنتجات</div>
-      <div style="overflow-x:auto"><table class="tbl">
-        <thead><tr><th>الصورة</th><th>القطعة</th><th>عدد الصور</th><th>تعديل</th></tr></thead>
-        <tbody id="prodImgTbl"></tbody>
+        <thead><tr><th>صورة</th><th>الاسم</th><th>الفئة</th><th>العمر</th><th>الأحجام</th><th>سعر البيع</th><th>سعر الشراء</th><th>الخصم</th><th>الربح</th><th>الكمية</th><th>إجراءات</th></tr></thead>
+        <tbody id="stockBody"></tbody>
       </table></div>
     </div>
 
-    <!-- INSTAGRAM SETTINGS -->
-    <div class="pc2" style="border:2px solid #e1306c22;background:linear-gradient(135deg,#fff0f6,#fff)">
-      <div class="pct" style="color:#e1306c">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="#e1306c" style="vertical-align:middle;margin-left:.4rem"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-        ربط حساب Instagram
-      </div>
-
-      <div class="fg">
-        <label>اسم مستخدم الإنستغرام (@username)</label>
-        <div style="display:flex;gap:.5rem">
-          <input type="text" id="igUsername" placeholder="مثال: valentina.iq" style="flex:1;padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif;direction:ltr">
-          <button class="bp" style="flex:none;padding:.62rem 1rem;background:#e1306c" onclick="saveIgUsername()">حفظ</button>
-        </div>
-      </div>
-
-      <div style="background:var(--c2);border-radius:8px;padding:.9rem;margin-bottom:.8rem">
-        <div style="font-weight:700;font-size:.85rem;color:var(--wb);margin-bottom:.5rem">🔑 Instagram Access Token</div>
-        <div class="fg" style="margin-bottom:.5rem">
-          <label>Access Token</label>
-          <input type="text" id="igToken" placeholder="IGAAx..." style="width:100%;padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:7px;font-family:monospace;font-size:.78rem;direction:ltr">
-        </div>
-        <button class="bp" style="background:#e1306c;width:100%" onclick="saveIgToken()">💾 حفظ الـ Token</button>
-      </div>
-
-      <div style="border-top:1px solid var(--bd);padding-top:.8rem;margin-top:.5rem">
-        <div style="font-weight:700;font-size:.85rem;color:var(--wb);margin-bottom:.4rem">📷 أو أضيفي صور الإنستغرام يدوياً</div>
-        
-        <!-- إضافة صور الإنستغرام بالرابط أو الرفع -->
-        <div style="display:flex;gap:.4rem;margin-bottom:.5rem">
-          <input type="text" id="igManualLinkInp" placeholder="رابط درايف للصورة..." style="flex:1;padding:.5rem;border:1px solid var(--bd);border-radius:7px;direction:ltr">
-          <button class="bp" style="flex:none;padding:.5rem;background:#e1306c" onclick="addIgManualFromLink()">➕ إضافة رابط</button>
-        </div>
-        <div class="iua" onclick="document.getElementById('igManualUp').click()">
-          <input type="file" id="igManualUp" accept="image/*" multiple onchange="addIgManualImgs(this)">
-          <div style="font-size:1.4rem">📸</div>
-          <div style="font-size:.82rem;color:var(--mt)">ارفعي صور منشوراتك</div>
-        </div>
-        
-        <div class="ipw" id="igManualPreviews" style="margin-top:.6rem"></div>
-        <button class="bp" style="width:100%;margin-top:.5rem;background:#e1306c" onclick="saveIgManual()">💾 حفظ الصور</button>
-      </div>
-      
-      <div style="margin-top:.9rem;border-top:1px solid var(--bd);padding-top:.8rem">
-        <button class="bp" style="background:var(--wb);width:100%" onclick="renderInstaSection();toast('✅ تم تحديث المعاينة')">🔄 تحديث المعاينة في الصفحة</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- OFFERS -->
-  <div id="panel-offers" class="sp">
-    <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb);margin-bottom:1.1rem">🎁 العروض</div>
-    <div class="g2">
-      <div class="pc2"><div class="pct">🚚 توصيل مجاني</div>
-        <div class="fg"><label>عدد القطع</label><input type="number" id="fSQ" value="2"></div>
-        <div class="fg"><label>تكلفة التوصيل (د.ع)</label><input type="number" id="sCost" value="5000"></div>
-      </div>
-      <div class="pc2"><div class="pct">🎁 الهدية</div>
-        <div class="fg"><label>عدد القطع للهدية</label><input type="number" id="gQ" value="4"></div>
-      </div>
-      <div class="pc2"><div class="pct">⭐ VIP</div>
-        <div class="fg"><label>عدد الطلبات للـ VIP</label><input type="number" id="vO" value="5"></div>
-        <div class="fg"><label>خصم VIP (%)</label><input type="number" id="vD" value="10"></div>
-      </div>
-      <div class="pc2"><div class="pct">🏷️ كود الخصم</div>
-        <div class="fg"><label>الكود</label><input type="text" id="pCode" value="VALENTINA10"></div>
-        <div class="fg"><label>الخصم (%)</label><input type="number" id="pDisc" value="10"></div>
-      </div>
-    </div>
-    <button class="bp" onclick="saveOffers()">💾 حفظ العروض</button>
-  </div>
-
-  <!-- SETTINGS -->
-  <div id="panel-settings" class="sp">
-    <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb);margin-bottom:1.1rem">⚙️ الإعدادات</div>
-    <div class="stabs">
-      <div class="stab active" onclick="showStab('cats',this)">📂 الفئات</div>
-      <div class="stab" onclick="showStab('ages',this)">👶 الفئات العمرية</div>
-      <div class="stab" onclick="showStab('sizes',this)">📏 القياسات</div>
-      <div class="stab" onclick="showStab('colors',this)">🎨 الألوان والمظهر</div>
-      <div class="stab" onclick="showStab('store',this)">🏪 المتجر</div>
-      <div class="stab" onclick="showStab('sections',this)">📐 ترتيب الصفحات</div>
-      <div class="stab" onclick="showStab('sheets',this)">🔗 Sheets</div>
-    </div>
-
-    <!-- ... Tab contents (Cats, Ages, Sizes, Colors, Store, Sections, Sheets) exactly as original ... -->
-    <div id="stab-cats" class="stc active">
-      <div class="pc2"><div class="pct">📂 الفئات</div>
-        <div id="catList"></div>
-        <div style="display:flex;gap:.4rem;margin-top:.7rem">
-          <input type="text" id="nCat" placeholder="اسم الفئة" style="flex:1;padding:.58rem .85rem;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif;direction:rtl">
-          <input type="text" id="nCatIc" placeholder="أيقونة" style="width:52px;padding:.58rem .4rem;border:1.5px solid var(--bd);border-radius:7px;text-align:center">
-          <button class="bp" style="flex:none;padding:.58rem .9rem" onclick="addCat()">➕</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="stab-ages" class="stc">
-      <div class="pc2"><div class="pct">👶 الفئات العمرية</div>
-        <div id="ageList"></div>
-        <div style="display:flex;gap:.4rem;margin-top:.7rem">
-          <input type="text" id="nAge" placeholder="اسم الفئة" style="flex:1;padding:.58rem .85rem;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif;direction:rtl">
-          <input type="text" id="nAgeIc" placeholder="أيقونة" style="width:52px;padding:.58rem .4rem;border:1.5px solid var(--bd);border-radius:7px;text-align:center">
-          <button class="bp" style="flex:none;padding:.58rem .9rem" onclick="addAge()">➕</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="stab-sizes" class="stc">
-      <div class="pc2"><div class="pct">📏 القياسات حسب الفئة العمرية</div>
-        <div class="fg"><label>اختر الفئة</label>
-          <select id="szAgeSel" onchange="renderSzForAge()" style="padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif;width:100%;direction:rtl"></select>
-        </div>
-        <div id="szForAge"></div>
-        <div style="display:flex;gap:.4rem;margin-top:.6rem">
-          <input type="text" id="nSz" placeholder="قياس جديد" style="flex:1;padding:.58rem .85rem;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif;direction:rtl">
-          <button class="bp" style="flex:none;padding:.58rem .9rem" onclick="addSzToAge()">➕</button>
-        </div>
-        <button class="bp" style="width:100%;margin-top:.7rem" onclick="saveSzs()">💾 حفظ</button>
-      </div>
-    </div>
-
-    <div id="stab-colors" class="stc">
-      <div class="pc2"><div class="pct">🎨 الألوان والمظهر</div>
-        <div class="preset-row">
-          <button class="preset-btn" onclick="applyPreset('rose')">🌸 وردي فاتح</button>
-          <button class="preset-btn" onclick="applyPreset('sage')">🌿 أخضر مريمية</button>
-          <button class="preset-btn" onclick="applyPreset('lavender')">💜 لافندر</button>
-          <button class="preset-btn" onclick="applyPreset('earth')">🤎 ترابي دافئ</button>
-          <button class="preset-btn" onclick="applyPreset('ocean')">🌊 أزرق محيطي</button>
-          <button class="preset-btn" onclick="applyPreset('default')">✨ الافتراضي</button>
-        </div>
-        <div class="color-row">
-          <div class="color-swatch"><label>الخلفية</label><input type="color" id="col-sw" value="#fdf8f5" oninput="applyColor('--c1',this.value)"></div>
-          <div class="color-swatch"><label>البطاقات</label><input type="color" id="col-card" value="#ffffff" oninput="applyColor('--card-bg',this.value)"></div>
-          <div class="color-swatch"><label>لون رئيسي</label><input type="color" id="col-wb" value="#8b6f5e" oninput="applyColor('--wb',this.value)"></div>
-          <div class="color-swatch"><label>لون ثانوي</label><input type="color" id="col-ac" value="#c9a87c" oninput="applyColor('--ac',this.value)"></div>
-          <div class="color-swatch"><label>اللون 1</label><input type="color" id="col-c2" value="#f9f0d3" oninput="applyColor('--c2',this.value)"></div>
-          <div class="color-swatch"><label>اللون 2</label><input type="color" id="col-c3" value="#e8e0f0" oninput="applyColor('--c3',this.value)"></div>
-          <div class="color-swatch"><label>اللون 3</label><input type="color" id="col-c4" value="#f2d5d5" oninput="applyColor('--c4',this.value)"></div>
-          <div class="color-swatch"><label>زر الـ Nav</label><input type="color" id="col-nav" value="#ffffff" oninput="applyColor('--nav-bg',this.value)"></div>
-        </div>
-        <div class="fg" style="margin-top:.5rem"><label>لون زر الشراء</label>
-          <input type="color" id="col-btn" value="#8b6f5e" oninput="applyColor('--btn-bg',this.value);document.querySelectorAll('.acbtn,.hero-cta,.co-btn,.id-atc').forEach(el=>el.style.background=this.value)">
-        </div>
-        <button class="bp" onclick="saveColors()">💾 حفظ الألوان</button>
-        <button class="bs" onclick="resetColors()" style="margin-top:.5rem">↩️ إعادة ضبط</button>
-      </div>
-    </div>
-
-    <div id="stab-store" class="stc">
-      <div class="pc2"><div class="pct">🏪 المتجر</div>
+    <div id="panel-batch" class="sp">
+      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb);margin-bottom:1.1rem">🧾 إضافة Batch</div>
+      <div class="bcalc">
+        <div class="pct">🧮 حساب تكلفة الـ Batch</div>
         <div class="g2">
-          <div class="fg"><label>اسم المتجر</label><input type="text" id="stName" value="Valentina"></div>
-          <div class="fg"><label>العملة</label>
-            <select id="stCur" style="padding:.62rem .9px;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif;width:100%;direction:rtl">
-              <option value="د.ع" selected>دينار عراقي (د.ع)</option>
-              <option value="$">دولار ($)</option><option value="€">يورو (€)</option>
-            </select>
+          <div class="fg"><label>اسم الـ Batch</label><input type="text" id="bN" placeholder="Batch يناير"></div>
+          <div class="fg"><label>تاريخ الاستلام</label><input type="date" id="bD"></div>
+          <div class="fg"><label>تكلفة الشراء (د.ع)</label><input type="number" id="bC" placeholder="0" oninput="calcB()"></div>
+          <div class="fg"><label>مصاريف الشحن (د.ع)</label><input type="number" id="bS" placeholder="0" oninput="calcB()"></div>
+          <div class="fg"><label>عدد القطع</label><input type="number" id="bQ" placeholder="0" oninput="calcB()"></div>
+          <div class="fg"><label>ملاحظات</label><input type="text" id="bNo" placeholder=""></div>
+        </div>
+        <div class="bres" id="bRes"><strong>📊 نتائج</strong>
+          <div class="rg">
+            <div class="ri"><strong id="rC">0</strong><span>تكلفة/قطعة</span></div>
+            <div class="ri"><strong id="rS">0</strong><span>شحن/قطعة</span></div>
+            <div class="ri"><strong id="rT">0</strong><span>الكلي/قطعة</span></div>
           </div>
         </div>
-        <button class="bp" onclick="saveStore()">💾 حفظ</button>
       </div>
-    </div>
-
-    <div id="stab-sections" class="stc">
-      <div class="pc2"><div class="pct">📐 ترتيب أقسام الصفحة الرئيسية</div>
-        <div id="sectionOrderList" style="display:flex;flex-direction:column;gap:.5rem"></div>
-        <button class="bp" style="margin-top:.8rem" onclick="saveSectionOrder()">💾 حفظ الترتيب</button>
-      </div>
-    </div>
-
-    <div id="stab-sheets" class="stc">
-      <div class="pc2" style="background:linear-gradient(135deg,var(--c3),var(--c1));border:1.5px solid var(--c3)">
-        <div class="pct">🔗 Google Sheets</div>
-        <div style="background:#d4edda;color:#155724;padding:.6rem .9rem;border-radius:8px;font-size:.82rem;margin-bottom:.8rem;font-weight:600">✅ الرابط مُدمج في البرنامج — البيانات تُحفظ تلقائياً</div>
-        <div style="background:var(--c1);border-radius:8px;padding:.7rem;font-size:.78rem;color:var(--mt);word-break:break-all;margin-bottom:.8rem;border:1px solid var(--bd)">
-          <strong style="color:var(--wb)">الرابط الحالي:</strong><br>
-          <span style="font-size:.7rem">AKfycbx4TRp3LCVSOxjGmyJui9BhLoT6MJ6euLl62f13XTPyznnt262pKuuotH0H624vr1UK</span>
+      <div class="pc2">
+        <div class="pct">📷 باركود</div>
+        <div class="g2">
+          <div>
+            <div class="fg"><label>مسح أو إدخال</label>
+              <div style="display:flex;gap:.4rem">
+                <input type="text" id="bcIn" placeholder="باركود..." style="flex:1;padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif" onchange="bcLookup()">
+                <button onclick="startScan()" style="background:var(--c6);border:none;padding:.5rem .8rem;border-radius:7px;cursor:pointer;font-size:1rem">📷</button>
+              </div>
+            </div>
+            <div class="fg"><label>توليد باركود</label>
+              <div style="display:flex;gap:.4rem">
+                <input type="text" id="bcGen" placeholder="رقم أو نص" style="flex:1;padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif">
+                <button onclick="genBC()" style="background:var(--c2);border:none;padding:.5rem .9rem;border-radius:7px;cursor:pointer;color:var(--wb);font-weight:600;font-family:'Tajawal',sans-serif">توليد</button>
+              </div>
+            </div>
+            <div id="bcResult" style="font-size:.8rem;margin-top:.4rem"></div>
+          </div>
+          <div class="bc-sec"><canvas id="bcCanvas"></canvas><br>
+            <button onclick="printBC()" style="margin-top:.5rem;background:var(--c5);color:#fff;border:none;padding:.36rem .85rem;border-radius:6px;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:600;font-size:.76rem">🖨️ طباعة</button>
+          </div>
         </div>
-        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-          <button class="bp" onclick="syncSheets()">🔄 تحديث من Sheets الآن</button>
-          <button class="bs" onclick="testSheet()">🧪 اختبار الاتصال</button>
+        <div class="scanOv" id="scanOv" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:5000;align-items:center;justify-content:center;flex-direction:column;gap:1rem">
+          <video id="scanVid" style="width:90%;max-width:400px;border-radius:12px"></video>
+          <button onclick="stopScan()" style="background:var(--er);color:#fff;border:none;padding:.55rem 1.4rem;border-radius:9px;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700">إغلاق</button>
         </div>
+      </div>
+      <div class="pc2">
+        <div class="pct">📝 قطع الـ Batch</div>
+        <div id="bRows"></div>
+        <button class="ab ae" onclick="addBRow()" style="margin-top:.5rem">➕ إضافة قطعة</button>
+        <div style="display:flex;gap:.6rem;margin-top:1rem">
+          <button class="bp" style="flex:1" onclick="confirmBatch()">✅ تأكيد وإضافة للمخزون</button>
+          <button class="bs" onclick="clearBatch()">🗑️ مسح</button>
+        </div>
+      </div>
+      <div class="pc2">
+        <div class="pct">📋 سجل الـ Batches</div>
+        <div style="overflow-x:auto"><table class="tbl">
+          <thead><tr><th>#</th><th>الاسم</th><th>التاريخ</th><th>القطع</th><th>التكلفة</th><th>الشحن</th><th>التكلفة/قطعة</th><th>الحالة</th></tr></thead>
+          <tbody id="bHist"></tbody>
+        </table></div>
       </div>
     </div>
 
-  </div><!-- end settings -->
-
-  </div><!-- sc -->
-</div><!-- sl -->
-</div><!-- page-seller -->
-
-<!-- ════════════════════════ MODALS ════════════════════════ -->
-
-<!-- PRODUCT MODAL -->
-<div class="mov" id="prodModal">
-<div class="modal xl">
-  <h3 id="pmTitle">➕ إضافة قطعة</h3>
-  <input type="hidden" id="pmId">
-  <div class="g2">
-    <div class="fg"><label>الاسم *</label><input type="text" id="pmName" placeholder="اسم القطعة"></div>
-    <div class="fg"><label>الفئة *</label><select id="pmCat" style="padding:.62rem .9px;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif;width:100%;direction:rtl"></select></div>
-    <div class="fg"><label>الفئة العمرية</label><select id="pmAge" onchange="loadProdSizes()" style="padding:.62rem .9px;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif;width:100%;direction:rtl"></select></div>
-    <div class="fg"><label>سعر البيع (د.ع) *</label><input type="number" id="pmSell" placeholder="0"></div>
-    <div class="fg"><label>سعر الشراء (د.ع)</label><input type="number" id="pmBuy" placeholder="0"></div>
-    <div class="fg"><label>باركود</label><input type="text" id="pmBC" placeholder="تلقائي"></div>
-  </div>
-  <div class="disc-section">
-    <div style="font-weight:600;font-size:.83rem;color:var(--wb);margin-bottom:.5rem">🏷️ خصم (اختياري)</div>
-    <div class="g2">
-      <div class="fg"><label>نوع الخصم</label>
-        <select id="pmDiscType" onchange="toggleDiscInputs()" style="padding:.62rem .9px;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif;width:100%;direction:rtl">
-          <option value="none">بدون خصم</option>
-          <option value="percent">نسبة مئوية (%)</option>
-          <option value="fixed">مبلغ ثابت (د.ع)</option>
+    <div id="panel-orders" class="sp">
+      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb);margin-bottom:1rem">🛍️ الطلبات</div>
+      <div class="date-filter">
+        <label>من:</label><input type="date" id="oFrom">
+        <label>إلى:</label><input type="date" id="oTo">
+        <select id="oStatus" onchange="renderOrders()" style="padding:.38rem .65rem;border:1.5px solid var(--bd);border-radius:6px;font-family:'Tajawal',sans-serif;direction:rtl">
+          <option value="all">كل الحالات</option>
+          <option value="preparing">قيد التجهيز</option>
+          <option value="delivering">قيد التوصيل</option>
+          <option value="done">تم الاستلام</option>
+          <option value="rejected">تم الرفض</option>
+          <option value="returned">راجع للمخزن</option>
         </select>
+        <button class="ab ao" onclick="renderOrders()">🔍 بحث</button>
+        <button class="ab ae" onclick="resetDateFilter()">↩️ هذا الشهر</button>
       </div>
-      <div class="fg" id="discValWrap" style="display:none"><label id="discValLabel">قيمة الخصم</label><input type="number" id="pmDiscVal" placeholder="0"></div>
+      <div class="srow" id="orderStats"></div>
+      <div style="overflow-x:auto"><table class="tbl">
+        <thead><tr><th>#</th><th>العميل</th><th>القطع</th><th>الإجمالي</th><th>العرض</th><th>التاريخ</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+        <tbody id="ordersBody"></tbody>
+      </table></div>
     </div>
-  </div>
-  
-  <div class="fg"><label>الأحجام والكميات</label><div class="szgrid" id="pmSizes"></div></div>
-  
-  <div class="fg">
-    <label>الصور (رابط درايف أو رفع من الجهاز)</label>
-    <!-- خيار إضافة الرابط الجديد -->
-    <div style="display:flex;gap:.4rem;margin-bottom:.5rem">
-      <input type="text" id="pmImgLinkInp" placeholder="لصق رابط الصورة هنا..." style="flex:1;padding:.5rem .8rem;border:1.5px solid var(--bd);border-radius:7px;direction:ltr;font-family:sans-serif">
-      <button class="bp" style="flex:none;padding:.5rem .8rem" onclick="addProdImgFromLink()">➕ إضافة رابط</button>
+
+    <div id="panel-customers" class="sp">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb)">👥 العملاء</div>
+        <span id="custCnt" style="color:var(--mt);font-size:.85rem">0 عميل</span>
+      </div>
+      <input class="srch" id="custSrch" placeholder="ابحث..." oninput="renderCustomers()" style="width:100%;padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:8px;font-family:'Tajawal',sans-serif;margin-bottom:.8rem;direction:rtl">
+      <div id="custList"></div>
     </div>
-    <!-- خيار الرفع القديم -->
-    <div class="iua" onclick="document.getElementById('pmImgUp').click()">
-      <input type="file" id="pmImgUp" accept="image/*" multiple onchange="handleProdImgs(this)">
-      <div style="font-size:1.3rem">📸</div><div style="font-size:.81rem;color:var(--mt)">اضغط لرفع صور من الجهاز</div>
+
+    <div id="panel-reports" class="sp">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+        <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb)">📊 التقارير</div>
+        <div style="display:flex;gap:.4rem">
+          <select id="repM" onchange="renderReports()" style="padding:.4rem .65rem;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif;direction:rtl">
+            <option value="0">يناير</option><option value="1">فبراير</option><option value="2">مارس</option>
+            <option value="3">أبريل</option><option value="4">مايو</option><option value="5">يونيو</option>
+            <option value="6">يوليو</option><option value="7">أغسطس</option><option value="8">سبتمبر</option>
+            <option value="9">أكتوبر</option><option value="10">نوفمبر</option><option value="11">ديسمبر</option>
+          </select>
+          <select id="repY" onchange="renderReports()" style="padding:.4rem .65rem;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif">
+            <option>2024</option><option>2025</option><option selected>2026</option>
+          </select>
+        </div>
+      </div>
+      <div class="rep-sum"><h3>💰 ملخص الشهر</h3>
+        <div class="rep-grid">
+          <div class="ri2"><strong id="rpS">0</strong><span>المبيعات</span></div>
+          <div class="ri2"><strong id="rpC">0</strong><span>تكلفة البضاعة</span></div>
+          <div class="ri2"><strong id="rpA">0</strong><span>إعلانات</span></div>
+          <div class="ri2"><strong id="rpSh">0</strong><span>شحن</span></div>
+          <div class="ri2"><strong id="rpPk">0</strong><span>تغليف</span></div>
+          <div class="ri2"><strong id="rpOf">0</strong><span>خسائر العروض</span></div>
+          <div class="ri2"><strong id="rpN">0</strong><span>الربح الصافي</span></div>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="pc2">
+          <div class="pct">📢 المصاريف</div>
+          <div class="fg"><label>إعلانات (د.ع)</label><input type="number" id="eA" placeholder="0"></div>
+          <div class="fg"><label>شحن (د.ع)</label><input type="number" id="eS" placeholder="0"></div>
+          <div class="fg"><label>تغليف (د.ع)</label><input type="number" id="eP" placeholder="0"></div>
+          <button class="bp" onclick="saveExp()">💾 حفظ</button>
+        </div>
+        <div class="pc2"><div class="pct">📦 مبيعات حسب الفئة</div><div id="catSales"></div></div>
+      </div>
+      <div class="pc2">
+        <div class="pct">📋 تفاصيل المبيعات</div>
+        <div style="overflow-x:auto"><table class="tbl">
+          <thead><tr><th>القطعة</th><th>الكمية</th><th>الإيراد</th><th>التكلفة</th><th>الربح</th></tr></thead>
+          <tbody id="saleDetail"></tbody>
+        </table></div>
+      </div>
     </div>
-    
-    <div class="ipw" id="pmPreviews"></div>
-    <div style="font-size:.72rem;color:var(--mt);margin-top:.3rem">💡 اضغط على الصورة لجعلها الرئيسية</div>
-  </div>
-  
-  <div class="fg"><label>الوصف</label><textarea id="pmDesc" rows="2" placeholder="وصف القطعة..."></textarea></div>
-  <div class="fg">
-    <label>ملاحظات للمشتري</label>
-    <div id="pmNotesArea"></div>
-    <div style="display:flex;gap:.4rem;margin-top:.5rem;flex-wrap:wrap">
-      <input type="text" id="pmNoteText" placeholder="ملاحظة نصية..." style="flex:1;min-width:140px;padding:.55rem .8rem;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif;direction:rtl">
-      <button onclick="addNoteText()" style="background:var(--c2);border:none;padding:.5rem .8rem;border-radius:7px;cursor:pointer;color:var(--wb);font-weight:600">➕ نص</button>
-      
-      <input type="text" id="pmNoteLinkInp" placeholder="رابط صورة..." style="flex:1;min-width:140px;padding:.55rem .8rem;border:1.5px solid var(--bd);border-radius:7px;direction:ltr">
-      <button onclick="addNoteImgFromLink()" style="background:var(--wb);border:none;padding:.5rem .8rem;border-radius:7px;cursor:pointer;color:#fff;font-weight:600">➕ رابط صورة</button>
-      
-      <div class="iua" style="flex:none;padding:.4rem .7rem;margin-bottom:0" onclick="document.getElementById('pmNoteImg').click()">
-        <input type="file" id="pmNoteImg" accept="image/*" onchange="addNoteImg(this)"><span style="font-size:.78rem">📸 جهاز</span>
+
+    <div id="panel-banners" class="sp">
+      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb);margin-bottom:1.1rem">🖼️ الصور والبنرات</div>
+      <div class="pc2">
+        <div class="pct">بنرات Hero / صور الخلفية</div>
+        <div id="bnSlots"></div>
+        <div style="display:flex;gap:.4rem;margin-top:.6rem">
+          <input type="text" id="bnLinkInp" placeholder="لصق رابط درايف للبنر..." style="flex:1;padding:.5rem;border:1px solid var(--bd);border-radius:7px;direction:ltr">
+          <button class="bp" style="flex:none;padding:.5rem" onclick="addBannerFromLink()">➕ إضافة رابط</button>
+        </div>
+        <div class="iua" onclick="document.getElementById('bnUp').click()" style="margin-top:.5rem">
+          <input type="file" id="bnUp" accept="image/*" multiple onchange="addBanners(this)">
+          <div style="font-size:1.6rem">🖼️</div>
+          <div style="font-weight:600;color:var(--wb);font-size:.85rem">ارفع بنر من الجهاز</div>
+        </div>
+      </div>
+
+      <div class="pc2">
+        <div class="pct">الشعار (Logo)</div>
+        <div style="display:flex;gap:1rem;align-items:center;margin-bottom:.8rem;flex-wrap:wrap">
+          <img id="logoPreviewImg" src="" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:2px solid var(--bd);display:none">
+          <div style="flex:1">
+            <div style="display:flex;gap:.4rem;margin-bottom:.5rem">
+              <input type="text" id="logoLinkInp" placeholder="رابط درايف للشعار..." style="flex:1;padding:.5rem;border:1px solid var(--bd);border-radius:7px;direction:ltr">
+              <button class="bp" style="flex:none;padding:.5rem" onclick="addLogoFromLink()">إضافة رابط</button>
+            </div>
+            <div class="iua" onclick="document.getElementById('logoUp').click()" style="padding:.6rem 1rem;display:inline-flex;align-items:center;gap:.5rem;width:100%;justify-content:center">
+              <input type="file" id="logoUp" accept="image/*" onchange="handleLogoUpload(this)">
+              <span>📸 رفع شعار من الجهاز</span>
+            </div>
+            <button class="ab ad" onclick="removeLogo()" style="margin-top:.5rem;width:100%">🗑️ إزالة الشعار</button>
+          </div>
+        </div>
+        <div class="fg"><label>اسم المتجر في الـ Nav</label>
+          <input type="text" id="storeNameNav" placeholder="Valentina" oninput="updateNavName()">
+        </div>
+      </div>
+
+      <div class="pc2">
+        <div class="pct">محتوى Hero</div>
+        <div class="fg"><label>العلامة الصغيرة</label><input type="text" id="heroTagEdit" placeholder="أزياء راقية" oninput="liveUpdateHero()"></div>
+        <div class="fg"><label>العنوان الرئيسي</label><input type="text" id="heroTitleEdit" placeholder="مرحباً بك في Valentina" oninput="liveUpdateHero()"></div>
+        <div class="fg"><label>الوصف</label><textarea id="heroDescEdit" rows="2" oninput="liveUpdateHero()"></textarea></div>
+        <div class="fg"><label>قصتنا — العنوان</label><input type="text" id="storyTitleEdit" oninput="liveUpdateStory()"></div>
+        <div class="fg"><label>قصتنا — النص</label><textarea id="storyBodyEdit" rows="3" oninput="liveUpdateStory()"></textarea></div>
+        <div class="fg"><label>صورة قصتنا</label>
+          <div style="display:flex;gap:.4rem;margin-bottom:.5rem">
+            <input type="text" id="storyLinkInp" placeholder="رابط درايف للصورة..." style="flex:1;padding:.5rem;border:1px solid var(--bd);border-radius:7px;direction:ltr">
+            <button class="bp" style="flex:none;padding:.5rem" onclick="addStoryImgFromLink()">إضافة رابط</button>
+          </div>
+          <div class="iua" onclick="document.getElementById('storyImgUp').click()">
+            <input type="file" id="storyImgUp" accept="image/*" onchange="handleStoryImg(this)">
+            <span style="font-size:.82rem;color:var(--mt)">📸 رفع صورة من الجهاز</span>
+          </div>
+        </div>
+        <button class="bp" onclick="saveHeroContent()">💾 حفظ</button>
+      </div>
+
+      <div class="pc2">
+        <div class="pct">📸 صور المنتجات</div>
+        <div style="overflow-x:auto"><table class="tbl">
+          <thead><tr><th>الصورة</th><th>القطعة</th><th>عدد الصور</th><th>تعديل</th></tr></thead>
+          <tbody id="prodImgTbl"></tbody>
+        </table></div>
+      </div>
+
+      <div class="pc2" style="border:2px solid #e1306c22;background:linear-gradient(135deg,#fff0f6,#fff)">
+        <div class="pct" style="color:#e1306c">ربط حساب Instagram</div>
+        <div class="fg">
+          <label>اسم مستخدم الإنستغرام (@username)</label>
+          <div style="display:flex;gap:.5rem">
+            <input type="text" id="igUsername" placeholder="مثال: valentina.iq" style="flex:1;padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:7px;direction:ltr">
+            <button class="bp" style="flex:none;padding:.62rem 1rem;background:#e1306c" onclick="saveIgUsername()">حفظ</button>
+          </div>
+        </div>
+        <div style="background:var(--c2);border-radius:8px;padding:.9rem;margin-bottom:.8rem">
+          <div style="font-weight:700;font-size:.85rem;color:var(--wb);margin-bottom:.5rem">🔑 Instagram Access Token</div>
+          <div class="fg" style="margin-bottom:.5rem">
+            <label>Access Token</label>
+            <input type="text" id="igToken" placeholder="IGAAx..." style="width:100%;padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:7px;font-family:monospace;font-size:.78rem;direction:ltr">
+          </div>
+          <button class="bp" style="background:#e1306c;width:100%" onclick="saveIgToken()">💾 حفظ الـ Token</button>
+        </div>
+        <div style="border-top:1px solid var(--bd);padding-top:.8rem;margin-top:.5rem">
+          <div style="font-weight:700;font-size:.85rem;color:var(--wb);margin-bottom:.4rem">📷 أو أضيفي صور الإنستغرام يدوياً</div>
+          <div style="display:flex;gap:.4rem;margin-bottom:.5rem">
+            <input type="text" id="igManualLinkInp" placeholder="رابط درايف للصورة..." style="flex:1;padding:.5rem;border:1px solid var(--bd);border-radius:7px;direction:ltr">
+            <button class="bp" style="flex:none;padding:.5rem;background:#e1306c" onclick="addIgManualFromLink()">➕ إضافة رابط</button>
+          </div>
+          <div class="iua" onclick="document.getElementById('igManualUp').click()">
+            <input type="file" id="igManualUp" accept="image/*" multiple onchange="addIgManualImgs(this)">
+            <div style="font-size:1.4rem">📸</div>
+            <div style="font-size:.82rem;color:var(--mt)">ارفعي صور منشوراتك</div>
+          </div>
+          <div class="ipw" id="igManualPreviews" style="margin-top:.6rem"></div>
+          <button class="bp" style="width:100%;margin-top:.5rem;background:#e1306c" onclick="saveIgManual()">💾 حفظ الصور</button>
+        </div>
+        <div style="margin-top:.9rem;border-top:1px solid var(--bd);padding-top:.8rem">
+          <button class="bp" style="background:var(--wb);width:100%" onclick="renderInstaSection();toast('✅ تم تحديث المعاينة')">🔄 تحديث المعاينة في الصفحة</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="panel-offers" class="sp">
+      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb);margin-bottom:1.1rem">🎁 العروض</div>
+      <div class="g2">
+        <div class="pc2"><div class="pct">🚚 توصيل مجاني</div>
+          <div class="fg"><label>عدد القطع</label><input type="number" id="fSQ" value="2"></div>
+          <div class="fg"><label>تكلفة التوصيل (د.ع)</label><input type="number" id="sCost" value="5000"></div>
+        </div>
+        <div class="pc2"><div class="pct">🎁 الهدية</div>
+          <div class="fg"><label>عدد القطع للهدية</label><input type="number" id="gQ" value="4"></div>
+        </div>
+        <div class="pc2"><div class="pct">⭐ VIP</div>
+          <div class="fg"><label>عدد الطلبات للـ VIP</label><input type="number" id="vO" value="5"></div>
+          <div class="fg"><label>خصم VIP (%)</label><input type="number" id="vD" value="10"></div>
+        </div>
+        <div class="pc2"><div class="pct">🏷️ كود الخصم</div>
+          <div class="fg"><label>الكود</label><input type="text" id="pCode" value="VALENTINA10"></div>
+          <div class="fg"><label>الخصم (%)</label><input type="number" id="pDisc" value="10"></div>
+        </div>
+      </div>
+      <button class="bp" onclick="saveOffers()">💾 حفظ العروض</button>
+    </div>
+
+    <div id="panel-settings" class="sp">
+      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb);margin-bottom:1.1rem">⚙️ الإعدادات</div>
+      <div class="stabs">
+        <div class="stab active" onclick="showStab('cats',this)">📂 الفئات</div>
+        <div class="stab" onclick="showStab('ages',this)">👶 الفئات العمرية</div>
+        <div class="stab" onclick="showStab('sizes',this)">📏 القياسات</div>
+        <div class="stab" onclick="showStab('colors',this)">🎨 الألوان والمظهر</div>
+        <div class="stab" onclick="showStab('store',this)">🏪 المتجر</div>
+        <div class="stab" onclick="showStab('sections',this)">📐 ترتيب الصفحات</div>
+        <div class="stab" onclick="showStab('sheets',this)">🔗 Sheets</div>
+      </div>
+
+      <div id="stab-cats" class="stc active">
+        <div class="pc2"><div class="pct">📂 الفئات</div>
+          <div id="catList"></div>
+          <div style="display:flex;gap:.4rem;margin-top:.7rem">
+            <input type="text" id="nCat" placeholder="اسم الفئة" style="flex:1;padding:.58rem .85rem;border:1.5px solid var(--bd);border-radius:7px;direction:rtl">
+            <input type="text" id="nCatIc" placeholder="أيقونة" style="width:52px;padding:.58rem .4rem;border:1.5px solid var(--bd);border-radius:7px;text-align:center">
+            <button class="bp" style="flex:none;padding:.58rem .9rem" onclick="addCat()">➕</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="stab-ages" class="stc">
+        <div class="pc2"><div class="pct">👶 الفئات العمرية</div>
+          <div id="ageList"></div>
+          <div style="display:flex;gap:.4rem;margin-top:.7rem">
+            <input type="text" id="nAge" placeholder="اسم الفئة" style="flex:1;padding:.58rem .85rem;border:1.5px solid var(--bd);border-radius:7px;direction:rtl">
+            <input type="text" id="nAgeIc" placeholder="أيقونة" style="width:52px;padding:.58rem .4rem;border:1.5px solid var(--bd);border-radius:7px;text-align:center">
+            <button class="bp" style="flex:none;padding:.58rem .9rem" onclick="addAge()">➕</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="stab-sizes" class="stc">
+        <div class="pc2"><div class="pct">📏 القياسات حسب الفئة العمرية</div>
+          <div class="fg"><label>اختر الفئة</label>
+            <select id="szAgeSel" onchange="renderSzForAge()" style="padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:7px;width:100%;direction:rtl"></select>
+          </div>
+          <div id="szForAge"></div>
+          <div style="display:flex;gap:.4rem;margin-top:.6rem">
+            <input type="text" id="nSz" placeholder="قياس جديد" style="flex:1;padding:.58rem .85rem;border:1.5px solid var(--bd);border-radius:7px;direction:rtl">
+            <button class="bp" style="flex:none;padding:.58rem .9rem" onclick="addSzToAge()">➕</button>
+          </div>
+          <button class="bp" style="width:100%;margin-top:.7rem" onclick="saveSzs()">💾 حفظ</button>
+        </div>
+      </div>
+
+      <div id="stab-colors" class="stc">
+        <div class="pc2"><div class="pct">🎨 الألوان والمظهر</div>
+          <div class="preset-row">
+            <button class="preset-btn" onclick="applyPreset('rose')">🌸 وردي فاتح</button>
+            <button class="preset-btn" onclick="applyPreset('sage')">🌿 أخضر مريمية</button>
+            <button class="preset-btn" onclick="applyPreset('lavender')">💜 لافندر</button>
+            <button class="preset-btn" onclick="applyPreset('earth')">🤎 ترابي دافئ</button>
+            <button class="preset-btn" onclick="applyPreset('ocean')">🌊 أزرق محيطي</button>
+            <button class="preset-btn" onclick="applyPreset('default')">✨ الافتراضي</button>
+          </div>
+          <div class="color-row">
+            <div class="color-swatch"><label>الخلفية</label><input type="color" id="col-sw" value="#fdf8f5" oninput="applyColor('--c1',this.value)"></div>
+            <div class="color-swatch"><label>البطاقات</label><input type="color" id="col-card" value="#ffffff" oninput="applyColor('--card-bg',this.value)"></div>
+            <div class="color-swatch"><label>لون رئيسي</label><input type="color" id="col-wb" value="#8b6f5e" oninput="applyColor('--wb',this.value)"></div>
+            <div class="color-swatch"><label>لون ثانوي</label><input type="color" id="col-ac" value="#c9a87c" oninput="applyColor('--ac',this.value)"></div>
+            <div class="color-swatch"><label>اللون 1</label><input type="color" id="col-c2" value="#f9f0d3" oninput="applyColor('--c2',this.value)"></div>
+            <div class="color-swatch"><label>اللون 2</label><input type="color" id="col-c3" value="#e8e0f0" oninput="applyColor('--c3',this.value)"></div>
+            <div class="color-swatch"><label>اللون 3</label><input type="color" id="col-c4" value="#f2d5d5" oninput="applyColor('--c4',this.value)"></div>
+            <div class="color-swatch"><label>زر الـ Nav</label><input type="color" id="col-nav" value="#ffffff" oninput="applyColor('--nav-bg',this.value)"></div>
+          </div>
+          <div class="fg" style="margin-top:.5rem"><label>لون زر الشراء</label>
+            <input type="color" id="col-btn" value="#8b6f5e" oninput="applyColor('--btn-bg',this.value);document.querySelectorAll('.acbtn,.hero-cta,.co-btn,.id-atc').forEach(el=>el.style.background=this.value)">
+          </div>
+          <button class="bp" onclick="saveColors()">💾 حفظ الألوان</button>
+          <button class="bs" onclick="resetColors()" style="margin-top:.5rem">↩️ إعادة ضبط</button>
+        </div>
+      </div>
+
+      <div id="stab-store" class="stc">
+        <div class="pc2"><div class="pct">🏪 المتجر</div>
+          <div class="g2">
+            <div class="fg"><label>اسم المتجر</label><input type="text" id="stName" value="Valentina"></div>
+            <div class="fg"><label>العملة</label>
+              <select id="stCur" style="padding:.62rem .9px;border:1.5px solid var(--bd);border-radius:7px;width:100%;direction:rtl">
+                <option value="د.ع" selected>دينار عراقي (د.ع)</option>
+                <option value="$">دولار ($)</option><option value="€">يورو (€)</option>
+              </select>
+            </div>
+          </div>
+          <button class="bp" onclick="saveStore()">💾 حفظ</button>
+        </div>
+      </div>
+
+      <div id="stab-sections" class="stc">
+        <div class="pc2"><div class="pct">📐 ترتيب أقسام الصفحة الرئيسية</div>
+          <div id="sectionOrderList" style="display:flex;flex-direction:column;gap:.5rem"></div>
+          <button class="bp" style="margin-top:.8rem" onclick="saveSectionOrder()">💾 حفظ الترتيب</button>
+        </div>
+      </div>
+
+      <div id="stab-sheets" class="stc">
+        <div class="pc2" style="background:linear-gradient(135deg,var(--c3),var(--c1));border:1.5px solid var(--c3)">
+          <div class="pct">🔗 Google Sheets</div>
+          <div style="background:#d4edda;color:#155724;padding:.6rem .9rem;border-radius:8px;font-size:.82rem;margin-bottom:.8rem;font-weight:600">✅ نظام التزامن السحابي النشط متصل ومحمي</div>
+          <div style="background:var(--c1);border-radius:8px;padding:.7rem;font-size:.78rem;color:var(--mt);word-break:break-all;margin-bottom:.8rem;border:1px solid var(--bd)">
+            <strong style="color:var(--wb)">الرابط السحابي للـ API:</strong><br>
+            <span style="font-size:.7rem" id="shUrlText">https://script.google.com/macros/s/AKfycbx4TRp3LCVSOxjGmyJui9BhLoT6MJ6euLl62f13XTPyznnt262pKuuotH0H624vr1UK/exec</span>
+          </div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <button class="bp" onclick="syncSheets()">🔄 مزامنة من Sheets الآن</button>
+            <button class="bs" onclick="testSheet()">🧪 اختبار جودة الاتصال</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  <div class="ma"><button class="bp" onclick="saveProd()">💾 حفظ</button><button class="bs" onclick="closeM('prodModal')">إلغاء</button></div>
 </div>
 </div>
 
-<!-- ORDER, REJECT, CUSTOMER, CHECKOUT, AUTH, CART MODALS -->
-<!-- (تم الإبقاء عليها كما هي دون تغيير) -->
+<!-- MODALS -->
 <div class="mov" id="ordModal"><div class="modal wide"><h3>📋 تفاصيل الطلب</h3><div id="ordDetail"></div><div class="ma"><button class="bs" onclick="closeM('ordModal')">إغلاق</button></div></div></div>
-<div class="mov" id="rejModal"><div class="modal"><h3>❌ رفض الطلب</h3><p style="color:var(--mt);font-size:.83rem;margin-bottom:.9rem">ستُرجع القطع للمخزون تلقائياً</p><div class="fg"><label>وضع الإرجاع</label><select id="retSt" style="padding:.62rem .9px;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif;width:100%;direction:rtl"><option value="returned">راجع للمخزن</option><option value="company">راجع من الشركة</option></select></div><div class="fg"><label>سبب الرفض</label><input type="text" id="rejReason" placeholder="اختياري"></div><input type="hidden" id="rejId"><div class="ma"><button class="bd2" onclick="doReject()">❌ تأكيد</button><button class="bs" onclick="closeM('rejModal')">إلغاء</button></div></div></div>
+<div class="mov" id="rejModal"><div class="modal"><h3>❌ رفض الطلب</h3><p style="color:var(--mt);font-size:.83rem;margin-bottom:.9rem">ستُرجع القطع للمخزون تلقائياً</p><div class="fg"><label>وضع الإرجاع</label><select id="retSt" style="padding:.62rem .9px;border:1.5px solid var(--bd);border-radius:7px;width:100%;direction:rtl"><option value="returned">راجع للمخزن</option><option value="company">راجع من الشركة</option></select></div><div class="fg"><label>سبب الرفض</label><input type="text" id="rejReason" placeholder="اختياري"></div><input type="hidden" id="rejId"><div class="ma"><button class="bd2" onclick="doReject()">❌ تأكيد</button><button class="bs" onclick="closeM('rejModal')">إلغاء</button></div></div></div>
 <div class="mov" id="custModal"><div class="modal wide"><h3>👤 ملف العميل</h3><div id="custDetail"></div><div class="ma"><button class="bs" onclick="closeM('custModal')">إغلاق</button></div></div></div>
 <div class="mov" id="coModal"><div class="modal"><h3>📋 إتمام الطلب</h3><div class="g2"><div class="fg"><label>الاسم *</label><input type="text" id="coName" placeholder="اسمك الكامل"></div><div class="fg"><label>الهاتف *</label><input type="text" id="coPhone" placeholder="07xxxxxxxxx"></div></div><div class="fg"><label>العنوان *</label><input type="text" id="coAddr" placeholder="المحافظة، المدينة، الشارع"></div><div class="fg"><label>ملاحظات</label><textarea id="coNotes" rows="2"></textarea></div><div class="fg"><label>كود الخصم</label><input type="text" id="coPromo" placeholder="VALENTINA10" oninput="applyPromo()"><div id="promoMsg" style="display:none;margin-top:.3rem;padding:.38rem .7rem;border-radius:6px;font-size:.79rem"></div></div><div id="coSum" style="background:var(--c1);border-radius:9px;padding:.85rem;margin-top:.7rem;font-size:.85rem"></div><div class="ma"><button class="bp" onclick="placeOrder()">✅ تأكيد الطلب</button><button class="bs" onclick="closeM('coModal')">إلغاء</button></div></div></div>
-<div class="auth-ov" id="authOv"><div class="auth-box"><button onclick="closeM('authOv')" style="position:absolute;top:.8rem;left:.8rem;background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--mt)">✕</button><div class="auth-logo"><em>V</em>alentina</div><p style="color:var(--mt);font-size:.85rem;margin-bottom:1.1rem">سجلي دخولك برقم هاتفك</p><div id="authS1"><div class="ph-wrap"><div class="ph-flag">🇮🇶 +964</div><input type="tel" id="authPh" placeholder="07xxxxxxxx" maxlength="11" style="flex:1;padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif;font-size:.95rem"></div><button class="bp" style="width:100%" onclick="sendOTP()">إرسال كود التحقق →</button><p style="margin-top:.7rem;font-size:.74rem;color:var(--mt)">الكود التجريبي: 1234</p></div><div id="authS2" style="display:none"><p style="font-size:.82rem;color:var(--mt);margin-bottom:.7rem">أدخل كود التحقق</p><div class="otp-row"><input type="tel" maxlength="1" oninput="otpN(this,0)"><input type="tel" maxlength="1" oninput="otpN(this,1)"><input type="tel" maxlength="1" oninput="otpN(this,2)"><input type="tel" maxlength="1" oninput="otpN(this,3)"></div><button class="bp" style="width:100%" onclick="verOTP()">تحقق →</button></div></div></div>
+<div class="auth-ov" id="authOv"><div class="auth-box"><button onclick="closeM('authOv')" style="position:absolute;top:.8rem;left:.8rem;background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--mt)">✕</button><div class="auth-logo"><em>V</em>alentina</div><p style="color:var(--mt);font-size:.85rem;margin-bottom:1.1rem">سجلي دخولك برقم هاتفك</p><div id="authS1"><div class="ph-wrap"><div class="ph-flag">🇮🇶 +964</div><input type="tel" id="authPh" placeholder="07xxxxxxxx" maxlength="11" style="flex:1;padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:7px;font-size:.95rem"></div><button class="bp" style="width:100%" onclick="sendOTP()">إرسال كود التحقق →</button><p style="margin-top:.7rem;font-size:.74rem;color:var(--mt)">العود التجريبي: 1234</p></div><div id="authS2" style="display:none"><p style="font-size:.82rem;color:var(--mt);margin-bottom:.7rem">أدخل كود التحقق</p><div class="otp-row"><input type="tel" maxlength="1" oninput="otpN(this,0)"><input type="tel" maxlength="1" oninput="otpN(this,1)"><input type="tel" maxlength="1" oninput="otpN(this,2)"><input type="tel" maxlength="1" oninput="otpN(this,3)"></div><button class="bp" style="width:100%" onclick="verOTP()">تحقق →</button></div></div></div>
 <div class="cart-ov" id="cartOv" onclick="toggleCart()"></div><div class="cart-sb" id="cartSb"><div class="cart-hd"><h3>🛒 السلة</h3><button class="xbtn" onclick="toggleCart()">✕</button></div><div class="cart-items" id="cartItems"></div><div class="cart-ft"><div id="offerCartTag" class="otag-cart" style="display:none"></div><div class="cr"><span>المجموع</span><span id="cSub">0</span></div><div class="cr"><span>التوصيل</span><span id="cShip">0</span></div><div class="cr"><span>الخصم</span><span id="cDisc">0</span></div><div class="cr tot"><span>الإجمالي</span><span id="cTot">0</span></div><button class="co-btn" onclick="openCO()">إتمام الطلب →</button></div></div>
 
 <div class="toast" id="toast"></div>
 
 <!-- LOADING INDICATOR -->
-<div id="loadingIndicator" style="display:none;position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:1rem">
+<div id="loadingIndicator" style="display:none;position:fixed;inset:0;background:rgba(255,255,255,.9);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:1rem">
   <div style="width:50px;height:50px;border:4px solid var(--bd);border-top-color:var(--wb);border-radius:50%;animation:spin 1s linear infinite"></div>
-  <div style="font-family:'Tajawal',sans-serif;font-size:.95rem;color:var(--wb);font-weight:600">جاري التحميل من Google Sheets...</div>
+  <div style="font-family:'Tajawal',sans-serif;font-size:.95rem;color:var(--wb);font-weight:600">جاري تحميل بيانات Valentina من السحاب...</div>
   <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 </div>
 
 <script>
 // ════════════════════════════════════════════════════════════
-//  STATE
+//  STATE & VARIABLES
 // ════════════════════════════════════════════════════════════
 let S={
   products:[],cart:[],orders:[],customers:[],batches:[],
@@ -1121,37 +1002,25 @@ let S={
 const SHEETS_URL='https://script.google.com/macros/s/AKfycbx4TRp3LCVSOxjGmyJui9BhLoT6MJ6euLl62f13XTPyznnt262pKuuotH0H624vr1UK/exec';
 
 // ════════════════════════════════════════════════════════════
-//  نظام الصور والدوال المساعدة الجديدة (تحويل روابط درايف)
+//  نظام تحويل ومعالجة صور جوجل درايف للروابط المباشرة
 // ════════════════════════════════════════════════════════════
-
-// دالة ذكية لتحويل رابط درايف العادي إلى رابط مباشر
 function processLink(url) {
   if(!url) return null;
-  // استخراج الـ ID من رابط جوجل درايف
   let m = url.match(/\/d\/(.*?)\//);
   if(m && m[1]) return 'https://lh3.googleusercontent.com/d/' + m[1];
-  
-  // صيغة أخرى لروابط جوجل درايف
   let m2 = url.match(/id=(.*?)&/); 
   if(m2 && m2[1]) return 'https://lh3.googleusercontent.com/d/' + m2[1];
-  
-  // إذا لم يكن من جوجل درايف، اتركه كما هو
   return url; 
 }
 
-// 1. إضافة صورة المنتج بالرابط
 function addProdImgFromLink() {
   let u = processLink(document.getElementById('pmImgLinkInp').value.trim());
   if(u) { S.tempImgs.push(u); renderProdImgPrev(); document.getElementById('pmImgLinkInp').value=''; toast('✅ تمت إضافة الصورة'); }
 }
-
-// 2. إضافة صورة لملاحظات المنتج بالرابط
 function addNoteImgFromLink() {
   let u = processLink(document.getElementById('pmNoteLinkInp').value.trim());
   if(u) { S.tempNotes.push({type:'img',content:u}); renderNotesArea(); document.getElementById('pmNoteLinkInp').value=''; toast('✅ تمت إضافة صورة الملاحظة'); }
 }
-
-// 3. إضافة صورة للباتش (Batch) بالرابط
 function addBRowImgFromLink(btn) {
   let row = btn.closest('.brow');
   let u = processLink(row.querySelector('.br-link-inp').value.trim());
@@ -1165,26 +1034,18 @@ function addBRowImgFromLink(btn) {
       toast('✅ تمت إضافة الصورة');
   }
 }
-
-// 4. إضافة البنرات بالرابط
 function addBannerFromLink() {
   let u = processLink(document.getElementById('bnLinkInp').value.trim());
   if(u) { S.banners.push(u); save(); renderBanners(); renderHeroImgs(); document.getElementById('bnLinkInp').value=''; toast('✅ تمت إضافة البنر'); }
 }
-
-// 5. إضافة الشعار بالرابط
 function addLogoFromLink() {
   let u = processLink(document.getElementById('logoLinkInp').value.trim());
   if(u) { S.logo = u; save(); applyLogo(); document.getElementById('logoLinkInp').value=''; toast('✅ تم تحديث الشعار'); }
 }
-
-// 6. إضافة صورة القصة بالرابط
 function addStoryImgFromLink() {
   let u = processLink(document.getElementById('storyLinkInp').value.trim());
   if(u) { S.storyImg = u; save(); applyStoryContent(); document.getElementById('storyLinkInp').value=''; toast('✅ تم تحديث صورة القصة'); }
 }
-
-// 7. إضافة صورة إنستغرام اليدوية بالرابط
 function addIgManualFromLink() {
   let u = processLink(document.getElementById('igManualLinkInp').value.trim());
   if(u) {
@@ -1222,25 +1083,15 @@ async function uploadImgToDrive(file, folder='products'){
   });
 }
 
-async function uploadMultiImgs(files, folder='products', progressCb=null){
-  const urls=[];
-  for(let i=0;i<files.length;i++){
-    if(progressCb)progressCb(i+1,files.length);
-    const url=await uploadImgToDrive(files[i],folder);
-    urls.push(url);
-  }
-  return urls;
-}
-
 // ════════════════════════════════════════════════════════════
-//  SAVE & PUSH TO SHEETS
-// ════════════════════════════════════════════════════════════
-// ════════════════════════════════════════════════════════════
-//  SAVE & PUSH TO SHEETS (محدث: إرسال سحابي مباشر وبدون تخزين محلي)
+//  نظام المزامنة والحفظ التلقائي والاحتياطي الواقي
 // ════════════════════════════════════════════════════════════
 function save(){
-  // بناء البيانات البرمجية لإرسالها مباشرة للسحاب
   const metaOnly = buildMetaPayload();
+  
+  // حزام الأمان: حفظ التحديث محلياً داخل هذا الجهاز تحسباً لانقطاع الشبكة فجأة
+  try { localStorage.setItem('val4_backup', JSON.stringify(metaOnly)); } catch(e){}
+  
   pushToSheets(metaOnly);
 }
 
@@ -1250,35 +1101,13 @@ function buildMetaPayload(){
     Object.entries(S.prodImgs).forEach(([id,imgs])=>{ cleanImgs[id]=(imgs||[]).filter(u=>typeof u==='string'); });
   }
   return {
-    products: S.products || [], 
-    orders: S.orders || [], 
-    customers: S.customers || [], 
-    batches: S.batches || [], 
-    expenses: S.expenses || {}, 
-    settings: {...S.settings, sheetsUrl:undefined}, 
-    categories: S.categories || [], 
-    ageGroups: S.ageGroups || [], 
-    heroContent: S.heroContent || {}, 
-    storyContent: S.storyContent || {}, 
-    sectionOrder: S.sectionOrder || [], 
-    colors: S.colors || {}, 
-    favorites: S.favorites || [], 
-    prodImgs: cleanImgs, 
-    prodCoverIdx: S.prodCoverIdx || {}, 
-    prodNotes: S.prodNotes || {}, 
-    banners: S.banners || [], 
-    logo: S.logo || null, 
-    storyImg: S.storyImg || null, 
-    igSettings: S.igSettings || {}, 
-    igManualImgs: S.igManualImgs || [], 
-    savedAt: new Date().toISOString()
+    products: S.products || [], orders: S.orders || [], customers: S.customers || [], batches: S.batches || [], expenses: S.expenses || {}, settings: {...S.settings, sheetsUrl:undefined}, categories: S.categories || [], ageGroups: S.ageGroups || [], heroContent: S.heroContent || {}, storyContent: S.storyContent || {}, sectionOrder: S.sectionOrder || [], colors: S.colors || {}, favorites: S.favorites || [], prodImgs: cleanImgs, prodCoverIdx: S.prodCoverIdx || {}, prodNotes: S.prodNotes || {}, banners: S.banners || [], logo: S.logo || null, storyImg: S.storyImg || null, igSettings: S.igSettings || {}, igManualImgs: S.igManualImgs || [], savedAt: new Date().toISOString()
   };
 }
 
 let _pushTimer = null;
 async function pushToSheets(payload){
   clearTimeout(_pushTimer);
-  // تأخير بسيط لدمج المدخلات السريعة وتقليل الضغط على السيرفر
   _pushTimer = setTimeout(async () => {
     try {
       const response = await fetch(SHEETS_URL, { 
@@ -1288,27 +1117,25 @@ async function pushToSheets(payload){
       });
       const resData = await response.json();
       if(resData.ok) {
-        toast('▲ تم حفظ التغييرات ومزامنتها سحابياً');
+        toast('▲ تم تأمين وحفظ البيانات في السيرفر السحابي');
       } else {
-        toast('❌ فشل الحفظ في السحاب: ' + (resData.msg || 'خطأ غير معروف'));
+        toast('❌ خطأ في معالجة السيرفر: ' + resData.msg);
       }
     } catch (e) { 
       console.warn(e); 
-      toast('❌ فشل الاتصال بالسحاب. تحقق من شبكة الإنترنت');
+      toast('⚠️ تم الحفظ محلياً وجاري المحاولة السحابية عند استقرار الإنترنت');
     }
-  }, 1000);
+  }, 1200);
 }
-
-// تم حذف دالة load() القديمة بالكامل لمنع القراءة من ذاكرة الجهاز الافتراضية
 
 async function loadFromSheets(){
   const ind=document.getElementById('loadingIndicator'); 
-  if(ind) ind.style.display='flex'; // إظهار مؤشر التحميل البرمجي لتعطيل الشاشة
+  if(ind) ind.style.display='flex';
   try{
     const r=await fetch(`${SHEETS_URL}?action=loadAll`);
     if(!r.ok) throw new Error('http '+r.status);
     const d=await r.json();
-    if(d.ok){
+    if(d.ok && d.hasData){
       const fields=['products','orders','customers','batches','expenses','settings','categories','ageGroups','heroContent','storyContent','sectionOrder','colors','favorites','prodImgs','prodCoverIdx','prodNotes','banners','logo','storyImg','igSettings','igManualImgs'];
       fields.forEach(k=>{
         if(d[k]!==undefined && d[k]!==null){
@@ -1319,7 +1146,7 @@ async function loadFromSheets(){
       return true;
     }
   }catch(e){
-    console.error("خطأ في جلب البيانات:", e);
+    console.error("خطأ في الاتصال وجلب الملف السحابي:", e);
   }finally{ 
     if(ind) ind.style.display='none'; 
   }
@@ -1330,12 +1157,11 @@ function cur(n){n=parseFloat(n)||0;return n.toLocaleString('ar-IQ')+' '+S.settin
 function toast(msg,ms=3000){const t=document.getElementById('toast');if(t){t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),ms);}}
 
 // ════════════════════════════════════════════════════════════
-//  INIT & START (محدث للتزامن البرمجي المطلق)
+//  دالة التحميل والتشغيل المتزامن (INIT)
 // ════════════════════════════════════════════════════════════
 async function init(){
   S.settings.sheetsUrl=SHEETS_URL;
   
-  // إعداد الفلاتر الافتراضية والمستندات قبل الجلب
   const now=new Date();
   if(document.getElementById('repM'))document.getElementById('repM').value=now.getMonth();
   if(document.getElementById('repY'))document.getElementById('repY').value=now.getFullYear();
@@ -1344,15 +1170,26 @@ async function init(){
   document.querySelectorAll('.mov,.auth-ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
   document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.shiftKey&&e.key==='S'){e.preventDefault();showSeller();}});
   
-  // جلب البيانات الإجباري من جوجل شيت لمنع تصفير البرنامج
-  const isLoaded = await loadFromSheets();
-  if(isLoaded){
-    toast('✅ تم تحميل أحدث بضاعة من السحاب الحقيقي');
-  } else {
-    toast('⚠️ تحذير: لم نتمكن من جلب بيانات السحاب. يرجى إعادة تحديث الصفحة');
+  // 1. محاولة جلب أحدث بيانات بضاعة حقيقية من الشيت السحابي مباشرة
+  const cloudSuccess = await loadFromSheets();
+  
+  // 2. نظام هجرة البيانات الآمن: إذا كان الشيت فارغاً أو فشل الاتصال، استرجع فوراً آخر كاش محلي مخزن بالجهاز
+  if(!cloudSuccess || S.products.length === 0){
+    const backupData = localStorage.getItem('val4_backup');
+    if(backupData){
+      try {
+        const parsed = JSON.parse(backupData);
+        if(parsed && parsed.products && parsed.products.length > 0){
+          Object.keys(parsed).forEach(k=>{ if(k in S) S[k]=parsed[k]; });
+          toast('⚡ تم جلب البيانات مؤقتاً من الكاش؛ جاري إعداد التزامن السحابي...');
+          // ارفعيها فوراً للشيت لتأمينها سحابياً لجميع الأجهزة الأخرى
+          save();
+        }
+      } catch(e){ console.warn("خطأ في قراءة كاش الطوارئ", e); }
+    }
   }
   
-  // رندرة البيانات وبناء الواجهات بناءً على القادم من السحاب فقط
+  // رندرة وبناء عناصر واجهة المستخدم الكاملة بناءً على البيانات المستقرة
   applySettings();
   applyColors(); 
   renderAll();
@@ -1373,6 +1210,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     setTimeout(()=>clicks=0,600);
   });
 });
+
 function seedProds(){
   S.products=[
     {id:1,name:'فستان ربيعي أنيق',category:'فساتين',ageGroup:'نساء',sellPrice:85000,buyPrice:35000,sizes:{S:3,M:5,L:2},barcode:'VAL001',desc:'فستان أنيق للمناسبات الربيعية',discType:'none',discVal:0,createdAt:Date.now()-86400000*2,salesCount:12},
@@ -1402,9 +1240,6 @@ function renderAll(){
   renderSectionOrderUI();updateCartUI();updateFavUI();
 }
 
-// ════════════════════════════════════════════════════════════
-//  SELLER LOCK / UNLOCK
-// ════════════════════════════════════════════════════════════
 function showSeller(){ if(S.sellerUnlocked){goSeller();return;} const ls=document.getElementById('lockScreen'); ls.classList.add('show'); document.getElementById('lockPin').value=''; document.getElementById('lockErr').style.display='none'; setTimeout(()=>document.getElementById('lockPin').focus(),150); }
 function hideLock(){document.getElementById('lockScreen').classList.remove('show');}
 function checkPin(){ const v=document.getElementById('lockPin').value; if(v==='Mays1988'){ S.sellerUnlocked=true; hideLock();goSeller(); }else{ document.getElementById('lockErr').style.display='block'; document.getElementById('lockPin').value=''; document.getElementById('lockPin').focus(); document.getElementById('lockPin').style.borderColor='var(--er)'; setTimeout(()=>document.getElementById('lockPin').style.borderColor='',800); } }
@@ -1419,17 +1254,11 @@ function closeM(id){document.getElementById(id).classList.remove('open');}
 function openM(id){document.getElementById(id).classList.add('open');}
 function scrollToSec(id){ document.querySelectorAll('.page').forEach(x=>x.classList.remove('active')); document.getElementById('page-buyer').classList.add('active'); S.prevPage = null; setTimeout(() => { const el = document.getElementById(id); if(el) el.scrollIntoView({behavior: 'smooth', block: 'start'}); }, 50); }
 
-// ════════════════════════════════════════════════════════════
-//  LOGO & NAV
-// ════════════════════════════════════════════════════════════
 async function handleLogoUpload(input){ const f=input.files[0];if(!f)return; toast('⬆️ جاري رفع الشعار...'); const url=await uploadImgToDrive(f,'logo'); S.logo=url;save();applyLogo(); toast('✅ تم رفع الشعار على Drive'); input.value=''; }
 function applyLogo(){ const img=document.getElementById('navLogoImg'); const txt=document.getElementById('navLogoText'); const prev=document.getElementById('logoPreviewImg'); if(S.logo){img.src=S.logo;img.style.display='block';txt.style.display='none';if(prev){prev.src=S.logo;prev.style.display='block';}} else{img.style.display='none';txt.style.display='block';if(prev)prev.style.display='none';} }
 function removeLogo(){S.logo=null;save();applyLogo();toast('🗑️ تم إزالة الشعار');}
 function updateNavName(){const v=document.getElementById('storeNameNav').value;document.getElementById('navLogoText').innerHTML=`<em>${v.charAt(0)}</em>${v.slice(1)}`;}
 
-// ════════════════════════════════════════════════════════════
-//  HERO CONTENT
-// ════════════════════════════════════════════════════════════
 function applyHeroContent(){ const h=S.heroContent||{}; if(h.tag){const el=document.getElementById('heroTag');if(el)el.textContent=h.tag;} if(h.title){const el=document.getElementById('heroTitle');if(el)el.innerHTML=h.title.replace(/\n/g,'<br>');} if(h.desc){const el=document.getElementById('heroDesc');if(el)el.textContent=h.desc;} const te=document.getElementById('heroTagEdit');const ti=document.getElementById('heroTitleEdit');const de=document.getElementById('heroDescEdit'); if(te)te.value=h.tag||'';if(ti)ti.value=h.title||'';if(de)de.value=h.desc||''; }
 function applyStoryContent(){ const s=S.storyContent||{}; const st=document.getElementById('storyTag');const si=document.getElementById('storyTitle');const sb=document.getElementById('storyBody'); if(st&&s.tag)st.textContent=s.tag; if(si&&s.title)si.textContent=s.title; if(sb&&s.body)sb.textContent=s.body; const te=document.getElementById('storyTitleEdit');const be=document.getElementById('storyBodyEdit'); if(te)te.value=s.title||'';if(be)be.value=s.body||''; if(S.storyImg){const ib=document.getElementById('storyImgBox');if(ib)ib.innerHTML=`<img src="${S.storyImg}" alt="">`;} }
 function liveUpdateHero(){ const tag=document.getElementById('heroTagEdit').value; const title=document.getElementById('heroTitleEdit').value; const desc=document.getElementById('heroDescEdit').value; const et=document.getElementById('heroTag');const ei=document.getElementById('heroTitle');const ed=document.getElementById('heroDesc'); if(et)et.textContent=tag;if(ei)ei.innerHTML=title.replace(/\n/g,'<br>');if(ed)ed.textContent=desc; }
@@ -1437,9 +1266,6 @@ function liveUpdateStory(){ const title=document.getElementById('storyTitleEdit'
 async function handleStoryImg(input){ const f=input.files[0];if(!f)return; toast('⬆️ جاري رفع الصورة...'); const url=await uploadImgToDrive(f,'story'); S.storyImg=url; const ib=document.getElementById('storyImgBox');if(ib)ib.innerHTML=`<img src="${url}" alt="">`; save();toast('✅ تم رفع صورة قصتنا على Drive'); input.value=''; }
 function saveHeroContent(){ S.heroContent={tag:document.getElementById('heroTagEdit').value,title:document.getElementById('heroTitleEdit').value,desc:document.getElementById('heroDescEdit').value}; S.storyContent={tag:'قصتنا',title:document.getElementById('storyTitleEdit').value,body:document.getElementById('storyBodyEdit').value}; save();toast('✅ تم حفظ المحتوى'); }
 
-// ════════════════════════════════════════════════════════════
-//  HERO IMAGES
-// ════════════════════════════════════════════════════════════
 function renderHeroImgs(){
   const col=document.getElementById('heroImgsCol');if(!col)return;
   col.style.position = 'relative'; col.style.maxWidth = '480px'; col.style.padding = '1.5rem'; col.style.zIndex = '1';
@@ -1461,9 +1287,6 @@ function renderBanners(){ const sl=document.getElementById('bnSlots');if(!sl)ret
 async function addBanners(input){ const files=Array.from(input.files);if(!files.length)return; toast(`⬆️ جاري رفع ${files.length} بنر على Drive...`); for(const f of files){ const url=await uploadImgToDrive(f,'banners'); S.banners.push(url); } save();renderBanners();renderHeroImgs(); toast('✅ تم رفع البنرات — محفوظة على Drive'); input.value=''; }
 function rmBanner(i){if(!confirm('حذف؟'))return;S.banners.splice(i,1);save();renderBanners();renderHeroImgs();}
 
-// ════════════════════════════════════════════════════════════
-//  CATEGORY STRIP
-// ════════════════════════════════════════════════════════════
 function renderCatStrip(){
   const strip=document.getElementById('catStrip');if(!strip)return;
   strip.innerHTML=S.categories.map(c=>{
@@ -1474,9 +1297,6 @@ function renderCatStrip(){
   }).join('');
 }
 
-// ════════════════════════════════════════════════════════════
-//  COLOR CUSTOMIZER
-// ════════════════════════════════════════════════════════════
 const PRESETS={ default:{c1:'#fdf8f5',c2:'#f9f0d3',c3:'#e8e0f0',c4:'#f2d5d5',wb:'#8b6f5e',ac:'#c9a87c','nav-bg':'#ffffff'}, rose:{c1:'#fff5f7',c2:'#fce4ec',c3:'#f8bbd9',c4:'#f48fb1',wb:'#880e4f',ac:'#e91e63','nav-bg':'#fff5f7'}, sage:{c1:'#f4f7f4',c2:'#dcedc8',c3:'#c5e1a5',c4:'#aed581',wb:'#33691e',ac:'#7cb342','nav-bg':'#f4f7f4'}, lavender:{c1:'#f8f7ff',c2:'#ede7f6',c3:'#d1c4e9',c4:'#b39ddb',wb:'#4527a0',ac:'#7e57c2','nav-bg':'#f8f7ff'}, earth:{c1:'#fdf6ee',c2:'#ede0d4',c3:'#d7ccc8',c4:'#bcaaa4',wb:'#4e342e',ac:'#8d6e63','nav-bg':'#fdf6ee'}, ocean:{c1:'#f0f8ff',c2:'#e1f5fe',c3:'#b3e5fc',c4:'#81d4fa',wb:'#01579b',ac:'#039be5','nav-bg':'#f0f8ff'}, };
 function applyColor(cssVar,val){document.documentElement.style.setProperty(cssVar,val);}
 function applyPreset(name){ const p=PRESETS[name];if(!p)return; Object.entries(p).forEach(([k,v])=>{ document.documentElement.style.setProperty('--'+k,v); const inp=document.getElementById('col-'+k.replace('--','')); if(inp)inp.value=v; }); S.colors=p;save();toast('✅ تم تطبيق الثيم'); }
@@ -1484,9 +1304,6 @@ function applyColors(){ if(!S.colors||!Object.keys(S.colors).length)return; Obje
 function saveColors(){ S.colors={}; const map={'col-sw':'c1','col-card':'card-bg','col-wb':'wb','col-ac':'ac','col-c2':'c2','col-c3':'c3','col-c4':'c4','col-nav':'nav-bg','col-btn':'btn-bg'}; Object.entries(map).forEach(([eid,cv])=>{ const el=document.getElementById(eid);if(!el)return; S.colors[cv]=el.value; document.documentElement.style.setProperty('--'+cv,el.value); }); save();toast('✅ تم حفظ الألوان'); }
 function resetColors(){S.colors={};save();applyPreset('default');toast('✅ تمت إعادة الضبط');}
 
-// ════════════════════════════════════════════════════════════
-//  DRAG & DROP SECTION ORDERING
-// ════════════════════════════════════════════════════════════
 const SECTION_LABELS={ 'sec-hero':'🏠 الهيرو الرئيسي', 'sec-features':'✨ مميزات المتجر', 'sec-best':'🔥 الأكثر مبيعاً', 'sec-new':'🆕 وصلنا حديثاً', 'sec-story':'📖 قصتنا', 'sec-promo':'📸 معرض الصور', 'sec-all':'👗 كل المنتجات', };
 function renderSectionOrderUI(){ const list=document.getElementById('sectionOrderList');if(!list)return; const order=S.sectionOrder||Object.keys(SECTION_LABELS); list.innerHTML=order.map((id,i)=>`<div class="dnd-order-item" data-id="${id}" draggable="true" style="background:#fff;border:1.5px solid var(--bd);border-radius:8px;padding:.6rem .9rem;display:flex;align-items:center;gap:.7rem;cursor:grab;user-select:none" ondragstart="orderDragStart(event,${i})" ondragover="orderDragOver(event)" ondrop="orderDrop(event,${i})"><span style="font-size:1.2rem;opacity:.4">⠿</span><span style="font-size:.9rem">${SECTION_LABELS[id]||id}</span><span style="margin-right:auto;font-size:.72rem;color:var(--mt)">${i+1}</span></div>`).join(''); }
 let _dragIdx=null;
@@ -1501,24 +1318,17 @@ function applySectionOrder(){
     const el=document.getElementById(id); 
     if(el&&el.parentElement===buyer)buyer.appendChild(el); 
   }); 
-  // هذا السطر الجديد لإجبار الفوتر على البقاء في النهاية دائماً
   const footer = document.getElementById('siteFooter');
   if(footer) buyer.appendChild(footer);
 }
 function initDnD(){ let dragSrc=null; document.querySelectorAll('.dnd-section[draggable]').forEach(sec=>{ sec.addEventListener('dragstart',e=>{dragSrc=sec;sec.style.opacity='.5';}); sec.addEventListener('dragend',()=>{dragSrc=null;document.querySelectorAll('.dnd-section').forEach(s=>s.style.opacity='');}); sec.addEventListener('dragover',e=>{e.preventDefault();sec.classList.add('drag-over');}); sec.addEventListener('dragleave',()=>sec.classList.remove('drag-over')); sec.addEventListener('drop',e=>{ e.preventDefault();sec.classList.remove('drag-over'); if(!dragSrc||dragSrc===sec)return; const parent=sec.parentElement; const all=[...parent.querySelectorAll('.dnd-section')]; const si=all.indexOf(sec);const di=all.indexOf(dragSrc); if(di<si)parent.insertBefore(dragSrc,sec.nextSibling);else parent.insertBefore(dragSrc,sec); S.sectionOrder=[...parent.querySelectorAll('.dnd-section')].map(el=>el.id).filter(Boolean); save(); }); }); }
 
-// ════════════════════════════════════════════════════════════
-//  FILTERS
-// ════════════════════════════════════════════════════════════
 function renderFilters(){ const cb=document.getElementById('catBar'); if(cb)cb.innerHTML=`<div class="fc ${S.activeCat==='all'?'active':''}" onclick="fCat('all',this)">الكل</div>`+S.categories.map(c=>`<div class="fc ${S.activeCat===c.name?'active':''}" onclick="fCat('${c.name}',this)">${c.icon} ${c.name}</div>`).join(''); const ab=document.getElementById('ageBar'); if(ab)ab.innerHTML=`<div class="fc ${S.activeAge==='all'?'active':''}" onclick="fAge('all',this)">كل الأعمار</div>`+S.ageGroups.map(ag=>`<div class="fc ${S.activeAge===ag.name?'active':''}" onclick="fAge('${ag.name}',this)">${ag.icon} ${ag.name}</div>`).join(''); }
 function fCat(c,el){ S.activeCat=c; document.querySelectorAll('#catBar .fc').forEach(x=>x.classList.remove('active')); if(el)el.classList.add('active'); else{const fc=document.querySelector(`#catBar .fc[onclick*="${c}"]`);if(fc)fc.classList.add('active');} renderAllProducts();scrollToSec('allProducts'); }
 function fAge(a,el){S.activeAge=a;document.querySelectorAll('#ageBar .fc').forEach(x=>x.classList.remove('active'));if(el)el.classList.add('active');renderAllProducts();}
 function effPrice(p){ if(p.discType==='percent'&&p.discVal>0)return Math.round(p.sellPrice*(1-p.discVal/100)); if(p.discType==='fixed'&&p.discVal>0)return Math.max(0,p.sellPrice-p.discVal); return p.sellPrice; }
 function discLabel(p){ if(p.discType==='percent'&&p.discVal>0)return `-${p.discVal}%`; if(p.discType==='fixed'&&p.discVal>0)return `-${cur(p.discVal)}`; return null; }
 
-// ════════════════════════════════════════════════════════════
-//  PRODUCT CARD
-// ════════════════════════════════════════════════════════════
 function buildCard(p){
   const stock=Object.values(p.sizes||{}).reduce((a,b)=>a+b,0); const isOut=stock===0;
   const imgs=S.prodImgs[p.id]||[];const cov=S.prodCoverIdx[p.id]||0; const src=imgs[cov]||null;
@@ -1527,17 +1337,11 @@ function buildCard(p){
   return `<div class="pcard" id="pc${p.id}">${dl?`<div class="disc-badge">${dl}</div>`:''}<div class="pcard-img" onclick="openItem(${p.id})">${src?`<img src="${src}" alt="${p.name}">`:'<span style="font-size:3.5rem">👗</span>'}<button class="fav-btn ${isFav?'on':''}" onclick="togFav(${p.id},event)">${isFav?'❤️':'🤍'}</button>${isOut?`<div class="oos-overlay"><div class="oos-tag">نفد المخزون</div></div>`:''}${ag?`<div class="age-badge">${ag.icon} ${ag.name}</div>`:''}</div><div class="pcard-info"><div class="pname" onclick="openItem(${p.id})">${p.name}</div><div class="pmeta">${p.category}</div><div class="pprices"><span class="pprice">${cur(ep)}</span>${dl?`<span class="pold-price">${cur(p.sellPrice)}</span>`:''}</div><div class="szrow">${szH}</div><button class="acbtn" onclick="addCart(${p.id})" ${isOut?'disabled style="opacity:.4;cursor:not-allowed"':''}>${isOut?'نفد المخزون':'+ أضف للسلة'}</button></div></div>`;
 }
 
-// ════════════════════════════════════════════════════════════
-//  BUYER SECTIONS
-// ════════════════════════════════════════════════════════════
 function renderNewArrivals(){ const g=document.getElementById('newArrivalsGrid');if(!g)return; const ps=[...S.products].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).slice(0,5); g.innerHTML=ps.length?ps.map(buildCard).join(''):'<div style="color:var(--mt)">لا توجد منتجات</div>'; }
 function renderBestSellers(){ const g=document.getElementById('bestSellersGrid');if(!g)return; const ps=[...S.products].sort((a,b)=>(b.salesCount||0)-(a.salesCount||0)).slice(0,5); g.innerHTML=ps.length?ps.map(buildCard).join(''):'<div style="color:var(--mt)">لا توجد منتجات</div>'; }
 function renderAllProducts(){ const g=document.getElementById('allGrid');if(!g)return; const q=(document.getElementById('buyerSearch')?.value||'').toLowerCase(); const ps=S.products.filter(p=>{ const ms=p.name.toLowerCase().includes(q)||(p.desc||'').toLowerCase().includes(q); const mc=S.activeCat==='all'||p.category===S.activeCat; const ma=S.activeAge==='all'||p.ageGroup===S.activeAge; return ms&&mc&&ma; }); g.innerHTML=ps.length?ps.map(buildCard).join(''):'<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--mt)">🔍 لا توجد منتجات</div>'; }
 function pickSz(el,pid,sz){ document.querySelectorAll(`[data-pid="${pid}"]`).forEach(x=>x.classList.remove('sel')); el.classList.add('sel'); const c=document.getElementById(`pc${pid}`);if(c)c.dataset.sz=sz; }
 
-// ════════════════════════════════════════════════════════════
-//  ITEM DETAIL
-// ════════════════════════════════════════════════════════════
 function openItem(id){
   const p=S.products.find(x=>x.id===id);if(!p)return; S.prevPage='buyer';showPage('item');
   const imgs=S.prodImgs[id]||[];const cov=S.prodCoverIdx[id]||0; const ep=effPrice(p);const dl=discLabel(p); const ag=S.ageGroups.find(a=>a.name===p.ageGroup);
@@ -1548,7 +1352,7 @@ function openItem(id){
   const szH=Object.entries(p.sizes||{}).map(([sz,qty])=>`<div class="id-sz ${qty===0?'out':''}" data-sz="${sz}" onclick="pickIdSz(this)">${sz}${qty===0?' (نفد)':''}</div>`).join('');
   document.getElementById('idInfo').innerHTML=`<div class="id-name">${p.name}</div><div class="id-meta">${p.category}${ag?' — '+ag.icon+' '+ag.name:''}</div><div class="id-prices"><span class="id-price">${cur(ep)}</span>${dl?`<span class="id-old">${cur(p.sellPrice)}</span><span class="id-disc-tag">${dl}</span>`:''}</div>${p.desc?`<div class="id-desc">${p.desc}</div>`:''}<div class="id-szlabel">اختاري المقاس:</div><div class="id-sizes" id="idSizes">${szH}</div><button class="id-atc" onclick="addCartFromDetail(${id})">+ أضف للسلة</button><button class="id-fav" onclick="togFav(${id},{stopPropagation:()=>{}})" id="idFavBtn">${S.favorites.includes(id)?'❤️ في المفضلة':'🤍 أضف للمفضلة'}</button>`;
   const notes=S.prodNotes[id]||[];
-  document.getElementById('idNotes').innerHTML=notes.length?`<div style="font-weight:700;color:var(--wb);margin-bottom:.6rem">📌 ملاحظات</div>`+notes.map(n=>n.type==='text'?`<div class="note-item">${n.content}</div>`:`<div class="note-item"><img src="${n.content}" style="max-width:200px;border-radius:7px;cursor:pointer" onclick="zoomImg2('${n.content}')"></div>`).join(''):'';
+  document.getElementById('idNotes').innerHTML=notes.length?`<div style="font-weight:700;color:var(--wb);margin-bottom:.6rem">📌 ملاحظات</div>`+notes.map(n=>n.type==='text'?`<div class="note-item">${n.content}</div>`:`<div class="note-item"><img src="${n.content}" style="max-width:200px;border-radius:7px;cursor:pointer" onclick="zoomImg2('${n.content}')"></div>`).join(''):';';
   window._idP=p;
 }
 function switchThumb(i){ const imgs=window._iImgs||[];if(!imgs[i])return; window._iMainDiv.innerHTML=`<img src="${imgs[i]}" alt="" style="width:100%;height:100%;object-fit:cover">`; document.querySelectorAll('.id-thumb').forEach((t,j)=>t.classList.toggle('active',j===i)); }
@@ -1557,16 +1361,10 @@ function addCartFromDetail(id){ const selEl=document.querySelector('.id-sz.sel')
 function zoomImg(e){ const img=e.target;if(img.tagName!=='IMG')return; zoomImg2(img.src); }
 function zoomImg2(src){ const d=document.createElement('div'); d.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9000;display:flex;align-items:center;justify-content:center;cursor:pointer'; d.innerHTML=`<img src="${src}" style="max-width:95vw;max-height:95vh;border-radius:10px">`; d.onclick=()=>d.remove();document.body.appendChild(d); }
 
-// ════════════════════════════════════════════════════════════
-//  FAVORITES
-// ════════════════════════════════════════════════════════════
 function togFav(pid,e){ if(e.stopPropagation)e.stopPropagation(); const i=S.favorites.indexOf(pid); if(i>=0)S.favorites.splice(i,1);else S.favorites.push(pid); save();renderNewArrivals();renderBestSellers();renderAllProducts();updateFavUI(); const fb=document.getElementById('idFavBtn'); if(fb)fb.textContent=S.favorites.includes(pid)?'❤️ في المفضلة':'🤍 أضف للمفضلة'; }
 function updateFavUI(){ const c=S.favorites.length;const d=document.getElementById('favDot'); if(c>0){d.classList.remove('hidden');d.textContent=c;}else d.classList.add('hidden'); }
 function openFavs(){ S.prevPage='buyer'; const favP=S.products.filter(p=>S.favorites.includes(p.id)); document.getElementById('favsGrid').innerHTML=favP.length?favP.map(buildCard).join(''):'<div style="text-align:center;padding:3rem;color:var(--mt)">❤️ لا توجد مفضلات</div>'; showPage('favs'); }
 
-// ════════════════════════════════════════════════════════════
-//  CART
-// ════════════════════════════════════════════════════════════
 function addCart(pid){ const p=S.products.find(x=>x.id===pid);if(!p)return; const card=document.getElementById(`pc${pid}`); const sz=card?.dataset?.sz||Object.keys(p.sizes||{}).find(s=>(p.sizes[s]||0)>0); if(!sz){toast('⚠️ اختاري المقاس');return;} if(!(p.sizes[sz]>0)){toast('⚠️ هذا المقاس نفد');return;} const ep=effPrice(p); const ex=S.cart.find(i=>i.pid===pid&&i.sz===sz); if(ex)ex.qty++;else S.cart.push({pid,sz,qty:1,price:ep,name:p.name}); save();updateCartUI();toast(`✅ أُضيف "${p.name}"`); }
 function rmCart(pid,sz){S.cart=S.cart.filter(i=>!(i.pid===pid&&i.sz===sz));save();updateCartUI();}
 function toggleCart(){document.getElementById('cartOv').classList.toggle('open');document.getElementById('cartSb').classList.toggle('open');}
@@ -1574,21 +1372,12 @@ function calcCart(){ const {freeShipQty,shipCost,giftQty}=S.settings; const sub=
 function updateCartUI(){ const cnt=S.cart.reduce((a,i)=>a+i.qty,0); document.getElementById('cartDot').textContent=cnt; const ci=document.getElementById('cartItems');if(!ci)return; if(!S.cart.length){ci.innerHTML='<div style="text-align:center;padding:2rem;color:var(--mt)">🛒 السلة فارغة</div>';updateCartSummary();return;} ci.innerHTML=S.cart.map(item=>{ const imgs=S.prodImgs[item.pid]||[];const cov=S.prodCoverIdx[item.pid]||0; const src=imgs[cov]||null; return `<div class="ci"><div class="ci-img">${src?`<img src="${src}">`:'👗'}</div><div class="ci-d"><div class="ci-n">${item.name}</div><div class="ci-s">مقاس: ${item.sz} | الكمية: ${item.qty}</div><div class="ci-p">${cur(item.price*item.qty)}</div></div><button onclick="rmCart(${item.pid},'${item.sz}')" style="background:none;border:none;color:var(--er);cursor:pointer;font-size:1.1rem;padding:.2rem">✕</button></div>`; }).join(''); updateCartSummary(); }
 function updateCartSummary(){ const c=calcCart(); document.getElementById('cSub').textContent=cur(c.sub); document.getElementById('cShip').textContent=c.ship===0?'مجاني 🚚':cur(c.ship); document.getElementById('cDisc').textContent='-'+cur(c.disc); document.getElementById('cTot').textContent=cur(c.total); const ot=document.getElementById('offerCartTag'); if(c.msg){ot.textContent=c.msg;ot.style.display='block';}else ot.style.display='none'; }
 
-// ════════════════════════════════════════════════════════════
-//  CHECKOUT
-// ════════════════════════════════════════════════════════════
 function openCO(){ if(!S.cart.length){toast('⚠️ السلة فارغة');return;} if(document.getElementById('cartSb').classList.contains('open'))toggleCart(); const c=calcCart(); document.getElementById('coSum').innerHTML=`<div style="display:flex;justify-content:space-between;margin-bottom:.35rem"><span style="color:var(--mt)">المجموع</span><span>${cur(c.sub)}</span></div><div style="display:flex;justify-content:space-between;margin-bottom:.35rem"><span style="color:var(--mt)">الشحن</span><span>${c.ship===0?'مجاني':cur(c.ship)}</span></div><div style="display:flex;justify-content:space-between;margin-bottom:.35rem"><span style="color:var(--mt)">الخصم</span><span>-${cur(c.disc)}</span></div><div style="display:flex;justify-content:space-between;font-weight:700;color:var(--dt);border-top:1px solid var(--bd);padding-top:.35rem"><span>الإجمالي</span><span>${cur(c.total)}</span></div>`; openM('coModal'); }
 function applyPromo(){ const code=document.getElementById('coPromo').value.toUpperCase(); const msg=document.getElementById('promoMsg'); if(code===S.settings.promoCode.toUpperCase()){ S.currentPromo=S.settings.promoDisc; msg.style.cssText='display:block;background:#d4edda;color:#155724;padding:.38rem .7rem;border-radius:6px;font-size:.79rem'; msg.textContent=`✅ خصم ${S.settings.promoDisc}%`; }else if(code){S.currentPromo=null;msg.style.cssText='display:block;background:#f8d7da;color:#721c24;padding:.38rem .7rem;border-radius:6px;font-size:.79rem';msg.textContent='❌ كود خاطئ';} else{S.currentPromo=null;msg.style.display='none';} }
 function placeOrder(){ const name=document.getElementById('coName').value.trim(); const phone=document.getElementById('coPhone').value.trim(); const addr=document.getElementById('coAddr').value.trim(); if(!name||!phone||!addr){toast('⚠️ الحقول المطلوبة مفقودة');return;} const c=calcCart(); const order={id:Date.now(),dateTs:Date.now(),date:new Date().toLocaleDateString('ar-IQ'),status:'preparing', customer:{name,phone,addr,notes:document.getElementById('coNotes').value}, items:S.cart.map(i=>({...i})),sub:c.sub,ship:c.ship,disc:c.disc,total:c.total, offerMsg:c.msg||'-',offersLoss:c.disc,promoUsed:document.getElementById('coPromo').value||null}; S.cart.forEach(item=>{ const p=S.products.find(x=>x.id===item.pid); if(p&&p.sizes[item.sz]!==undefined)p.sizes[item.sz]=Math.max(0,(p.sizes[item.sz]||0)-item.qty); if(p)p.salesCount=(p.salesCount||0)+item.qty; }); S.orders.push(order); let cu=S.customers.find(x=>x.phone===phone); const now=new Date().toLocaleDateString('ar-IQ'); if(cu){cu.orders++;cu.totalSpent+=c.total;cu.lastOrder=now;} else S.customers.push({id:Date.now(),name,phone,addr,orders:1,totalSpent:c.total,joinDate:now,lastOrder:now}); S.cart=[];S.currentPromo=null; save();closeM('coModal');updateCartUI();renderAllProducts();renderNewArrivals();renderBestSellers(); toast('🎉 تم تأكيد طلبك! سنتواصل معك قريباً',5000); }
 
-// ════════════════════════════════════════════════════════════
-//  STOCK
-// ════════════════════════════════════════════════════════════
-function renderStock(){ const q=(document.getElementById('stockSrch')?.value||'').toLowerCase(); const prods=S.products.filter(p=>p.name.toLowerCase().includes(q)||p.category?.toLowerCase().includes(q)); let tQ=0,low=0,capV=0,sellV=0,profV=0; S.products.forEach(p=>{const q2=Object.values(p.sizes||{}).reduce((a,b)=>a+b,0);tQ+=q2;if(q2>0&&q2<=3)low++;const bp=p.buyPrice||0;const sp=effPrice(p);capV+=q2*bp;sellV+=q2*sp;profV+=q2*(sp-bp);}); document.getElementById('stockStats').innerHTML=`<div class="sc2"><div class="sv">${tQ.toLocaleString()}</div><div class="sl2">إجمالي القطع</div></div><div class="sc2"><div class="sv">${low}</div><div class="sl2">مخزون منخفض</div></div><div class="sc2"><div class="sv">${capV.toLocaleString('ar-IQ')}</div><div class="sl2">رأس المال (د.ع)</div><div class="ss2">بأسعار الشراء</div></div><div class="sc2"><div class="sv">${sellV.toLocaleString('ar-IQ')}</div><div class="sl2">قيمة المخزون (د.ع)</div><div class="ss2">بأسعار البيع</div></div><div class="sc2"><div class="sv">${profV.toLocaleString('ar-IQ')}</div><div class="sl2">الأرباح المتوقعة</div></div><div class="sc2"><div class="sv">${new Set(S.products.map(p=>p.category)).size}</div><div class="sl2">الفئات</div></div>`; const tbody=document.getElementById('stockBody');if(!tbody)return; tbody.innerHTML=prods.map(p=>{ const qty=Object.values(p.sizes||{}).reduce((a,b)=>a+b,0); const ep=effPrice(p);const dl=discLabel(p);const profit=ep-(p.buyPrice||0); const imgs=S.prodImgs[p.id]||[];const cov=S.prodCoverIdx[p.id]||0;const src=imgs[cov]||null; const sz=Object.entries(p.sizes||{}).map(([s,q])=>`<span style="font-size:.68rem">${s}:<b>${q}</b></span>`).join(' '); const st=qty===0?'<span class="badge berr">نفد</span>':qty<=3?'<span class="badge bwarn">منخفض</span>':'<span class="badge bok">متوفر</span>'; return `<tr><td>${src?`<img src="${src}" style="width:36px;height:36px;border-radius:5px;object-fit:cover">`:'<span style="font-size:1.3rem">👗</span>'}</td><td>strong>${p.name}</strong></td><td>${p.category||''}</td><td>${p.ageGroup||'-'}</td><td style="font-size:.72rem">${sz} ${st}</td><td><strong>${cur(ep)}</strong>${dl?`<br><span style="font-size:.68rem;color:var(--er)">${dl}</span>`:''}</td><td>${cur(p.buyPrice||0)}</td><td>${dl?`<span class="badge berr">${dl}</span>`:'—'}</td><td style="color:var(--ok)">${cur(profit)}</td><td style="font-weight:700">${qty}</td><td style="display:flex;gap:.22rem;flex-wrap:wrap"><button class="ab ae" onclick="openEditProd(${p.id})">✏️</button><button class="ab ad" onclick="delProd(${p.id})">🗑️</button></td></tr>`; }).join(''); }
+function renderStock(){ const q=(document.getElementById('stockSrch')?.value||'').toLowerCase(); const prods=S.products.filter(p=>p.name.toLowerCase().includes(q)||p.category?.toLowerCase().includes(q)); let tQ=0,low=0,capV=0,sellV=0,profV=0; S.products.forEach(p=>{const q2=Object.values(p.sizes||{}).reduce((a,b)=>a+b,0);tQ+=q2;if(q2>0&&q2<=3)low++;const bp=p.buyPrice||0;const sp=effPrice(p);capV+=q2*bp;sellV+=q2*sp;profV+=q2*(sp-bp);}); document.getElementById('stockStats').innerHTML=`<div class="sc2"><div class="sv">${tQ.toLocaleString()}</div><div class="sl2">إجمالي القطع</div></div><div class="sc2"><div class="sv">${low}</div><div class="sl2">مخزون منخفض</div></div><div class="sc2"><div class="sv">${capV.toLocaleString('ar-IQ')}</div><div class="sl2">رأس المال (د.ع)</div><div class="ss2">بأسعار الشراء</div></div><div class="sc2"><div class="sv">${sellV.toLocaleString('ar-IQ')}</div><div class="sl2">قيمة المخزون (د.ع)</div><div class="ss2">بأسعار البيع</div></div><div class="sc2"><div class="sv">${profV.toLocaleString('ar-IQ')}</div><div class="sl2">الأرباح المتوقعة</div></div><div class="sc2"><div class="sv">${new Set(S.products.map(p=>p.category)).size}</div><div class="sl2">الفئات</div></div>`; const tbody=document.getElementById('stockBody');if(!tbody)return; tbody.innerHTML=prods.map(p=>{ const qty=Object.values(p.sizes||{}).reduce((a,b)=>a+b,0); const ep=effPrice(p);const dl=discLabel(p);const profit=ep-(p.buyPrice||0); const imgs=S.prodImgs[p.id]||[];const cov=S.prodCoverIdx[p.id]||0;const src=imgs[cov]||null; const sz=Object.entries(p.sizes||{}).map(([s,q])=>`<span style="font-size:.68rem">${s}:<b>${q}</b></span>`).join(' '); const st=qty===0?'<span class="badge berr">نفد</span>':qty<=3?'<span class="badge bwarn">منخفض</span>':'<span class="badge bok">متوفر</span>'; return `<tr><td>${src?`<img src="${src}" style="width:36px;height:36px;border-radius:5px;object-fit:cover">`:'<span style="font-size:1.3rem">👗</span>'}</td><td><strong>${p.name}</strong></td><td>${p.category||''}</td><td>${p.ageGroup||'-'}</td><td style="font-size:.72rem">${sz} ${st}</td><td><strong>${cur(ep)}</strong>${dl?`<br><span style="font-size:.68rem;color:var(--er)">${dl}</span>`:''}</td><td>${cur(p.buyPrice||0)}</td><td>${dl?`<span class="badge berr">${dl}</span>`:'—'}</td><td style="color:var(--ok)">${cur(profit)}</td><td style="font-weight:700">${qty}</td><td style="display:flex;gap:.22rem;flex-wrap:wrap"><button class="ab ae" onclick="openEditProd(${p.id})">✏️</button><button class="ab ad" onclick="delProd(${p.id})">🗑️</button></td></tr>`; }).join(''); }
 
-// ════════════════════════════════════════════════════════════
-//  ADD/EDIT PRODUCT
-// ════════════════════════════════════════════════════════════
 function renderProdCatSel(){document.getElementById('pmCat').innerHTML=S.categories.map(c=>`<option value="${c.name}">${c.icon} ${c.name}</option>`).join('');}
 function renderProdAgeSel(){document.getElementById('pmAge').innerHTML=`<option value="">— بدون —</option>`+S.ageGroups.map(ag=>`<option value="${ag.name}">${ag.icon} ${ag.name}</option>`).join('');}
 function loadProdSizes(){ const ageName=document.getElementById('pmAge').value; const ag=S.ageGroups.find(a=>a.name===ageName); const sizes=ag?.sizes||['XS','S','M','L','XL','XXL']; const grid=document.getElementById('pmSizes'); const existing={};grid.querySelectorAll('[data-sz]').forEach(i=>{existing[i.dataset.sz]=i.value;}); grid.innerHTML=sizes.map(sz=>`<div class="szbox"><label>${sz}</label><input type="number" min="0" placeholder="0" data-sz="${sz}" value="${existing[sz]||0}"></div>`).join(''); }
@@ -1607,14 +1396,11 @@ function saveProd(){ const name=document.getElementById('pmName').value.trim();c
 function delProd(id){if(!confirm('حذف؟'))return;S.products=S.products.filter(p=>p.id!==id);delete S.prodImgs[id];delete S.prodCoverIdx[id];delete S.prodNotes[id];save();renderStock();renderAllProducts();renderNewArrivals();renderBestSellers();toast('🗑️ تم الحذف');}
 function renderProdImgTbl(){ const tb=document.getElementById('prodImgTbl');if(!tb)return; tb.innerHTML=S.products.map(p=>{const imgs=S.prodImgs[p.id]||[];const cov=S.prodCoverIdx[p.id]||0; return `<tr><td>${imgs[cov]?`<img src="${imgs[cov]}" style="width:38px;height:38px;border-radius:5px;object-fit:cover">`:'—'}</td><td>${p.name}</td><td>${imgs.length}</td><td><button class="ab ae" onclick="openEditProd(${p.id})">✏️</button></td></tr>`; }).join(''); }
 
-// ════════════════════════════════════════════════════════════
-//  BATCH
-// ════════════════════════════════════════════════════════════
 function calcB(){ const c=parseFloat(document.getElementById('bC').value)||0;const s=parseFloat(document.getElementById('bS').value)||0;const q=parseFloat(document.getElementById('bQ').value)||1; document.getElementById('rC').textContent=Math.round(c/q).toLocaleString('ar-IQ');document.getElementById('rS').textContent=Math.round(s/q).toLocaleString('ar-IQ');document.getElementById('rT').textContent=Math.round((c+s)/q).toLocaleString('ar-IQ'); document.getElementById('bRes').classList.add('show'); }
 function addBRow(){
   const container=document.getElementById('bRows');const div=document.createElement('div');div.className='brow'; div.style.cssText='background:var(--c1);border-radius:8px;padding:.9rem;margin-bottom:.7rem;border:1px solid var(--bd)';
   const catOpts=S.categories.map(c=>`<option value="${c.name}">${c.icon} ${c.name}</option>`).join(''); const ageOpts=`<option value="">—</option>`+S.ageGroups.map(ag=>`<option value="${ag.name}">${ag.icon} ${ag.name}</option>`).join('');
-  div.innerHTML=`<div style="display:flex;justify-content:space-between;margin-bottom:.5rem"><strong style="font-size:.86rem">قطعة</strong><button onclick="this.closest('.brow').remove()" style="background:#fde8e8;border:none;padding:.2rem .5rem;border-radius:5px;cursor:pointer;color:var(--er);font-size:.78rem">✕ حذف</button></div><div class="g2"><div class="fg"><label>الاسم</label><input type="text" class="br-n" placeholder="الاسم"></div><div class="fg"><label>الفئة</label><select class="br-c" style="padding:.62rem .9px;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif;width:100%;direction:rtl">${catOpts}</select></div><div class="fg"><label>الفئة العمرية</label><select class="br-a" onchange="loadBRowSz(this)" style="padding:.62rem .9px;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif;width:100%;direction:rtl">${ageOpts}</select></div><div class="fg"><label>سعر البيع (د.ع)</label><input type="number" class="br-s" placeholder="0"></div><div class="fg"><label>باركود</label><input type="text" class="br-b" placeholder="تلقائي"></div></div><div class="fg"><label>الأحجام</label><div class="br-sz szgrid"></div></div><div class="fg"><label>الصور (رابط درايف أو رفع)</label><div style="display:flex;gap:.4rem;margin-bottom:.4rem"><input type="text" class="br-link-inp" placeholder="لصق رابط درايف..." style="flex:1;padding:.4rem;border:1px solid var(--bd);border-radius:5px;direction:ltr"><button class="bp" style="flex:none;padding:.4rem" onclick="addBRowImgFromLink(this)">➕ إضافة</button></div><div class="iua" onclick="this.querySelector('input').click()" style="padding:.5rem"><input type="file" accept="image/*" multiple onchange="handleBRowImg(this)" style="display:none"><span style="font-size:.78rem;color:var(--mt)">📸 رفع صور</span></div><div class="br-imgs ipw" style="margin-top:.3rem"></div></div>`;
+  div.innerHTML=`<div style="display:flex;justify-content:space-between;margin-bottom:.5rem"><strong style="font-size:.86rem">قطعة</strong><button onclick="this.closest('.brow').remove()" style="background:#fde8e8;border:none;padding:.2rem .5rem;border-radius:5px;cursor:pointer;color:var(--er);font-size:.78rem">✕ حذف</button></div><div class="g2"><div class="fg"><label>الاسم</label><input type="text" class="br-n" placeholder="الاسم"></div><div class="fg"><label>الفئة</label><select class="br-c" style="padding:.62rem .9px;border:1.5px solid var(--bd);border-radius:7px;width:100%;direction:rtl">${catOpts}</select></div><div class="fg"><label>الفئة العمرية</label><select class="br-a" onchange="loadBRowSz(this)" style="padding:.62rem .9px;border:1.5px solid var(--bd);border-radius:7px;width:100%;direction:rtl">${ageOpts}</select></div><div class="fg"><label>سعر البيع (د.ع)</label><input type="number" class="br-s" placeholder="0"></div><div class="fg"><label>باركود</label><input type="text" class="br-b" placeholder="تلقائي"></div></div><div class="fg"><label>الأحجام</label><div class="br-sz szgrid"></div></div><div class="fg"><label>الصور (رابط درايف أو رفع)</label><div style="display:flex;gap:.4rem;margin-bottom:.4rem"><input type="text" class="br-link-inp" placeholder="لصق رابط درايف..." style="flex:1;padding:.4rem;border:1px solid var(--bd);border-radius:5px;direction:ltr"><button class="bp" style="flex:none;padding:.4rem" onclick="addBRowImgFromLink(this)">➕ إضافة</button></div><div class="iua" onclick="this.querySelector('input').click()" style="padding:.5rem"><input type="file" accept="image/*" multiple onchange="handleBRowImg(this)" style="display:none"><span style="font-size:.78rem;color:var(--mt)">📸 رفع صور</span></div><div class="br-imgs ipw" style="margin-top:.3rem"></div></div>`;
   container.appendChild(div);loadBRowSz(div.querySelector('.br-a'));
 }
 function loadBRowSz(sel){const row=sel.closest('.brow');const ag=S.ageGroups.find(a=>a.name===sel.value);const sizes=ag?.sizes||['XS','S','M','L','XL','XXL'];row.querySelector('.br-sz').innerHTML=sizes.map(sz=>`<div class="szbox"><label>${sz}</label><input type="number" min="0" placeholder="0" data-sz="${sz}" value="0"></div>`).join('');}
@@ -1623,18 +1409,12 @@ function confirmBatch(){ const bN=document.getElementById('bN').value.trim();con
 function clearBatch(){['bN','bD','bC','bS','bQ','bNo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('bRows').innerHTML='';document.getElementById('bRes').classList.remove('show');addBRow();}
 function renderBatchHist(){ const tb=document.getElementById('bHist');if(!tb)return; if(!S.batches.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--mt)">لا توجد batches</td></tr>';return;} tb.innerHTML=[...S.batches].reverse().map((b,i)=>`<tr><td>${S.batches.length-i}</td><td>${b.name}</td><td>${b.date||'-'}</td><td>${b.qty}</td><td>${cur(b.totalCost)}</td><td>${cur(b.shipping)}</td><td>${cur(b.costPerPiece)}</td><td><span class="badge bok">${b.status}</span></td></tr>`).join(''); }
 
-// ════════════════════════════════════════════════════════════
-//  BARCODE
-// ════════════════════════════════════════════════════════════
 function genBC(){const val=document.getElementById('bcGen').value.trim();if(!val){toast('⚠️ أدخل قيمة');return;}try{JsBarcode('#bcCanvas',val,{format:'CODE128',width:2,height:72,displayValue:true,font:'Courier',fontSize:12});}catch(e){toast('❌ قيمة غير صالحة');}}
 function bcLookup(){const val=document.getElementById('bcIn').value.trim();if(!val)return;const p=S.products.find(x=>x.barcode===val);const res=document.getElementById('bcResult');if(p){res.style.color='var(--ok)';res.textContent=`✅ ${p.name} — ${cur(effPrice(p))} — الكمية: ${Object.values(p.sizes||{}).reduce((a,b)=>a+b,0)}`;try{JsBarcode('#bcCanvas',val,{format:'CODE128',width:2,height:72,displayValue:true});}catch(e){}}else{res.style.color='var(--er)';res.textContent='❌ لم يُعثر على هذا الباركود';}}
 function printBC(){const c=document.getElementById('bcCanvas');if(!c.width){toast('⚠️ ولّد باركود أولاً');return;}const w=window.open('');w.document.write(`<html><body><img src="${c.toDataURL()}" style="width:260px"><script>window.onload=()=>{window.print();window.close()}<\/script></body></html>`);}
 function startScan(){const ov=document.getElementById('scanOv');ov.style.display='flex';if(navigator.mediaDevices?.getUserMedia){navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(stream=>{const vid=document.getElementById('scanVid');vid.srcObject=stream;vid.play();toast('📷 وجّه الكاميرا نحو الباركود',4000);}).catch(()=>toast('❌ تعذر الوصول للكاميرا'));}}
 function stopScan(){const vid=document.getElementById('scanVid');if(vid.srcObject)vid.srcObject.getTracks().forEach(t=>t.stop());document.getElementById('scanOv').style.display='none';}
 
-// ════════════════════════════════════════════════════════════
-//  ORDERS
-// ════════════════════════════════════════════════════════════
 function resetDateFilter(){const now=new Date();const y=now.getFullYear(),m=now.getMonth();document.getElementById('oFrom').value=new Date(y,m,1).toISOString().split('T')[0];document.getElementById('oTo').value=new Date(y,m+1,0).toISOString().split('T')[0];renderOrders();}
 function renderOrders(){ const from=document.getElementById('oFrom').value;const to=document.getElementById('oTo').value;const st=document.getElementById('oStatus').value; let orders=[...S.orders].filter(o=>{const d=new Date(o.dateTs||o.id);const df=from?d>=new Date(from):true;const dt=to?d<=new Date(to+'T23:59:59'):true;const ds=st==='all'||o.status===st;return df&&dt&&ds;}).reverse(); const sts={preparing:'قيد التجهيز',delivering:'قيد التوصيل',done:'تم الاستلام',rejected:'تم الرفض',returned:'راجع للمخزن'}; const bc={preparing:'bwarn',delivering:'bship',done:'bok',rejected:'berr',returned:'bac'}; document.getElementById('orderStats').innerHTML=`<div class="sc2"><div class="sv">${S.orders.length}</div><div class="sl2">إجمالي</div></div><div class="sc2"><div class="sv">${S.orders.filter(o=>o.status==='preparing').length}</div><div class="sl2">قيد التجهيز</div></div><div class="sc2"><div class="sv">${S.orders.filter(o=>o.status==='done').length}</div><div class="sl2">مكتملة</div></div><div class="sc2"><div class="sv">${S.orders.filter(o=>o.status==='done').reduce((a,o)=>a+(o.total||0),0).toLocaleString('ar-IQ')}</div><div class="sl2">الإيرادات (د.ع)</div></div>`; const tbody=document.getElementById('ordersBody');if(!tbody)return; if(!orders.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--mt)">لا توجد طلبات</td></tr>';return;} tbody.innerHTML=orders.map(o=>{ const iStr=o.items?.map(x=>`${x.name}(${x.sz}×${x.qty})`).join('، ')||''; return `<tr class="clk" onclick="viewOrder(${o.id})"><td style="font-size:.72rem">${o.id}</td><td><strong>${o.customer?.name||''}</strong><br><span style="font-size:.7rem;color:var(--mt)">${o.customer?.phone||''}</span></td><td style="font-size:.72rem;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${iStr}</td><td><strong>${cur(o.total)}</strong></td><td style="font-size:.7rem">${o.offerMsg!=='-'?o.offerMsg:'—'}</td><td style="font-size:.72rem">${o.date}</td><td><span class="badge ${bc[o.status]||'binfo'}">${sts[o.status]||o.status}</span></td><td onclick="event.stopPropagation()" style="display:flex;gap:.2rem;flex-wrap:wrap"><button class="ab aship" onclick="updOrd(${o.id},'delivering')">🚚</button><button class="ab ao" onclick="updOrd(${o.id},'done')">✅</button><button class="ab arej" onclick="openRej(${o.id})">❌</button></td></tr>`; }).join(''); }
 function updOrd(id,status){const o=S.orders.find(x=>x.id===id);if(!o)return;o.status=status;save();renderOrders();toast(status==='done'?'✅ تم الاستلام':status==='delivering'?'🚚 قيد التوصيل':'تم التحديث');}
@@ -1642,21 +1422,12 @@ function openRej(id){document.getElementById('rejId').value=id;document.getEleme
 function doReject(){ const id=parseInt(document.getElementById('rejId').value);const o=S.orders.find(x=>x.id===id);if(!o)return; o.status=document.getElementById('retSt').value;o.rejectReason=document.getElementById('rejReason').value; o.items?.forEach(item=>{const p=S.products.find(x=>x.id===item.pid);if(p){if(!p.sizes)p.sizes={};p.sizes[item.sz]=(p.sizes[item.sz]||0)+item.qty;}}); save();closeM('rejModal');renderOrders();renderStock();toast('↩️ تم الرفض وإرجاع القطع للمخزون'); }
 function viewOrder(id){ const o=S.orders.find(x=>x.id===id);if(!o)return; const sts={preparing:'⏳ قيد التجهيز',delivering:'🚚 قيد التوصيل',done:'✅ تم الاستلام',rejected:'❌ تم الرفض',returned:'↩️ راجع للمخزن'}; const items=o.items?.map(item=>{ const p=S.products.find(x=>x.id===item.pid);const imgs=S.prodImgs[item.pid]||[];const cov=S.prodCoverIdx[item.pid]||0;const src=imgs[cov]||null; return `<div style="display:flex;gap:.7rem;align-items:center;background:var(--c1);border-radius:8px;padding:.6rem;margin-bottom:.5rem"><div style="width:48px;height:58px;border-radius:6px;background:var(--c4);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center">${src?`<img src="${src}" style="width:100%;height:100%;object-fit:cover">`:'👗'}</div><div style="flex:1"><div style="font-weight:600;font-size:.85rem">${item.name}</div><div style="font-size:.76rem;color:var(--mt)">مقاس: <strong>${item.sz}</strong> | كمية: <strong>${item.qty}</strong></div><div style="font-size:.8rem;font-weight:700;color:var(--wb)">${cur(item.price)} / قطعة — إجمالي: ${cur(item.price*item.qty)}</div>${p?`<div style="font-size:.7rem;color:var(--mt)">${p.category||''} ${p.ageGroup?'— '+p.ageGroup:''}</div>`:''}</div></div>`;}).join(''); document.getElementById('ordDetail').innerHTML=`<div class="g2" style="margin-bottom:.9rem"><div style="background:var(--c1);border-radius:8px;padding:.8rem"><div style="font-size:.74rem;color:var(--mt);margin-bottom:.25rem">معلومات العميل</div><div style="font-weight:600">${o.customer?.name}</div><div style="font-size:.82rem">${o.customer?.phone}</div><div style="font-size:.78rem;color:var(--mt)">${o.customer?.addr}</div>${o.customer?.notes?`<div style="font-size:.76rem;margin-top:.3rem;font-style:italic">${o.customer.notes}</div>`:''}</div><div style="background:var(--c1);border-radius:8px;padding:.8rem"><div style="font-size:.74rem;color:var(--mt);margin-bottom:.25rem">المالية</div><div style="font-size:.82rem">المجموع: <strong>${cur(o.sub)}</strong></div><div style="font-size:.82rem">الشحن: <strong>${cur(o.ship)}</strong></div><div style="font-size:.82rem">الخصم: <strong>-${cur(o.disc)}</strong></div><div style="font-size:.98rem;font-weight:700;color:var(--wb);margin-top:.25rem">الإجمالي: ${cur(o.total)}</div><div style="margin-top:.3rem">${sts[o.status]||o.status}</div>${o.offerMsg&&o.offerMsg!=='-'?`<div style="font-size:.74rem;color:var(--ok)">${o.offerMsg}</div>`:''}</div></div><div style="font-weight:700;margin-bottom:.5rem;color:var(--wb)">📦 القطع (${o.items?.length||0})</div>${items}${o.rejectReason?`<div style="background:#fde8e8;border-radius:7px;padding:.5rem;font-size:.78rem;color:var(--er);margin-top:.5rem">سبب الرفض: ${o.rejectReason}</div>`:''}`; openM('ordModal'); }
 
-// ════════════════════════════════════════════════════════════
-//  CUSTOMERS
-// ════════════════════════════════════════════════════════════
 function renderCustomers(){ const q=(document.getElementById('custSrch')?.value||'').toLowerCase(); const custs=S.customers.filter(c=>c.name?.toLowerCase().includes(q)||c.phone?.includes(q)).sort((a,b)=>b.totalSpent-a.totalSpent); document.getElementById('custCnt').textContent=`${S.customers.length} عميل`; const el=document.getElementById('custList');if(!el)return; if(!custs.length){el.innerHTML='<div style="text-align:center;padding:2rem;color:var(--mt)">لا توجد عملاء</div>';return;} el.innerHTML=custs.map(c=>{const isVip=c.orders>=S.settings.vipOrders; return `<div style="background:#fff;border-radius:9px;padding:.82rem 1rem;box-shadow:0 2px 9px var(--sh);display:flex;gap:.8rem;align-items:center;margin-bottom:.6rem;cursor:pointer" onclick="viewCust('${c.phone}')"><div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--c4),var(--c3));display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">👤</div><div style="flex:1"><div style="display:flex;align-items:center;gap:.4rem"><strong>${c.name}</strong>${isVip?'<span class="vip">⭐ VIP</span>':''}</div><div style="font-size:.75rem;color:var(--mt)">${c.phone} | ${c.addr||''}</div><div style="font-size:.75rem;margin-top:.15rem"><span style="color:var(--wb);font-weight:600">${c.orders} طلب</span> | إجمالي: <strong>${cur(c.totalSpent)}</strong> | آخر طلب: ${c.lastOrder}</div></div></div>`;}).join(''); }
 function viewCust(phone){ const c=S.customers.find(x=>x.phone===phone);if(!c)return; const orders=S.orders.filter(o=>o.customer?.phone===phone).reverse(); const isVip=c.orders>=S.settings.vipOrders; const ords=orders.length?orders.map(o=>{ const items=o.items?.map(item=>{ const imgs=S.prodImgs[item.pid]||[];const cov=S.prodCoverIdx[item.pid]||0;const src=imgs[cov]||null; return `<div style="display:flex;gap:.5rem;align-items:center;background:#fff;border-radius:7px;padding:.42rem;margin-bottom:.3rem"><div style="width:36px;height:44px;border-radius:5px;background:var(--c4);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center">${src?`<img src="${src}" style="width:100%;height:100%;object-fit:cover">`:'👗'}</div><div style="flex:1;font-size:.78rem"><div style="font-weight:600">${item.name}</div><div style="color:var(--mt)">مقاس: ${item.sz} | كمية: ${item.qty} | ${cur(item.price*item.qty)}</div></div></div>`;}).join(''); const sts={preparing:'⏳',delivering:'🚚',done:'✅',rejected:'❌',returned:'↩️'}; return `<div style="background:var(--c1);border-radius:8px;padding:.78rem;margin-bottom:.6rem;border-right:3px solid var(--ac)"><div style="display:flex;justify-content:space-between;margin-bottom:.4rem"><div style="font-weight:600;font-size:.83rem">${sts[o.status]||''} طلب ${o.date}</div><div style="font-weight:700;color:var(--wb)">${cur(o.total)}</div></div>${items}<div style="font-size:.72rem;color:var(--mt);margin-top:.25rem">شحن: ${cur(o.ship)} | خصم: -${cur(o.disc)} ${o.offerMsg!=='-'?'| '+o.offerMsg:''}</div></div>`; }).join(''):'<div style="text-align:center;color:var(--mt);padding:1rem">لا توجد طلبات</div>'; document.getElementById('custDetail').innerHTML=`<div style="background:linear-gradient(135deg,var(--c4),var(--c3));border-radius:9px;padding:.88rem;margin-bottom:.88rem;display:flex;gap:.88rem;align-items:center"><div style="font-size:2rem">👤</div><div><div style="font-size:1.02rem;font-weight:700">${c.name} ${isVip?'<span class="vip">⭐ VIP</span>':''}</div><div style="font-size:.82rem">${c.phone}</div><div style="font-size:.78rem;opacity:.8">${c.addr||''}</div></div></div><div class="g3" style="margin-bottom:.88rem"><div style="background:#fff;border-radius:7px;padding:.62rem;text-align:center;box-shadow:0 2px 7px var(--sh)"><div style="font-size:1.25rem;font-weight:700;color:var(--wb)">${c.orders}</div><div style="font-size:.7rem;color:var(--mt)">طلب</div></div><div style="background:#fff;border-radius:7px;padding:.62rem;text-align:center;box-shadow:0 2px 7px var(--sh)"><div style="font-size:.88rem;font-weight:700;color:var(--wb)">${cur(c.totalSpent)}</div><div style="font-size:.7rem;color:var(--mt)">إجمالي الإنفاق</div></div><div style="background:#fff;border-radius:7px;padding:.62rem;text-align:center;box-shadow:0 2px 7px var(--sh)"><div style="font-size:.8rem;font-weight:600;color:var(--wb)">${c.lastOrder}</div><div style="font-size:.7rem;color:var(--mt)">آخر طلب</div></div></div><div style="font-weight:700;color:var(--wb);margin-bottom:.5rem">📋 سجل الطلبات (${orders.length})</div>${ords}`; openM('custModal'); }
 
-// ════════════════════════════════════════════════════════════
-//  REPORTS
-// ════════════════════════════════════════════════════════════
 function renderReports(){ const m=parseInt(document.getElementById('repM')?.value);const y=parseInt(document.getElementById('repY')?.value);const key=`${y}-${m}`; const exp=S.expenses[key]||{ads:0,ship:0,pack:0}; document.getElementById('eA').value=exp.ads||0;document.getElementById('eS').value=exp.ship||0;document.getElementById('eP').value=exp.pack||0; const ords=S.orders.filter(o=>{const d=new Date(o.dateTs||o.id);return d.getMonth()===m&&d.getFullYear()===y&&o.status!=='rejected'&&o.status!=='returned';}); const useOrds=ords.length>0?ords:S.orders.filter(o=>o.status!=='rejected'&&o.status!=='returned'); const sales=useOrds.reduce((a,o)=>a+(o.total||0),0); const cogs=useOrds.reduce((a,o)=>a+(o.items?.reduce((x,i)=>{const p=S.products.find(px=>px.id===i.pid);return x+(p?.buyPrice||0)*i.qty;},0)||0),0); const offL=useOrds.reduce((a,o)=>a+(o.offersLoss||0),0); const net=sales-cogs-(exp.ads||0)-(exp.ship||0)-(exp.pack||0)-offL; document.getElementById('rpS').textContent=sales.toLocaleString('ar-IQ');document.getElementById('rpC').textContent=cogs.toLocaleString('ar-IQ'); document.getElementById('rpA').textContent=(exp.ads||0).toLocaleString('ar-IQ');document.getElementById('rpSh').textContent=(exp.ship||0).toLocaleString('ar-IQ'); document.getElementById('rpPk').textContent=(exp.pack||0).toLocaleString('ar-IQ');document.getElementById('rpOf').textContent=offL.toLocaleString('ar-IQ'); document.getElementById('rpN').textContent=net.toLocaleString('ar-IQ'); const cS={};useOrds.forEach(o=>o.items?.forEach(i=>{const p=S.products.find(x=>x.id===i.pid);if(p)cS[p.category]=(cS[p.category]||0)+i.price*i.qty;})); const mx=Math.max(...Object.values(cS),1); document.getElementById('catSales').innerHTML=Object.entries(cS).map(([cat,v])=>`<div style="margin-bottom:.6rem"><div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:.2rem"><span>${cat}</span><span>${cur(v)}</span></div><div class="pb2"><div class="pf2" style="width:${(v/mx)*100}%"></div></div></div>`).join('')||'<p style="font-size:.78rem;color:var(--mt)">لا مبيعات</p>'; const sM={};useOrds.forEach(o=>o.items?.forEach(i=>{if(!sM[i.name])sM[i.name]={qty:0,rev:0,cost:0,bp:(S.products.find(p=>p.id===i.pid)?.buyPrice||0)};sM[i.name].qty+=i.qty;sM[i.name].rev+=i.price*i.qty;sM[i.name].cost+=sM[i.name].bp*i.qty;})); document.getElementById('saleDetail').innerHTML=Object.entries(sM).map(([n,d])=>`<tr><td>${n}</td><td>${d.qty}</td><td>${cur(d.rev)}</td><td>${cur(d.cost)}</td><td style="color:var(--ok)">${cur(d.rev-d.cost)}</td></tr>`).join('')||'<tr><td colspan="5" style="text-align:center;color:var(--mt)">لا مبيعات</td></tr>'; }
 function saveExp(){const m=parseInt(document.getElementById('repM').value);const y=parseInt(document.getElementById('repY').value);S.expenses[`${y}-${m}`]={ads:parseFloat(document.getElementById('eA').value)||0,ship:parseFloat(document.getElementById('eS').value)||0,pack:parseFloat(document.getElementById('eP').value)||0};save();renderReports();toast('✅ تم حفظ المصاريف');}
 
-// ════════════════════════════════════════════════════════════
-//  SETTINGS
-// ════════════════════════════════════════════════════════════
 function renderCatList(){ const el=document.getElementById('catList');if(!el)return; el.innerHTML=S.categories.map((c,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:.48rem .7rem;background:var(--c1);border-radius:6px;margin-bottom:.32rem"><span>${c.icon} ${c.name}</span><div style="display:flex;gap:.3rem"><input type="text" value="${c.icon}" onchange="S.categories[${i}].icon=this.value;save();renderFilters();renderCatStrip()" style="width:40px;padding:.26rem;border:1px solid var(--bd);border-radius:5px;text-align:center"><input type="text" value="${c.name}" onchange="S.categories[${i}].name=this.value;save();renderAll()" style="width:108px;padding:.26rem .48rem;border:1px solid var(--bd);border-radius:5px;direction:rtl;font-family:'Tajawal',sans-serif"><button class="ab ad" onclick="delCat(${i})">🗑️</button></div></div>`).join(''); }
 function addCat(){const n=document.getElementById('nCat').value.trim();const ic=document.getElementById('nCatIc').value.trim()||'📦';if(!n){toast('⚠️ أدخل اسم الفئة');return;}S.categories.push({name:n,icon:ic});document.getElementById('nCat').value='';document.getElementById('nCatIc').value='';save();renderCatList();renderFilters();renderCatStrip();toast('✅ تمت الإضافة');}
 function delCat(i){if(!confirm('حذف؟'))return;S.categories.splice(i,1);save();renderCatList();renderFilters();renderCatStrip();}
@@ -1673,21 +1444,10 @@ async function syncSheets(){ toast('🔄 جاري التحديث من Sheets...'
 async function testSheet(){ const url=SHEETS_URL; toast('🔄 اختبار الاتصال...'); try{ const r=await fetch(`${url}?action=test`); if(r.ok){const d=await r.json();toast(d.ok?'✅ الاتصال ناجح — Sheets متصل':'⚠️ الاتصال يعمل لكن هناك مشكلة');} else toast('⚠️ استجابة غير صحيحة'); }catch(e){toast('❌ فشل الاتصال — تحقق من الإنترنت');} }
 function saveOffers(){S.settings.freeShipQty=parseInt(document.getElementById('fSQ').value)||2;S.settings.shipCost=parseInt(document.getElementById('sCost').value)||5000;S.settings.giftQty=parseInt(document.getElementById('gQ').value)||4;S.settings.vipOrders=parseInt(document.getElementById('vO').value)||5;S.settings.vipDisc=parseInt(document.getElementById('vD').value)||10;S.settings.promoCode=document.getElementById('pCode').value||'VALENTINA10';S.settings.promoDisc=parseInt(document.getElementById('pDisc').value)||10;save();document.getElementById('giftTag').textContent=`🎁 ${S.settings.giftQty} قطع = هدية`;document.getElementById('annGift').textContent=S.settings.giftQty;toast('✅ تم حفظ العروض');}
 
-// ════════════════════════════════════════════════════════════
-//  AUTH
-// ════════════════════════════════════════════════════════════
 function openAuth(){if(S.currentUser){toast(`مرحباً ${S.currentUser.name}!`);return;}document.getElementById('authS1').style.display='block';document.getElementById('authS2').style.display='none';document.getElementById('authPh').value='';openM('authOv');}
-function sendOTP(){const ph=document.getElementById('authPh').value.trim();if(!ph||ph.length<10){toast('⚠️ أدخل رقم صحيح');return;}document.getElementById('authS1').style.display='none';document.getElementById('authS2').style.display='block';document.querySelectorAll('.otp-row input').forEach(i=>i.value='');document.querySelectorAll('.otp-row input')[0].focus();toast('📱 الكود التجريبي: 1234',4000);}
+function sendOTP(){const ph=document.getElementById('authPh').value.trim();if(!ph||ph.length<10){toast('⚠️ أدخل رقم صحيح');return;}document.getElementById('authS1').style.display='none';document.getElementById('authS2').style.display='block';document.querySelectorAll('.otp-row input').forEach(i=>i.value='');document.querySelectorAll('.otp-row input')[0].focus();toast('📱 كود التحقق التجريبي: 1234',4000);}
 function otpN(el,idx){if(el.value.length===1&&idx<3)document.querySelectorAll('.otp-row input')[idx+1].focus();}
 function verOTP(){const code=Array.from(document.querySelectorAll('.otp-row input')).map(i=>i.value).join('');const ph=document.getElementById('authPh').value;if(code==='1234'){const ex=S.customers.find(c=>c.phone===ph);S.currentUser={name:ex?.name||ph,phone:ph};save();closeM('authOv');document.getElementById('authBtn').innerHTML='✅';toast(`🎉 مرحباً ${S.currentUser.name}!`);}else toast('❌ الكود خاطئ. التجريبي: 1234');}
-
-// ════════════════════════════════════════════════════════════
-//  START
-// ════════════════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded',()=>{
-  init();addBRow();
-  let clicks=0;document.querySelector('.nav-logo-wrap').addEventListener('click',()=>{clicks++;if(clicks>=3){clicks=0;showSeller();}setTimeout(()=>clicks=0,600);});
-});
 </script>
 </body>
 </html>
