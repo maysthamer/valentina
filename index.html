@@ -108,6 +108,14 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
 .szchip{background:var(--c1);color:var(--mt);border-radius:4px;padding:.15rem .4rem;font-size:.68rem;font-weight:600;cursor:pointer;border:1.5px solid var(--bd);transition:all .18s}
 .szchip.sel,.szchip:hover{border-color:var(--wb);background:var(--c2);color:var(--wb)}
 .szchip.out{opacity:.3;cursor:not-allowed;text-decoration:line-through}
+/* ── qty counter ── */
+.qty-ctrl{display:inline-flex;align-items:center;border:1.5px solid var(--bd);border-radius:6px;overflow:hidden;height:28px}
+.qty-ctrl button{background:var(--c2);border:none;width:26px;height:100%;cursor:pointer;font-size:1rem;color:var(--wb);font-weight:700;transition:background .15s;flex-shrink:0}
+.qty-ctrl button:hover{background:var(--bd)}
+.qty-ctrl span{min-width:26px;text-align:center;font-size:.85rem;font-weight:700;color:var(--dt);padding:0 2px}
+/* cart item row */
+.ci{display:flex;gap:.8rem;padding:.7rem 0;border-bottom:1px solid var(--bd);align-items:flex-start}
+.ci-ctrl{display:flex;flex-direction:column;align-items:flex-end;gap:.4rem;flex-shrink:0}
 .acbtn{width:100%;background:var(--wb);border:none;color:#fff;padding:.55rem;border-radius:4px;font-family:'Tajawal',sans-serif;font-weight:600;font-size:.82rem;cursor:pointer;letter-spacing:.3px;transition:background .2s}
 .acbtn:hover{background:var(--ac)}
 
@@ -1395,14 +1403,15 @@ function buildCard(p){
   const stock=Object.values(p.sizes||{}).reduce((a,b)=>a+b,0); const isOut=stock===0;
   const imgs=S.prodImgs[p.id]||[];const cov=S.prodCoverIdx[p.id]||0; const src=imgs[cov]||null;
   const ep=effPrice(p);const dl=discLabel(p); const isFav=S.favorites.includes(p.id); const ag=S.ageGroups.find(a=>a.name===p.ageGroup);
-  const szH=Object.entries(p.sizes||{}).map(([sz,qty])=>`<span class="szchip ${qty===0?'out':''}" data-pid="${p.id}" data-sz="${sz}" onclick="pickSz(this,${p.id},'${sz}')">${sz}</span>`).join('');
-  return `<div class="pcard" id="pc${p.id}">${dl?`<div class="disc-badge">${dl}</div>`:''}<div class="pcard-img" onclick="openItem(${p.id})">${src?`<img src="${src}" alt="${p.name}">`:'<span style="font-size:3.5rem">👗</span>'}<button class="fav-btn ${isFav?'on':''}" onclick="togFav(${p.id},event)">${isFav?'❤️':'🤍'}</button>${isOut?`<div class="oos-overlay"><div class="oos-tag">نفد المخزون</div></div>`:''}${ag?`<div class="age-badge">${ag.icon} ${ag.name}</div>`:''}</div><div class="pcard-info"><div class="pname" onclick="openItem(${p.id})">${p.name}</div><div class="pmeta">${p.category}</div><div class="pprices"><span class="pprice">${cur(ep)}</span>${dl?`<span class="pold-price">${cur(p.sellPrice)}</span>`:''}</div><div class="szrow">${szH}</div><button class="acbtn" onclick="addCart(${p.id})" ${isOut?'disabled style="opacity:.4;cursor:not-allowed"':''}>${isOut?'نفد المخزون':'+ أضف للسلة'}</button></div></div>`;
+  const szH=Object.entries(p.sizes||{}).filter(([,q])=>q>0).map(([sz])=>`<span class="szchip">${sz}</span>`).join('');
+  const allOut=Object.values(p.sizes||{}).every(q=>q===0);
+  return `<div class="pcard" id="pc${p.id}" onclick="openItem(${p.id})" style="cursor:pointer">${dl?`<div class="disc-badge">${dl}</div>`:''}<div class="pcard-img">${src?`<img src="${src}" alt="${p.name}">`:'<span style="font-size:3.5rem">👗</span>'}<button class="fav-btn ${isFav?'on':''}" onclick="togFav(${p.id},event)">${isFav?'❤️':'🤍'}</button>${allOut?`<div class="oos-overlay"><div class="oos-tag">نفد المخزون</div></div>`:''}${ag?`<div class="age-badge">${ag.icon} ${ag.name}</div>`:''}</div><div class="pcard-info"><div class="pname">${p.name}</div><div class="pmeta">${p.category}</div><div class="pprices"><span class="pprice">${cur(ep)}</span>${dl?`<span class="pold-price">${cur(p.sellPrice)}</span>`:''}</div><div class="szrow">${szH}</div><button class="acbtn" onclick="event.stopPropagation();openItem(${p.id})" ${allOut?'disabled style="opacity:.4;cursor:not-allowed"':''}>${allOut?'نفد المخزون':'اختاري المقاس →'}</button></div></div>`;
 }
 
 function renderNewArrivals(){ const g=document.getElementById('newArrivalsGrid');if(!g)return; const ps=[...S.products].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).slice(0,5); g.innerHTML=ps.length?ps.map(buildCard).join(''):'<div style="color:var(--mt)">لا توجد منتجات</div>'; }
 function renderBestSellers(){ const g=document.getElementById('bestSellersGrid');if(!g)return; const ps=[...S.products].sort((a,b)=>(b.salesCount||0)-(a.salesCount||0)).slice(0,5); g.innerHTML=ps.length?ps.map(buildCard).join(''):'<div style="color:var(--mt)">لا توجد منتجات</div>'; }
 function renderAllProducts(){ const g=document.getElementById('allGrid');if(!g)return; const q=(document.getElementById('buyerSearch')?.value||'').toLowerCase(); const ps=S.products.filter(p=>{ const ms=p.name.toLowerCase().includes(q)||(p.desc||'').toLowerCase().includes(q); const mc=S.activeCat==='all'||p.category===S.activeCat; const ma=S.activeAge==='all'||p.ageGroup===S.activeAge; return ms&&mc&&ma; }); g.innerHTML=ps.length?ps.map(buildCard).join(''):'<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--mt)">🔍 لا توجد منتجات</div>'; }
-function pickSz(el,pid,sz){ document.querySelectorAll(`[data-pid="${pid}"]`).forEach(x=>x.classList.remove('sel')); el.classList.add('sel'); const c=document.getElementById(`pc${pid}`);if(c)c.dataset.sz=sz; }
+
 
 function openItem(id){
   const p=S.products.find(x=>x.id===id);if(!p)return; S.prevPage='buyer';showPage('item');
@@ -1411,15 +1420,89 @@ function openItem(id){
   mainDiv.innerHTML=imgs[cov]?`<img src="${imgs[cov]}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover">`:'<span style="font-size:6rem">👗</span>';
   document.getElementById('idThumbs').innerHTML=imgs.map((src,i)=>`<div class="id-thumb ${i===cov?'active':''}" onclick="switchThumb(${i})"><img src="${src}"></div>`).join('');
   window._iImgs=imgs;window._iMainDiv=mainDiv;
-  const szH=Object.entries(p.sizes||{}).map(([sz,qty])=>`<div class="id-sz ${qty===0?'out':''}" data-sz="${sz}" onclick="pickIdSz(this)">${sz}${qty===0?' (نفد)':''}</div>`).join('');
-  document.getElementById('idInfo').innerHTML=`<div class="id-name">${p.name}</div><div class="id-meta">${p.category}${ag?' — '+ag.icon+' '+ag.name:''}</div><div class="id-prices"><span class="id-price">${cur(ep)}</span>${dl?`<span class="id-old">${cur(p.sellPrice)}</span><span class="id-disc-tag">${dl}</span>`:''}</div>${p.desc?`<div class="id-desc">${p.desc}</div>`:''}<div class="id-szlabel">اختاري المقاس:</div><div class="id-sizes" id="idSizes">${szH}</div><button class="id-atc" onclick="addCartFromDetail(${id})">+ أضف للسلة</button><button class="id-fav" onclick="togFav(${id},{stopPropagation:()=>{}})" id="idFavBtn">${S.favorites.includes(id)?'❤️ في المفضلة':'🤍 أضف للمفضلة'}</button>`;
+  const szH=Object.entries(p.sizes||{}).map(([sz,qty])=>`<div class="id-sz ${qty===0?'out':''}" data-sz="${sz}" onclick="pickIdSz(this,${id})">${sz}${qty===0?' (نفد)':''}</div>`).join('');
+  document.getElementById('idInfo').innerHTML=`<div class="id-name">${p.name}</div><div class="id-meta">${p.category}${ag?' — '+ag.icon+' '+ag.name:''}</div><div class="id-prices"><span class="id-price">${cur(ep)}</span>${dl?`<span class="id-old">${cur(p.sellPrice)}</span><span class="id-disc-tag">${dl}</span>`:''}</div>${p.desc?`<div class="id-desc">${p.desc}</div>`:''}<div class="id-szlabel">اختاري المقاس:</div><div class="id-sizes" id="idSizes">${szH}</div><div style="display:flex;align-items:center;gap:1rem;margin:.8rem 0"><span style="font-weight:700;font-size:.85rem;color:var(--dt)">الكمية:</span><div class="qty-ctrl"><button onclick="detailQty(-1,${id})">−</button><span id="detailQtyVal">1</span><button onclick="detailQty(1,${id})">+</button></div></div><button class="id-atc" onclick="addCartFromDetail(${id})">+ أضف للسلة</button><button class="id-fav" onclick="togFav(${id},{stopPropagation:()=>{}})" id="idFavBtn">${S.favorites.includes(id)?'❤️ في المفضلة':'🤍 أضف للمفضلة'}</button>`;
   const notes=S.prodNotes[id]||[];
   document.getElementById('idNotes').innerHTML=notes.length?`<div style="font-weight:700;color:var(--wb);margin-bottom:.6rem">📌 ملاحظات</div>`+notes.map(n=>n.type==='text'?`<div class="note-item">${n.content}</div>`:`<div class="note-item"><img src="${n.content}" style="max-width:200px;border-radius:7px;cursor:pointer" onclick="zoomImg2('${n.content}')"></div>`).join(''):';';
   window._idP=p;
 }
 function switchThumb(i){ const imgs=window._iImgs||[];if(!imgs[i])return; window._iMainDiv.innerHTML=`<img src="${imgs[i]}" alt="" style="width:100%;height:100%;object-fit:cover">`; document.querySelectorAll('.id-thumb').forEach((t,j)=>t.classList.toggle('active',j===i)); }
-function pickIdSz(el){document.querySelectorAll('.id-sz').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');}
-function addCartFromDetail(id){ const selEl=document.querySelector('.id-sz.sel');const sz=selEl?.dataset?.sz||null; if(!sz){toast('⚠️ اختاري المقاس');return;} const p=S.products.find(x=>x.id===id);if(!p)return; if(!(p.sizes[sz]>0)){toast('⚠️ هذا المقاس نفد');return;} const ep=effPrice(p); const ex=S.cart.find(i=>i.pid===id&&i.sz===sz); if(ex)ex.qty++;else S.cart.push({pid:id,sz,qty:1,price:ep,name:p.name}); save();updateCartUI();toast('✅ أُضيف للسلة'); }
+function pickIdSz(el,pid){
+  document.querySelectorAll('.id-sz').forEach(x=>x.classList.remove('sel'));
+  el.classList.add('sel');
+  // تحديث الكمية القصوى حسب المخزون
+  const p=S.products.find(x=>x.id===pid);
+  const sz=el.dataset.sz;
+  const maxQ=p?.sizes[sz]||0;
+  const qEl=document.getElementById('detailQtyVal');
+  if(qEl){const cur=parseInt(qEl.textContent)||1;qEl.textContent=Math.min(cur,maxQ)||1;}
+  window._detailMaxQ=maxQ;
+}
+function detailQty(delta,pid){
+  const el=document.getElementById('detailQtyVal');if(!el)return;
+  const selSz=document.querySelector('.id-sz.sel');
+  const p=S.products.find(x=>x.id===pid);
+  const maxQ=selSz&&p?p.sizes[selSz.dataset.sz]||0:99;
+  let v=parseInt(el.textContent)||1;
+  v=Math.max(1,Math.min(maxQ,v+delta));
+  el.textContent=v;
+}
+function addCartFromDetail(id){
+  const selEl=document.querySelector('.id-sz.sel');
+  const sz=selEl?.dataset?.sz||null;
+  if(!sz){toast('⚠️ اختاري المقاس أولاً');return;}
+  const p=S.products.find(x=>x.id===id);if(!p)return;
+  if(!(p.sizes[sz]>0)){toast('⚠️ هذا المقاس نفد');return;}
+  const qty=parseInt(document.getElementById('detailQtyVal')?.textContent)||1;
+  if(qty>p.sizes[sz]){toast(`⚠️ المتوفر فقط ${p.sizes[sz]} قطع`);return;}
+  const ep=effPrice(p);
+  const ex=S.cart.find(i=>i.pid===id&&i.sz===sz);
+  if(ex){
+    const newQty=ex.qty+qty;
+    if(newQty>p.sizes[sz]){toast(`⚠️ المتوفر فقط ${p.sizes[sz]} قطع`);return;}
+    ex.qty=newQty;
+  } else {
+    S.cart.push({pid:id,sz,qty,price:ep,name:p.name});
+  }
+  save();updateCartUI();toast(`✅ أُضيف ${qty} ${qty>1?'قطع':'قطعة'} للسلة`);
+}
+function updateCartUI(){
+  const cnt=S.cart.reduce((a,i)=>a+i.qty,0);
+  document.getElementById('cartDot').textContent=cnt;
+  const ci=document.getElementById('cartItems');if(!ci)return;
+  if(!S.cart.length){ci.innerHTML='<div style="text-align:center;padding:2rem;color:var(--mt)">🛒 السلة فارغة</div>';updateCartSummary();return;}
+  ci.innerHTML=S.cart.map(item=>{
+    const imgs=S.prodImgs[item.pid]||[];const cov=S.prodCoverIdx[item.pid]||0;const src=imgs[cov]||null;
+    const p=S.products.find(x=>x.id===item.pid);const maxQ=p?.sizes[item.sz]||99;
+    return `<div class="ci">
+      <div class="ci-img">${src?`<img src="${src}">`:'👗'}</div>
+      <div class="ci-d" style="flex:1">
+        <div class="ci-n">${item.name}</div>
+        <div class="ci-s">مقاس: ${item.sz}</div>
+        <div class="ci-p">${cur(item.price*item.qty)}</div>
+      </div>
+      <div class="ci-ctrl">
+        <button onclick="rmCart(${item.pid},'${item.sz}')" style="background:none;border:none;color:var(--er);cursor:pointer;font-size:1rem;line-height:1;padding:0">✕</button>
+        <div class="qty-ctrl">
+          <button onclick="cartQty(${item.pid},'${item.sz}',-1)">−</button>
+          <span>${item.qty}</span>
+          <button onclick="cartQty(${item.pid},'${item.sz}',1)" ${item.qty>=maxQ?'disabled style="opacity:.4"':''}>+</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  updateCartSummary();
+}
+function cartQty(pid,sz,delta){
+  const item=S.cart.find(i=>i.pid===pid&&i.sz===sz);if(!item)return;
+  const p=S.products.find(x=>x.id===pid);
+  const maxQ=p?.sizes[sz]||99;
+  const newQ=item.qty+delta;
+  if(newQ<1){rmCart(pid,sz);return;}
+  if(newQ>maxQ){toast(`⚠️ المتوفر فقط ${maxQ} قطع`);return;}
+  item.qty=newQ;
+  save();updateCartUI();
+}
 function zoomImg(e){ const img=e.target;if(img.tagName!=='IMG')return; zoomImg2(img.src); }
 function zoomImg2(src){ const d=document.createElement('div'); d.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9000;display:flex;align-items:center;justify-content:center;cursor:pointer'; d.innerHTML=`<img src="${src}" style="max-width:95vw;max-height:95vh;border-radius:10px">`; d.onclick=()=>d.remove();document.body.appendChild(d); }
 
@@ -1427,11 +1510,10 @@ function togFav(pid,e){ if(e.stopPropagation)e.stopPropagation(); const i=S.favo
 function updateFavUI(){ const c=S.favorites.length;const d=document.getElementById('favDot'); if(c>0){d.classList.remove('hidden');d.textContent=c;}else d.classList.add('hidden'); }
 function openFavs(){ S.prevPage='buyer'; const favP=S.products.filter(p=>S.favorites.includes(p.id)); document.getElementById('favsGrid').innerHTML=favP.length?favP.map(buildCard).join(''):'<div style="text-align:center;padding:3rem;color:var(--mt)">❤️ لا توجد مفضلات</div>'; showPage('favs'); }
 
-function addCart(pid){ const p=S.products.find(x=>x.id===pid);if(!p)return; const card=document.getElementById(`pc${pid}`); const sz=card?.dataset?.sz||Object.keys(p.sizes||{}).find(s=>(p.sizes[s]||0)>0); if(!sz){toast('⚠️ اختاري المقاس');return;} if(!(p.sizes[sz]>0)){toast('⚠️ هذا المقاس نفد');return;} const ep=effPrice(p); const ex=S.cart.find(i=>i.pid===pid&&i.sz===sz); if(ex)ex.qty++;else S.cart.push({pid,sz,qty:1,price:ep,name:p.name}); save();updateCartUI();toast(`✅ أُضيف "${p.name}"`); }
+function addCart(pid){ openItem(pid); }
 function rmCart(pid,sz){S.cart=S.cart.filter(i=>!(i.pid===pid&&i.sz===sz));save();updateCartUI();}
 function toggleCart(){document.getElementById('cartOv').classList.toggle('open');document.getElementById('cartSb').classList.toggle('open');}
 function calcCart(){ const {freeShipQty,shipCost,giftQty}=S.settings; const sub=S.cart.reduce((a,i)=>a+i.price*i.qty,0); const cnt=S.cart.reduce((a,i)=>a+i.qty,0); let ship=cnt>=freeShipQty?0:shipCost;let disc=0;let msg=''; if(cnt>=freeShipQty)msg+='🚚 توصيل مجاني! '; if(cnt>=giftQty){const mn=Math.min(...S.cart.map(i=>i.price));disc+=mn;msg+=`🎁 هدية (-${cur(mn)})`;} if(S.currentPromo){const pd=Math.round(sub*(S.currentPromo/100));disc+=pd;} return{sub,ship,disc,total:sub+ship-disc,cnt,msg}; }
-function updateCartUI(){ const cnt=S.cart.reduce((a,i)=>a+i.qty,0); document.getElementById('cartDot').textContent=cnt; const ci=document.getElementById('cartItems');if(!ci)return; if(!S.cart.length){ci.innerHTML='<div style="text-align:center;padding:2rem;color:var(--mt)">🛒 السلة فارغة</div>';updateCartSummary();return;} ci.innerHTML=S.cart.map(item=>{ const imgs=S.prodImgs[item.pid]||[];const cov=S.prodCoverIdx[item.pid]||0; const src=imgs[cov]||null; return `<div class="ci"><div class="ci-img">${src?`<img src="${src}">`:'👗'}</div><div class="ci-d"><div class="ci-n">${item.name}</div><div class="ci-s">مقاس: ${item.sz} | الكمية: ${item.qty}</div><div class="ci-p">${cur(item.price*item.qty)}</div></div><button onclick="rmCart(${item.pid},'${item.sz}')" style="background:none;border:none;color:var(--er);cursor:pointer;font-size:1.1rem;padding:.2rem">✕</button></div>`; }).join(''); updateCartSummary(); }
 function updateCartSummary(){ const c=calcCart(); document.getElementById('cSub').textContent=cur(c.sub); document.getElementById('cShip').textContent=c.ship===0?'مجاني 🚚':cur(c.ship); document.getElementById('cDisc').textContent='-'+cur(c.disc); document.getElementById('cTot').textContent=cur(c.total); const ot=document.getElementById('offerCartTag'); if(c.msg){ot.textContent=c.msg;ot.style.display='block';}else ot.style.display='none'; }
 
 function openCO(){ if(!S.cart.length){toast('⚠️ السلة فارغة');return;} if(document.getElementById('cartSb').classList.contains('open'))toggleCart(); const c=calcCart(); document.getElementById('coSum').innerHTML=`<div style="display:flex;justify-content:space-between;margin-bottom:.35rem"><span style="color:var(--mt)">المجموع</span><span>${cur(c.sub)}</span></div><div style="display:flex;justify-content:space-between;margin-bottom:.35rem"><span style="color:var(--mt)">الشحن</span><span>${c.ship===0?'مجاني':cur(c.ship)}</span></div><div style="display:flex;justify-content:space-between;margin-bottom:.35rem"><span style="color:var(--mt)">الخصم</span><span>-${cur(c.disc)}</span></div><div style="display:flex;justify-content:space-between;font-weight:700;color:var(--dt);border-top:1px solid var(--bd);padding-top:.35rem"><span>الإجمالي</span><span>${cur(c.total)}</span></div>`; openM('coModal'); }
