@@ -20,7 +20,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
 .hidden{display:none!important}
 
 /* ════════ TOP ANNOUNCEMENT BAR ════════ */
-.ann-bar{background:var(--wb);color:#fff;text-align:center;padding:.4rem 1rem;font-size Rama;.8rem;font-weight:500;letter-spacing:.5px}
+.ann-bar{background:var(--wb);color:#fff;text-align:center;padding:.4rem 1rem;font-size:.8rem;font-weight:500;letter-spacing:.5px}
 
 /* ════════ NAV ════════ */
 .main-nav{background:var(--nav-bg);border-bottom:1px solid var(--bd);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:70px;position:sticky;top:0;z-index:900;box-shadow:0 1px 12px var(--sh)}
@@ -939,10 +939,14 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
       <div id="stab-sheets" class="stc">
         <div class="pc2" style="background:linear-gradient(135deg,var(--c3),var(--c1));border:1.5px solid var(--c3)">
           <div class="pct">🔗 Google Sheets</div>
-          <div style="background:#d4edda;color:#155724;padding:.6rem .9rem;border-radius:8px;font-size:.82rem;margin-bottom:.8rem;font-weight:600">✅ نظام التزامن السحابي النشط متصل ومحمي</div>
-          <div style="background:var(--c1);border-radius:8px;padding:.7rem;font-size:.78rem;color:var(--mt);word-break:break-all;margin-bottom:.8rem;border:1px solid var(--bd)">
-            <strong style="color:var(--wb)">الرابط السحابي للـ API:</strong><br>
-            <span style="font-size:.7rem" id="shUrlText">https://script.google.com/macros/s/AKfycbySrxNRy36rielhzksiFkfj4V9uziPjynB-b2oupeAPBlakdp85hRtcE0Zpuzwf19Xv/exec</span>
+          <div id="sheetsStatusBar" style="background:#d4edda;color:#155724;padding:.6rem .9rem;border-radius:8px;font-size:.82rem;margin-bottom:.8rem;font-weight:600">✅ نظام التزامن السحابي النشط متصل ومحمي</div>
+          <div class="fg" style="margin-bottom:.7rem">
+            <label style="font-size:.8rem;font-weight:700;color:var(--wb)">🔗 رابط الـ Apps Script (قابل للتعديل)</label>
+            <div style="display:flex;gap:.4rem;align-items:center">
+              <input type="text" id="shUrlInput" placeholder="https://script.google.com/macros/s/..." dir="ltr" style="flex:1;font-size:.72rem;padding:.55rem .8rem;border:1.5px solid var(--bd);border-radius:7px;font-family:monospace;background:#fff" oninput="updateSheetsUrlStatus()">
+              <button class="bp" style="flex:none;padding:.55rem .9rem;white-space:nowrap" onclick="saveSheetsUrl()">💾 حفظ</button>
+            </div>
+            <div id="sheetsUrlHint" style="font-size:.7rem;color:var(--mt);margin-top:.3rem">الرابط الحالي محفوظ ومفعّل</div>
           </div>
           <div style="display:flex;gap:.5rem;flex-wrap:wrap">
             <button class="bp" onclick="syncSheets()">🔄 مزامنة من Sheets الآن</button>
@@ -956,6 +960,56 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
 </div>
 
 <!-- MODALS -->
+<div class="mov" id="prodModal"><div class="modal xl"><h3 id="pmTitle">➕ إضافة قطعة</h3><input type="hidden" id="pmId">
+  <div class="g2">
+    <div class="fg"><label>اسم القطعة *</label><input type="text" id="pmName" placeholder="مثال: فستان سهرة"></div>
+    <div class="fg"><label>الفئة</label><select id="pmCat" style="padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:7px;width:100%;direction:rtl;font-family:'Tajawal',sans-serif"></select></div>
+  </div>
+  <div class="g2">
+    <div class="fg"><label>سعر البيع (د.ع) *</label><input type="number" id="pmSell" placeholder="0" min="0"></div>
+    <div class="fg"><label>سعر الشراء (د.ع)</label><input type="number" id="pmBuy" placeholder="0" min="0"></div>
+  </div>
+  <div class="g2">
+    <div class="fg"><label>الفئة العمرية</label><select id="pmAge" onchange="loadProdSizes()" style="padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:7px;width:100%;direction:rtl;font-family:'Tajawal',sans-serif"></select></div>
+    <div class="fg"><label>الباركود</label><input type="text" id="pmBC" placeholder="تلقائي إن تُرك فارغاً" dir="ltr"></div>
+  </div>
+  <div class="fg"><label>نوع الخصم</label>
+    <select id="pmDiscType" onchange="toggleDiscInputs()" style="padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:7px;width:100%;direction:rtl;font-family:'Tajawal',sans-serif">
+      <option value="none">بدون خصم</option>
+      <option value="percent">نسبة مئوية %</option>
+      <option value="amount">مبلغ ثابت</option>
+    </select>
+  </div>
+  <div class="fg" id="discValWrap" style="display:none"><label id="discValLabel">قيمة الخصم</label><input type="number" id="pmDiscVal" placeholder="0" min="0"></div>
+  <div class="fg"><label>الأحجام والكميات</label><div class="szgrid" id="pmSizes"></div></div>
+  <div class="fg"><label>وصف القطعة</label><textarea id="pmDesc" rows="2" placeholder="وصف اختياري..."></textarea></div>
+  <div class="fg"><label>الصور</label>
+    <div style="display:flex;gap:.4rem;margin-bottom:.5rem">
+      <input type="text" id="pmImgLinkInp" placeholder="لصق رابط صورة أو Google Drive..." style="flex:1;padding:.5rem .8rem;border:1.5px solid var(--bd);border-radius:7px;font-size:.84rem;direction:ltr">
+      <button class="bp" style="flex:none;padding:.5rem .8rem" onclick="addProdImgFromLink()">➕ إضافة</button>
+    </div>
+    <div class="iua" onclick="document.getElementById('pmImgUp').click()">
+      <input type="file" id="pmImgUp" accept="image/*" multiple onchange="handleProdImgs(this)" style="display:none">
+      <span style="font-size:.85rem;color:var(--mt)">📸 رفع صور من الجهاز</span>
+    </div>
+    <div class="ipw" id="pmPreviews" style="margin-top:.6rem"></div>
+  </div>
+  <div class="fg"><label>ملاحظات القطعة</label>
+    <div style="display:flex;gap:.4rem;margin-bottom:.4rem">
+      <input type="text" id="pmNoteText" placeholder="نص ملاحظة..." style="flex:1;padding:.5rem .8rem;border:1.5px solid var(--bd);border-radius:7px;font-family:'Tajawal',sans-serif">
+      <button class="bp" style="flex:none;padding:.5rem .8rem" onclick="addNoteText()">➕</button>
+    </div>
+    <div style="display:flex;gap:.4rem;margin-bottom:.4rem">
+      <input type="text" id="pmNoteLinkInp" placeholder="رابط صورة ملاحظة..." style="flex:1;padding:.5rem .8rem;border:1.5px solid var(--bd);border-radius:7px;direction:ltr;font-size:.84rem">
+      <button class="bp" style="flex:none;padding:.5rem .8rem" onclick="addNoteImgFromLink()">➕ صورة</button>
+    </div>
+    <div id="pmNotesArea"></div>
+  </div>
+  <div class="ma">
+    <button class="bp" onclick="saveProd()">💾 حفظ القطعة</button>
+    <button class="bs" onclick="closeM('prodModal')">إلغاء</button>
+  </div>
+</div></div>
 <div class="mov" id="ordModal"><div class="modal wide"><h3>📋 تفاصيل الطلب</h3><div id="ordDetail"></div><div class="ma"><button class="bs" onclick="closeM('ordModal')">إغلاق</button></div></div></div>
 <div class="mov" id="rejModal"><div class="modal"><h3>❌ رفض الطلب</h3><p style="color:var(--mt);font-size:.83rem;margin-bottom:.9rem">ستُرجع القطع للمخزون تلقائياً</p><div class="fg"><label>وضع الإرجاع</label><select id="retSt" style="padding:.62rem .9px;border:1.5px solid var(--bd);border-radius:7px;width:100%;direction:rtl"><option value="returned">راجع للمخزن</option><option value="company">راجع من الشركة</option></select></div><div class="fg"><label>سبب الرفض</label><input type="text" id="rejReason" placeholder="اختياري"></div><input type="hidden" id="rejId"><div class="ma"><button class="bd2" onclick="doReject()">❌ تأكيد</button><button class="bs" onclick="closeM('rejModal')">إلغاء</button></div></div></div>
 <div class="mov" id="custModal"><div class="modal wide"><h3>👤 ملف العميل</h3><div id="custDetail"></div><div class="ma"><button class="bs" onclick="closeM('custModal')">إغلاق</button></div></div></div>
@@ -999,7 +1053,30 @@ let S={
   activeCat:'all',activeAge:'all',prevPage:null,
 };
 
-const SHEETS_URL='https://script.google.com/macros/s/AKfycbySrxNRy36rielhzksiFkfj4V9uziPjynB-b2oupeAPBlakdp85hRtcE0Zpuzwf19Xv/exec';
+let SHEETS_URL = 'https://script.google.com/macros/s/AKfycbySrxNRy36rielhzksiFkfj4V9uziPjynB-b2oupeAPBlakdp85hRtcE0Zpuzwf19Xv/exec';
+
+function saveSheetsUrl(){
+  const inp=document.getElementById('shUrlInput');
+  const val=inp?inp.value.trim():'';
+  if(!val||!val.startsWith('https://script.google.com/')){toast('⚠️ الرابط غير صحيح، تأكد أنه يبدأ بـ https://script.google.com/');return;}
+  SHEETS_URL=val;
+  S.settings.sheetsUrl=val;
+  save();
+  toast('✅ تم حفظ الرابط الجديد — سيُحفظ سحابياً');
+  updateSheetsUrlStatus();
+}
+
+function updateSheetsUrlStatus(){
+  const inp=document.getElementById('shUrlInput');
+  const hint=document.getElementById('sheetsUrlHint');
+  const bar=document.getElementById('sheetsStatusBar');
+  if(!inp||!hint)return;
+  const val=inp.value.trim();
+  if(!val){hint.textContent='⚠️ الحقل فارغ — الرابط الحالي لا يزال مفعّلاً';hint.style.color='var(--er)';return;}
+  if(!val.startsWith('https://script.google.com/')){hint.textContent='❌ رابط غير صحيح';hint.style.color='var(--er)';return;}
+  if(val===SHEETS_URL){hint.textContent='✅ هذا هو الرابط المفعّل حالياً';hint.style.color='var(--ok)';}
+  else{hint.textContent='🔄 اضغط "حفظ" لتفعيل الرابط الجديد';hint.style.color='var(--ac)';}
+}
 
 // ════════════════════════════════════════════════════════════
 //  نظام تحويل ومعالجة صور جوجل درايف للروابط المباشرة
@@ -1087,12 +1164,8 @@ async function uploadImgToDrive(file, folder='products'){
 //  نظام المزامنة والحفظ التلقائي والاحتياطي الواقي
 // ════════════════════════════════════════════════════════════
 function save(){
-  const metaOnly = buildMetaPayload();
-  
-  // حزام الأمان: حفظ التحديث محلياً داخل هذا الجهاز تحسباً لانقطاع الشبكة فجأة
-  try { localStorage.setItem('val4_backup', JSON.stringify(metaOnly)); } catch(e){}
-  
-  pushToSheets(metaOnly);
+  const payload = buildMetaPayload();
+  pushToSheets(payload);
 }
 
 function buildMetaPayload(){
@@ -1101,7 +1174,7 @@ function buildMetaPayload(){
     Object.entries(S.prodImgs).forEach(([id,imgs])=>{ cleanImgs[id]=(imgs||[]).filter(u=>typeof u==='string'); });
   }
   return {
-    products: S.products || [], orders: S.orders || [], customers: S.customers || [], batches: S.batches || [], expenses: S.expenses || {}, settings: {...S.settings, sheetsUrl:undefined}, categories: S.categories || [], ageGroups: S.ageGroups || [], heroContent: S.heroContent || {}, storyContent: S.storyContent || {}, sectionOrder: S.sectionOrder || [], colors: S.colors || {}, favorites: S.favorites || [], prodImgs: cleanImgs, prodCoverIdx: S.prodCoverIdx || {}, prodNotes: S.prodNotes || {}, banners: S.banners || [], logo: S.logo || null, storyImg: S.storyImg || null, igSettings: S.igSettings || {}, igManualImgs: S.igManualImgs || [], savedAt: new Date().toISOString()
+    products: S.products || [], orders: S.orders || [], customers: S.customers || [], batches: S.batches || [], expenses: S.expenses || {}, settings: {...S.settings, sheetsUrl:SHEETS_URL}, categories: S.categories || [], ageGroups: S.ageGroups || [], heroContent: S.heroContent || {}, storyContent: S.storyContent || {}, sectionOrder: S.sectionOrder || [], colors: S.colors || {}, favorites: S.favorites || [], prodImgs: cleanImgs, prodCoverIdx: S.prodCoverIdx || {}, prodNotes: S.prodNotes || {}, banners: S.banners || [], logo: S.logo || null, storyImg: S.storyImg || null, igSettings: S.igSettings || {}, igManualImgs: S.igManualImgs || [], savedAt: new Date().toISOString()
   };
 }
 
@@ -1139,8 +1212,11 @@ async function loadFromSheets(){
       const fields=['products','orders','customers','batches','expenses','settings','categories','ageGroups','heroContent','storyContent','sectionOrder','colors','favorites','prodImgs','prodCoverIdx','prodNotes','banners','logo','storyImg','igSettings','igManualImgs'];
       fields.forEach(k=>{
         if(d[k]!==undefined && d[k]!==null){
-          if(k==='settings') S.settings={...S.settings,...d[k],sheetsUrl:SHEETS_URL};
-          else S[k]=d[k];
+          if(k==='settings'){
+            S.settings={...S.settings,...d[k]};
+            // إذا كان في رابط محدّث محفوظ بالسحابة، حدّثه
+            if(d[k].sheetsUrl && d[k].sheetsUrl.startsWith('https://script.google.com/')) SHEETS_URL=d[k].sheetsUrl;
+          } else S[k]=d[k];
         }
       });
       return true;
@@ -1170,26 +1246,12 @@ async function init(){
   document.querySelectorAll('.mov,.auth-ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
   document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.shiftKey&&e.key==='S'){e.preventDefault();showSeller();}});
   
-  // 1. محاولة جلب أحدث بيانات بضاعة حقيقية من الشيت السحابي مباشرة
+  // جلب البيانات من السحابة فقط — لا localStorage
   const cloudSuccess = await loadFromSheets();
-  
-  // 2. نظام هجرة البيانات الآمن: إذا كان الشيت فارغاً أو فشل الاتصال، استرجع فوراً آخر كاش محلي مخزن بالجهاز
-  if(!cloudSuccess || S.products.length === 0){
-    const backupData = localStorage.getItem('val4_backup');
-    if(backupData){
-      try {
-        const parsed = JSON.parse(backupData);
-        if(parsed && parsed.products && parsed.products.length > 0){
-          Object.keys(parsed).forEach(k=>{ if(k in S) S[k]=parsed[k]; });
-          toast('⚡ تم جلب البيانات مؤقتاً من الكاش؛ جاري إعداد التزامن السحابي...');
-          // ارفعيها فوراً للشيت لتأمينها سحابياً لجميع الأجهزة الأخرى
-          save();
-        }
-      } catch(e){ console.warn("خطأ في قراءة كاش الطوارئ", e); }
-    }
+  if(!cloudSuccess){
+    toast('⚠️ تعذّر الاتصال بالسيرفر — تحقق من الإنترنت ورابط الـ Apps Script');
   }
   
-  // رندرة وبناء عناصر واجهة المستخدم الكاملة بناءً على البيانات المستقرة
   applySettings();
   applyColors(); 
   renderAll();
@@ -1222,7 +1284,7 @@ function applySettings(){
   const el=id=>document.getElementById(id);
   if(el('stName'))el('stName').value=S.settings.storeName;
   if(el('stCur'))el('stCur').value=S.settings.currency;
-  if(el('shUrl'))el('shUrl').value=S.settings.sheetsUrl||'';
+  if(el('shUrlInput')){el('shUrlInput').value=SHEETS_URL;updateSheetsUrlStatus();}
   if(el('shId'))el('shId').value=S.settings.sheetId||'';
   const map={fSQ:'freeShipQty',sCost:'shipCost',gQ:'giftQty',vO:'vipOrders',vD:'vipDisc',pCode:'promoCode',pDisc:'promoDisc'};
   Object.entries(map).forEach(([eid,sk])=>{if(el(eid))el(eid).value=S.settings[sk];});
@@ -1441,7 +1503,7 @@ function rmSz(ai,si){S.ageGroups[ai].sizes.splice(si,1);save();renderSzForAge();
 function saveSzs(){save();toast('✅ تم حفظ القياسات');}
 function saveStore(){S.settings.storeName=document.getElementById('stName').value;S.settings.currency=document.getElementById('stCur').value;document.title=S.settings.storeName;save();toast('✅ تم الحفظ');}
 async function syncSheets(){ toast('🔄 جاري التحديث من Sheets...'); await loadFromSheets(); applySettings();applyColors(); renderAll();applySectionOrder(); applyHeroContent();applyStoryContent();applyLogo(); toast('✅ تمت المزامنة بنجاح'); }
-async function testSheet(){ const url=SHEETS_URL; toast('🔄 اختبار الاتصال...'); try{ const r=await fetch(`${url}?action=test`); if(r.ok){const d=await r.json();toast(d.ok?'✅ الاتصال ناجح — Sheets متصل':'⚠️ الاتصال يعمل لكن هناك مشكلة');} else toast('⚠️ استجابة غير صحيحة'); }catch(e){toast('❌ فشل الاتصال — تحقق من الإنترنت');} }
+async function testSheet(){ const url=SHEETS_URL; if(!url){toast('⚠️ لم يتم تحديد رابط الـ Apps Script');return;} toast('🔄 اختبار الاتصال...'); try{ const r=await fetch(`${url}?action=test`); if(r.ok){const d=await r.json();toast(d.ok?'✅ الاتصال ناجح — Sheets متصل':'⚠️ الاتصال يعمل لكن هناك مشكلة');} else toast('⚠️ استجابة غير صحيحة'); }catch(e){toast('❌ فشل الاتصال — تحقق من الإنترنت');} }
 function saveOffers(){S.settings.freeShipQty=parseInt(document.getElementById('fSQ').value)||2;S.settings.shipCost=parseInt(document.getElementById('sCost').value)||5000;S.settings.giftQty=parseInt(document.getElementById('gQ').value)||4;S.settings.vipOrders=parseInt(document.getElementById('vO').value)||5;S.settings.vipDisc=parseInt(document.getElementById('vD').value)||10;S.settings.promoCode=document.getElementById('pCode').value||'VALENTINA10';S.settings.promoDisc=parseInt(document.getElementById('pDisc').value)||10;save();document.getElementById('giftTag').textContent=`🎁 ${S.settings.giftQty} قطع = هدية`;document.getElementById('annGift').textContent=S.settings.giftQty;toast('✅ تم حفظ العروض');}
 
 function openAuth(){if(S.currentUser){toast(`مرحباً ${S.currentUser.name}!`);return;}document.getElementById('authS1').style.display='block';document.getElementById('authS2').style.display='none';document.getElementById('authPh').value='';openM('authOv');}
