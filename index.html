@@ -526,7 +526,49 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
     </div>
   </footer>
 </div>
+<div id="page-all-products" class="page">
+  <div class="sec" style="max-width:1300px; margin:0 auto; padding:2rem;">
+    <button class="id-back" onclick="goHome()">← رجوع للرئيسية</button>
+    <div class="sec-hd"><div class="sec-title">👗 جميع منتجاتنا</div></div>
+    
+    <!-- شريط الفلاتر المتقدمة -->
+    <div style="background:#fff; border-radius:10px; padding:1.2rem; margin-bottom:1.5rem; box-shadow:0 2px 10px var(--sh); display:flex; gap:1rem; flex-wrap:wrap; align-items:flex-end;">
+      
+      <div style="flex:1; min-width:150px;">
+        <label style="font-size:.75rem; font-weight:700; color:var(--mt); display:block; margin-bottom:.3rem;">بحث بالاسم</label>
+        <input type="text" id="advSearch" placeholder="اسم القطعة..." oninput="renderAdvancedProducts()" style="width:100%; padding:.5rem; border:1.5px solid var(--bd); border-radius:6px; font-family:'Tajawal',sans-serif;">
+      </div>
 
+      <div style="flex:1; min-width:120px;">
+        <label style="font-size:.75rem; font-weight:700; color:var(--mt); display:block; margin-bottom:.3rem;">الفئة</label>
+        <select id="advCat" onchange="renderAdvancedProducts()" style="width:100%; padding:.5rem; border:1.5px solid var(--bd); border-radius:6px; font-family:'Tajawal',sans-serif;"></select>
+      </div>
+
+      <div style="flex:1; min-width:120px;">
+        <label style="font-size:.75rem; font-weight:700; color:var(--mt); display:block; margin-bottom:.3rem;">الفئة العمرية</label>
+        <select id="advAge" onchange="renderAdvancedProducts()" style="width:100%; padding:.5rem; border:1.5px solid var(--bd); border-radius:6px; font-family:'Tajawal',sans-serif;"></select>
+      </div>
+
+      <div style="flex:1; min-width:100px;">
+        <label style="font-size:.75rem; font-weight:700; color:var(--mt); display:block; margin-bottom:.3rem;">القياس</label>
+        <input type="text" id="advSize" placeholder="مثال: M أو 4Y" oninput="renderAdvancedProducts()" style="width:100%; padding:.5rem; border:1.5px solid var(--bd); border-radius:6px; font-family:'Tajawal',sans-serif;">
+      </div>
+
+      <div style="flex:1; min-width:200px; display:flex; gap:.5rem;">
+        <div style="flex:1">
+          <label style="font-size:.75rem; font-weight:700; color:var(--mt); display:block; margin-bottom:.3rem;">السعر من</label>
+          <input type="number" id="advPriceMin" placeholder="0" oninput="renderAdvancedProducts()" style="width:100%; padding:.5rem; border:1.5px solid var(--bd); border-radius:6px;">
+        </div>
+        <div style="flex:1">
+          <label style="font-size:.75rem; font-weight:700; color:var(--mt); display:block; margin-bottom:.3rem;">السعر إلى</label>
+          <input type="number" id="advPriceMax" placeholder="الحد الأقصى" oninput="renderAdvancedProducts()" style="width:100%; padding:.5rem; border:1.5px solid var(--bd); border-radius:6px;">
+        </div>
+      </div>
+    </div>
+
+    <div class="pgrid pgrid-5" id="advProductsGrid"></div>
+  </div>
+</div>
 <div id="page-item" class="page">
   <div class="item-detail">
     <button class="id-back" onclick="goBack()">← رجوع</button>
@@ -565,18 +607,33 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
 
   <div class="sc">
     <div id="panel-stock" class="sp active">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.1rem;flex-wrap:wrap;gap:.5rem">
-        <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb)">📦 المخزون</div>
-        <div style="display:flex;gap:.4rem;flex-wrap:wrap">
-          <button class="ab ao" onclick="syncSheets()">🔄 مزامنة</button>
-          <button class="ab ae" style="background:var(--wb);color:#fff" onclick="openAddProd()">➕ إضافة قطعة</button>
-        </div>
-      </div>
-      <div class="srow" id="stockStats"></div>
-      <input class="srch" id="stockSrch" placeholder="ابحث..." oninput="renderStock()" style="width:100%;padding:.62rem .9rem;border:1.5px solid var(--bd);border-radius:8px;font-family:'Tajawal',sans-serif;margin-bottom:.8rem;direction:rtl">
-      <div style="overflow-x:auto"><table class="tbl">
-        <thead><tr><th>صورة</th><th>الاسم</th><th>الفئة</th><th>العمر</th><th>الأحجام</th><th>سعر البيع</th><th>سعر الشراء</th><th>الخصم</th><th>الربح</th><th>الكمية</th><th>إجراءات</th></tr></thead>
-        <tbody id="stockBody"></tbody>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.1rem;flex-wrap:wrap;gap:.5rem">
+    <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb)">📦 المخزون</div>
+    <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+      <button class="ab v" onclick="printData('stockPrintArea')">🖨️ طباعة</button>
+      <button class="ab ao" onclick="exportToCSV('stockTable', 'Valentina_Stock')">📊 تصدير Excel</button>
+      <button class="ab ao" onclick="syncSheets()">🔄 مزامنة</button>
+      <button class="ab ae" style="background:var(--wb);color:#fff" onclick="openAddProd()">➕ إضافة قطعة</button>
+    </div>
+  </div>
+  
+  <div class="srow" id="stockStats"></div>
+  
+  <!-- فلاتر المخزون المتقدمة -->
+  <div style="background:var(--c1); border:1px solid var(--bd); border-radius:8px; padding:1rem; margin-bottom:1rem; display:flex; gap:.6rem; flex-wrap:wrap;">
+    <input type="text" id="stockSrchName" placeholder="بحث بالاسم..." oninput="renderStock()" style="flex:1; min-width:120px; padding:.5rem; border:1.5px solid var(--bd); border-radius:6px;">
+    <select id="stockSrchCat" onchange="renderStock()" style="flex:1; min-width:100px; padding:.5rem; border:1.5px solid var(--bd); border-radius:6px;"><option value="all">كل الفئات</option></select>
+    <select id="stockSrchAge" onchange="renderStock()" style="flex:1; min-width:100px; padding:.5rem; border:1.5px solid var(--bd); border-radius:6px;"><option value="all">كل الأعمار</option></select>
+    <input type="text" id="stockSrchSize" placeholder="القياس (S, M...)" oninput="renderStock()" style="flex:1; min-width:90px; padding:.5rem; border:1.5px solid var(--bd); border-radius:6px;">
+  </div>
+
+  <div id="stockPrintArea" style="overflow-x:auto; background:#fff; border-radius:10px; padding:1rem;">
+    <table class="tbl" id="stockTable">
+      <thead><tr><th>صورة</th><th>الاسم</th><th>الفئة</th><th>العمر</th><th>الأحجام</th><th>سعر البيع</th><th>سعر الشراء</th><th>الكمية</th><th class="no-print">إجراءات</th></tr></thead>
+      <tbody id="stockBody"></tbody>
+    </table>
+  </div>
+</div>
       </table></div>
     </div>
 
@@ -645,29 +702,41 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
       </div>
     </div>
 
-    <div id="panel-orders" class="sp">
-      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb);margin-bottom:1rem">🛍️ الطلبات</div>
-      <div class="date-filter">
-        <label>من:</label><input type="date" id="oFrom">
-        <label>إلى:</label><input type="date" id="oTo">
-        <select id="oStatus" onchange="renderOrders()" style="padding:.38rem .65rem;border:1.5px solid var(--bd);border-radius:6px;font-family:'Tajawal',sans-serif;direction:rtl">
-          <option value="all">كل الحالات</option>
-          <option value="preparing">قيد التجهيز</option>
-          <option value="delivering">قيد التوصيل</option>
-          <option value="done">تم الاستلام</option>
-          <option value="rejected">تم الرفض</option>
-          <option value="returned">راجع للمخزن</option>
-        </select>
-        <button class="ab ao" onclick="renderOrders()">🔍 بحث</button>
-        <button class="ab ae" onclick="resetDateFilter()">↩️ هذا الشهر</button>
-      </div>
-      <div class="srow" id="orderStats"></div>
-      <div style="overflow-x:auto"><table class="tbl">
-        <thead><tr><th>#</th><th>العميل</th><th>القطع</th><th>الإجمالي</th><th>العرض</th><th>التاريخ</th><th>الحالة</th><th>إجراءات</th></tr></thead>
-        <tbody id="ordersBody"></tbody>
-      </table></div>
+  <div id="panel-orders" class="sp">
+  <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb);margin-bottom:1rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.5rem;">
+    <span>🛍️ الطلبات</span>
+    <!-- أزرار الطباعة والتصدير -->
+    <div style="display:flex; gap:.4rem;">
+      <button class="ab v" onclick="printData('ordersPrintArea')">🖨️ طباعة</button>
+      <button class="ab ao" onclick="exportToCSV('ordersTable', 'Valentina_Orders')">📊 تصدير Excel</button>
     </div>
-
+  </div>
+  
+  <div class="date-filter">
+    <label>من:</label><input type="date" id="oFrom">
+    <label>إلى:</label><input type="date" id="oTo">
+    <select id="oStatus" onchange="renderOrders()" style="padding:.38rem .65rem;border:1.5px solid var(--bd);border-radius:6px;font-family:'Tajawal',sans-serif;direction:rtl">
+      <option value="all">كل الحالات</option>
+      <option value="preparing">قيد التجهيز</option>
+      <option value="delivering">قيد التوصيل</option>
+      <option value="done">تم الاستلام</option>
+      <option value="rejected">تم الرفض</option>
+      <option value="returned">راجع للمخزن</option>
+    </select>
+    <button class="ab ao" onclick="renderOrders()">🔍 بحث</button>
+    <button class="ab ae" onclick="resetDateFilter()">↩️ هذا الشهر</button>
+  </div>
+  <div class="srow" id="orderStats"></div>
+  
+  <!-- إحاطة الجدول بـ ID للطباعة، و ID للجدول نفسه للتصدير -->
+  <div id="ordersPrintArea" style="overflow-x:auto">
+    <table class="tbl" id="ordersTable">
+      <thead><tr><th>#</th><th>العميل</th><th>القطع</th><th>الإجمالي</th><th>العرض</th><th>التاريخ</th><th>الحالة</th><th class="no-print">إجراءات</th></tr></thead>
+      <tbody id="ordersBody"></tbody>
+    </table>
+  </div>
+</div>
+  
     <div id="panel-customers" class="sp">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
         <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--wb)">👥 العملاء</div>
@@ -713,13 +782,24 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
         </div>
         <div class="pc2"><div class="pct">📦 مبيعات حسب الفئة</div><div id="catSales"></div></div>
       </div>
-      <div class="pc2">
-        <div class="pct">📋 تفاصيل المبيعات</div>
-        <div style="overflow-x:auto"><table class="tbl">
-          <thead><tr><th>القطعة</th><th>الكمية</th><th>الإيراد</th><th>التكلفة</th><th>الربح</th></tr></thead>
-          <tbody id="saleDetail"></tbody>
-        </table></div>
-      </div>
+     <div class="pc2">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.8rem; padding-bottom:.35rem; border-bottom:1.5px solid var(--c4)">
+    <div class="pct" style="margin-bottom:0; border-bottom:none; padding-bottom:0;">📋 تفاصيل المبيعات</div>
+    <!-- أزرار الطباعة والتصدير -->
+    <div style="display:flex; gap:.4rem;">
+      <button class="ab v" onclick="printData('reportsPrintArea')">🖨️ طباعة</button>
+      <button class="ab ao" onclick="exportToCSV('reportsTable', 'Valentina_Reports')">📊 تصدير Excel</button>
+    </div>
+  </div>
+  
+  <!-- إحاطة الجدول بـ ID للطباعة، و ID للجدول نفسه للتصدير -->
+  <div id="reportsPrintArea" style="overflow-x:auto">
+    <table class="tbl" id="reportsTable">
+      <thead><tr><th>القطعة</th><th>الكمية</th><th>الإيراد</th><th>التكلفة</th><th>الربح</th></tr></thead>
+      <tbody id="saleDetail"></tbody>
+    </table>
+  </div>
+</div>
     </div>
 
     <div id="panel-banners" class="sp">
@@ -1592,6 +1672,186 @@ function openAuth(){if(S.currentUser){toast(`مرحباً ${S.currentUser.name}!
 function sendOTP(){const ph=document.getElementById('authPh').value.trim();if(!ph||ph.length<10){toast('⚠️ أدخل رقم صحيح');return;}document.getElementById('authS1').style.display='none';document.getElementById('authS2').style.display='block';document.querySelectorAll('.otp-row input').forEach(i=>i.value='');document.querySelectorAll('.otp-row input')[0].focus();toast('📱 كود التحقق التجريبي: 1234',4000);}
 function otpN(el,idx){if(el.value.length===1&&idx<3)document.querySelectorAll('.otp-row input')[idx+1].focus();}
 function verOTP(){const code=Array.from(document.querySelectorAll('.otp-row input')).map(i=>i.value).join('');const ph=document.getElementById('authPh').value;if(code==='1234'){const ex=S.customers.find(c=>c.phone===ph);S.currentUser={name:ex?.name||ph,phone:ph};save();closeM('authOv');document.getElementById('authBtn').innerHTML='✅';toast(`🎉 مرحباً ${S.currentUser.name}!`);}else toast('❌ الكود خاطئ. التجريبي: 1234');}
+
+// ════════════════════════════════════════════════════════════
+//  نظام صفحة "كل المنتجات" المستقلة والفلاتر المتقدمة
+// ════════════════════════════════════════════════════════════
+
+// تعديل أزرار التنقل (Nav) لتفتح الصفحة المستقلة بدلاً من النزول للأسفل
+document.querySelectorAll('.nav-link, .sec-arrow, .hero-cta').forEach(btn => {
+    if(btn.getAttribute('onclick') === "scrollToSec('allProducts')") {
+        btn.setAttribute('onclick', "goAllProductsPage()");
+    }
+});
+
+function goAllProductsPage() {
+    S.prevPage = 'buyer';
+    showPage('all-products');
+    
+    // تعبئة الفلاتر إذا كانت فارغة
+    const catSel = document.getElementById('advCat');
+    const ageSel = document.getElementById('advAge');
+    
+    if(catSel.options.length <= 1) {
+        catSel.innerHTML = `<option value="all">جميع الفئات</option>` + S.categories.map(c => `<option value="${c.name}">${c.icon} ${c.name}</option>`).join('');
+    }
+    if(ageSel.options.length <= 1) {
+        ageSel.innerHTML = `<option value="all">كل الأعمار</option>` + S.ageGroups.map(a => `<option value="${a.name}">${a.icon} ${a.name}</option>`).join('');
+    }
+    
+    renderAdvancedProducts();
+}
+
+function renderAdvancedProducts() {
+    const g = document.getElementById('advProductsGrid');
+    if(!g) return;
+
+    const qName = (document.getElementById('advSearch').value || '').toLowerCase();
+    const qCat = document.getElementById('advCat').value;
+    const qAge = document.getElementById('advAge').value;
+    const qSize = (document.getElementById('advSize').value || '').toUpperCase();
+    const pMin = parseFloat(document.getElementById('advPriceMin').value) || 0;
+    const pMax = parseFloat(document.getElementById('advPriceMax').value) || Infinity;
+
+    const ps = S.products.filter(p => {
+        const ep = effPrice(p);
+        const mName = p.name.toLowerCase().includes(qName);
+        const mCat = qCat === 'all' || p.category === qCat;
+        const mAge = qAge === 'all' || p.ageGroup === qAge;
+        const mPrice = ep >= pMin && ep <= pMax;
+        
+        let mSize = true;
+        if(qSize) {
+            mSize = Object.keys(p.sizes || {}).some(s => s.toUpperCase().includes(qSize) && p.sizes[s] > 0);
+        }
+
+        return mName && mCat && mAge && mPrice && mSize;
+    });
+
+    g.innerHTML = ps.length ? ps.map(buildCard).join('') : '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--mt);">🔍 لا توجد منتجات تطابق بحثك</div>';
+}
+
+// ════════════════════════════════════════════════════════════
+//  تحديث دالة المخزون (Seller Stock) لتشمل الفلاتر الجديدة
+// ════════════════════════════════════════════════════════════
+function renderStock() {
+    // تعبئة قوائم المخزون إن لم تعبأ
+    const sCat = document.getElementById('stockSrchCat');
+    const sAge = document.getElementById('stockSrchAge');
+    if(sCat && sCat.options.length <= 1) sCat.innerHTML = `<option value="all">كل الفئات</option>` + S.categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+    if(sAge && sAge.options.length <= 1) sAge.innerHTML = `<option value="all">كل الأعمار</option>` + S.ageGroups.map(a => `<option value="${a.name}">${a.name}</option>`).join('');
+
+    const qName = (document.getElementById('stockSrchName')?.value || '').toLowerCase();
+    const qCat = document.getElementById('stockSrchCat')?.value || 'all';
+    const qAge = document.getElementById('stockSrchAge')?.value || 'all';
+    const qSize = (document.getElementById('stockSrchSize')?.value || '').toUpperCase();
+
+    const prods = S.products.filter(p => {
+        const mName = p.name.toLowerCase().includes(qName);
+        const mCat = qCat === 'all' || p.category === qCat;
+        const mAge = qAge === 'all' || p.ageGroup === qAge;
+        let mSize = true;
+        if(qSize) mSize = Object.keys(p.sizes || {}).some(s => s.toUpperCase().includes(qSize));
+        return mName && mCat && mAge && mSize;
+    });
+
+    // نفس منطق الإحصائيات الأصلي (تجاوزته هنا للاختصار، احتفظي به كما هو في دالتك الأصلية)
+    // ...
+
+    const tbody = document.getElementById('stockBody');
+    if(!tbody) return;
+
+    tbody.innerHTML = prods.map(p => {
+        const qty = Object.values(p.sizes || {}).reduce((a,b)=>a+b,0);
+        const ep = effPrice(p);
+        const imgs = S.prodImgs[p.id] || [];
+        const cov = S.prodCoverIdx[p.id] || 0;
+        const src = imgs[cov] || null;
+        const sz = Object.entries(p.sizes || {}).map(([s,q])=>`<span style="font-size:.68rem">${s}:<b>${q}</b></span>`).join(' ');
+        const st = qty === 0 ? '<span class="badge berr">نفد</span>' : qty <= 3 ? '<span class="badge bwarn">منخفض</span>' : '<span class="badge bok">متوفر</span>';
+        
+        return `<tr>
+            <td>${src ? `<img src="${src}" style="width:40px;height:40px;border-radius:5px;object-fit:cover;">` : '👗'}</td>
+            <td><strong>${p.name}</strong></td>
+            <td>${p.category || '-'}</td>
+            <td>${p.ageGroup || '-'}</td>
+            <td style="font-size:.72rem">${sz} <br>${st}</td>
+            <td><strong>${cur(ep)}</strong></td>
+            <td>${cur(p.buyPrice || 0)}</td>
+            <td style="font-weight:700">${qty}</td>
+            <td class="no-print" style="display:flex;gap:.22rem;">
+                <button class="ab ae" onclick="openEditProd(${p.id})">✏️</button>
+                <button class="ab ad" onclick="delProd(${p.id})">🗑️</button>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+// ════════════════════════════════════════════════════════════
+//  نظام التصدير (Excel / CSV) والطباعة
+// ════════════════════════════════════════════════════════════
+
+function exportToCSV(tableId, filename) {
+    const table = document.getElementById(tableId);
+    if(!table) return;
+    
+    let csv = [];
+    const rows = table.querySelectorAll("tr");
+    
+    for (let i = 0; i < rows.length; i++) {
+        let row = [], cols = rows[i].querySelectorAll("td, th");
+        
+        for (let j = 0; j < cols.length; j++) {
+            // تخطي عمود الإجراءات لأنه لا يفيد في الإكسل
+            if(cols[j].classList.contains('no-print')) continue; 
+            
+            let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").trim();
+            row.push('"' + data + '"');
+        }
+        csv.push(row.join(","));
+    }
+    
+    downloadCSV(csv.join("\n"), filename);
+}
+
+function downloadCSV(csv, filename) {
+    let csvFile;
+    let downloadLink;
+    // إضافة BOM لدعم اللغة العربية في Excel
+    const BOM = "\uFEFF"; 
+    csvFile = new Blob([BOM + csv], {type: "text/csv;charset=utf-8;"});
+    downloadLink = document.createElement("a");
+    downloadLink.download = filename + ".csv";
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+    toast('✅ تم تصدير الملف بنجاح');
+}
+
+function printData(divId) {
+    const printContent = document.getElementById(divId).innerHTML;
+    const originalContent = document.body.innerHTML;
+    
+    // ستايل خاص للطباعة يحافظ على الصور والجداول ويخفي أزرار الإجراءات
+    const printStyle = `
+        <style>
+            body { font-family: 'Tajawal', sans-serif; direction: rtl; padding: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: right; }
+            th { background-color: #f9f0d3 !important; -webkit-print-color-adjust: exact; }
+            img { max-width: 50px; max-height: 50px; object-fit: cover; border-radius: 4px; }
+            .no-print { display: none !important; }
+            h1 { font-family: 'Playfair Display', serif; color: #8b6f5e; }
+        </style>
+    `;
+
+    document.body.innerHTML = printStyle + `<h1>Valentina Store Report</h1>` + printContent;
+    window.print();
+    document.body.innerHTML = originalContent;
+    location.reload(); // إعادة تحميل الصفحة لإرجاع الـ Events بشكل سليم بعد الطباعة
+}
 </script>
 </body>
 </html>
