@@ -633,9 +633,9 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
   <div id="stockPrintArea" style="overflow-x:auto; background:#fff; border-radius:10px; padding:1rem;">
     <table class="tbl" id="stockTable">
       <thead><tr><th>صورة</th><th>الاسم</th><th>الفئة</th><th>العمر</th><th>الأحجام</th><th>سعر البيع</th><th>سعر الشراء</th><th>الكمية</th><th class="no-print">إجراءات</th></tr></thead>
-       <tbody id="stockBody"></tbody>
-      </table>
-    </div>
+      <tbody id="stockBody"></tbody>
+</div>
+      </table></div>
     </div>
 
     <div id="panel-batch" class="sp">
@@ -1339,17 +1339,7 @@ async function init(){
   const cloudSuccess = await loadFromSheets();
   if(!cloudSuccess){
     toast('⚠️ تعذّر الاتصال بالسيرفر — تحقق من الإنترنت ورابط الـ Apps Script');
-}
-
-// فتح المنتج من الرابط — بعد تحميل البيانات
-const urlParams = new URLSearchParams(window.location.search);
-const targetProductId = urlParams.get('p');
-if (targetProductId) {
-    const targetProd = S.products.find(x => x.id == parseInt(targetProductId));
-    if (targetProd) {
-        openItem(parseInt(targetProductId));
-    }
-}
+  }
   
   applySettings();
   applyColors(); 
@@ -1358,7 +1348,19 @@ if (targetProductId) {
   applyHeroContent();
   applyStoryContent();
   applyLogo();
- initDnD(); 
+  initDnD(); 
+
+  // === الكود الجديد لفتح القطعة من الرابط ===
+  const urlParams = new URLSearchParams(window.location.search);
+  const targetProductId = urlParams.get('p');
+  if (targetProductId) {
+      const targetProd = S.products.find(x => x.id == targetProductId);
+      if (targetProd) {
+          // تأخير بسيط حتى نضمن تحميل كل الصور والبيانات
+          setTimeout(() => { openItem(parseInt(targetProductId)); }, 300);
+      }
+  }
+}
 
 
 document.addEventListener('DOMContentLoaded',()=>{
