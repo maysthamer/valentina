@@ -1408,14 +1408,31 @@ function applySettings(){
 }
 
 function renderAll(){
-  renderFilters();renderHeroImgs();renderCatStrip();
-  renderNewArrivals();renderBestSellers();renderAllProducts();
-  renderStock();renderBatchHist();renderOrders();renderCustomers();renderReports();
-  renderCatList();renderAgeList();renderSzAgeSelect();renderBanners();renderProdImgTbl();
-  renderSectionOrderUI();updateCartUI();updateFavUI();
+  renderFilters();
+  renderHeroImgs();
+  renderCatStrip();
+  renderNewArrivals();
+  renderBestSellers();
+  renderAllProducts();
+  
+  // تأخير بسيط جداً لضمان وصول البيانات قبل الرسم
+  setTimeout(() => {
+    renderStock();
+    renderBatchHist();
+    renderOrders();
+    renderCustomers();
+    renderReports();
+    renderCatList();
+    renderAgeList();
+    renderSzAgeSelect();
+    renderBanners();
+    renderProdImgTbl();
+    renderSectionOrderUI();
+    updateCartUI();
+    updateFavUI();
+  }, 500);
 }
-
-function showSeller(){ if(S.sellerUnlocked){goSeller();return;} const ls=document.getElementById('lockScreen'); ls.classList.add('show'); document.getElementById('lockPin').value=''; document.getElementById('lockErr').style.display='none'; setTimeout(()=>document.getElementById('lockPin').focus(),150); }
+  function showSeller(){ if(S.sellerUnlocked){goSeller();return;} const ls=document.getElementById('lockScreen'); ls.classList.add('show'); document.getElementById('lockPin').value=''; document.getElementById('lockErr').style.display='none'; setTimeout(()=>document.getElementById('lockPin').focus(),150); }
 function hideLock(){document.getElementById('lockScreen').classList.remove('show');}
 function checkPin(){ const v=document.getElementById('lockPin').value; if(v==='Mays1988'){ S.sellerUnlocked=true; hideLock();goSeller(); }else{ document.getElementById('lockErr').style.display='block'; document.getElementById('lockPin').value=''; document.getElementById('lockPin').focus(); document.getElementById('lockPin').style.borderColor='var(--er)'; setTimeout(()=>document.getElementById('lockPin').style.borderColor='',800); } }
 function goSeller(){ document.querySelectorAll('.page').forEach(x=>x.classList.remove('active')); document.getElementById('page-seller').classList.add('active'); }
