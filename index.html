@@ -1350,17 +1350,15 @@ async function init(){
   applyLogo();
   initDnD(); 
 
-  // === الكود الجديد لفتح القطعة من الرابط ===
+// === فتح القطعة من الرابط - بعد اكتمال تحميل البيانات ===
   const urlParams = new URLSearchParams(window.location.search);
   const targetProductId = urlParams.get('p');
   if (targetProductId) {
-      const targetProd = S.products.find(x => x.id == targetProductId);
+      const targetProd = S.products.find(x => x.id == parseInt(targetProductId));
       if (targetProd) {
-          // تأخير بسيط حتى نضمن تحميل كل الصور والبيانات
-          setTimeout(() => { openItem(parseInt(targetProductId)); }, 300);
+          openItem(parseInt(targetProductId));
       }
   }
-}
 
 
 document.addEventListener('DOMContentLoaded',()=>{
