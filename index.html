@@ -1339,7 +1339,17 @@ async function init(){
   const cloudSuccess = await loadFromSheets();
   if(!cloudSuccess){
     toast('⚠️ تعذّر الاتصال بالسيرفر — تحقق من الإنترنت ورابط الـ Apps Script');
-  }
+}
+
+// فتح المنتج من الرابط — بعد تحميل البيانات
+const urlParams = new URLSearchParams(window.location.search);
+const targetProductId = urlParams.get('p');
+if (targetProductId) {
+    const targetProd = S.products.find(x => x.id == parseInt(targetProductId));
+    if (targetProd) {
+        openItem(parseInt(targetProductId));
+    }
+}
   
   applySettings();
   applyColors(); 
@@ -1350,16 +1360,6 @@ async function init(){
   applyLogo();
  initDnD(); 
 
-  // === فتح القطعة من الرابط ===
-  const urlParams = new URLSearchParams(window.location.search);
-  const targetProductId = urlParams.get('p');
-  if (targetProductId) {
-      const targetProd = S.products.find(x => x.id == parseInt(targetProductId));
-      if (targetProd) {
-          openItem(parseInt(targetProductId));
-      }
-  }
-}
 
 document.addEventListener('DOMContentLoaded',()=>{
   init();
