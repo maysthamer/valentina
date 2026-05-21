@@ -2014,45 +2014,48 @@ function renderStock() {
 //  نظام التصدير (Excel / CSV) والطباعة
 // ════════════════════════════════════════════════════════════
 
+// دالة التصدير للإكسل المطورة (تحل مشكلة دمج الأعمدة)
 function exportToCSV(tableId, filename) {
     const table = document.getElementById(tableId);
     if(!table) return;
-    
-    let csv = [];
-    const rows = table.querySelectorAll("tr");
-    
-    for (let i = 0; i < rows.length; i++) {
-        let row = [], cols = rows[i].querySelectorAll("td, th");
-        
-        for (let j = 0; j < cols.length; j++) {
-            // تخطي عمود الإجراءات لأنه لا يفيد في الإكسل
-            if(cols[j].classList.contains('no-print')) continue; 
-            
-            let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").trim();
-            row.push('"' + data + '"');
-        }
-        csv.push(row.join(","));
-    }
-    
-    downloadCSV(csv.join("\n"), filename);
-}
 
-function downloadCSV(csv, filename) {
-    let csvFile;
-    let downloadLink;
-    // إضافة BOM لدعم اللغة العربية في Excel
-    const BOM = "\uFEFF"; 
-    csvFile = new Blob([BOM + csv], {type: "text/csv;charset=utf-8;"});
-    downloadLink = document.createElement("a");
-    downloadLink.download = filename + ".csv";
-    downloadLink.href = window.URL.createObjectURL(csvFile);
+    // استنساخ الجدول حتى ما نأثر على الجدول الأصلي بالشاشة
+    let clone = table.cloneNode(true);
+    
+    // مسح الأزرار والأعمدة اللي ما نحتاجها (مثل عمود "إجراءات")
+    clone.querySelectorAll('.no-print').forEach(el => el.remove());
+
+    // بناء ملف إكسل (بصيغة HTML) يدعم اللغة العربية، اتجاه اليمين، والأعمدة المنفصلة 100%
+    let excelData = `
+    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+    <head>
+        <meta charset="utf-8">
+        <style>
+            table { border-collapse: collapse; width: 100%; direction: rtl; font-family: 'Segoe UI', Tahoma, sans-serif; }
+            th, td { border: 1px solid #000; padding: 10px; text-align: center; vertical-align: middle; font-size: 14px; }
+            th { background-color: #f9f0d3; font-weight: bold; }
+            /* mso-number-format يمنع الإكسل من تحويل أرقام الهواتف أو القياسات إلى تواريخ غريبة */
+            td { mso-number-format: "\\@"; } 
+        </style>
+    </head>
+    <body>
+        <table>${clone.innerHTML}</table>
+    </body>
+    </html>`;
+
+    // تحويل الملف بصيغة Excel (xls)
+    let blob = new Blob([excelData], { type: 'application/vnd.ms-excel' });
+    let downloadLink = document.createElement("a");
+    downloadLink.download = filename + ".xls"; // تغيير الصيغة إلى إكسل
+    downloadLink.href = window.URL.createObjectURL(blob);
     downloadLink.style.display = "none";
+    
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
-    toast('✅ تم تصدير الملف بنجاح');
+    
+    toast('📊 تم تصدير الملف كإكسل مرتب بنجاح!');
 }
-
 function printData(divId) {
     const printContent = document.getElementById(divId).innerHTML;
     const originalContent = document.body.innerHTML;
