@@ -631,8 +631,6 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
     <table class="tbl" id="stockTable">
       <thead><tr><th>صورة</th><th>الاسم</th><th>الفئة</th><th>العمر</th><th>الأحجام</th><th>سعر البيع</th><th>سعر الشراء</th><th>الكمية</th><th class="no-print">إجراءات</th></tr></thead>
       <tbody id="stockBody"></tbody>
-    </table>
-  </div>
 </div>
       </table></div>
     </div>
@@ -1353,11 +1351,23 @@ async function init(){
 document.addEventListener('DOMContentLoaded',()=>{
   init();
   addBRow();
-  let clicks=0;
-  document.querySelector('.nav-logo-wrap').addEventListener('click',()=>{
+  
+  // الغاء الحدث المكتوب داخل الـ HTML لمنع التعارض
+  document.querySelector('.nav-logo-wrap').removeAttribute('onclick'); 
+  
+  let clicks = 0;
+  let clickTimer;
+  document.querySelector('.nav-logo-wrap').addEventListener('click', () => {
+    goHome(); // العودة للرئيسية كما هو مصمم
     clicks++;
-    if(clicks>=3){clicks=0;showSeller();}
-    setTimeout(()=>clicks=0,600);
+    clearTimeout(clickTimer); // إيقاف المؤقت القديم مع كل ضغطة
+    if(clicks >= 3){
+      clicks = 0;
+      showSeller();
+    } else {
+      // إعطاء وقت أطول (800 ملي ثانية) ليناسب سرعة اللمس في الموبايل
+      clickTimer = setTimeout(() => { clicks = 0; }, 800); 
+    }
   });
 });
 
