@@ -1349,7 +1349,19 @@ async function init(){
   applyStoryContent();
   applyLogo();
   initDnD(); 
+
+  // === الكود الجديد لفتح القطعة من الرابط ===
+  const urlParams = new URLSearchParams(window.location.search);
+  const targetProductId = urlParams.get('p');
+  if (targetProductId) {
+      const targetProd = S.products.find(x => x.id == targetProductId);
+      if (targetProd) {
+          // تأخير بسيط حتى نضمن تحميل كل الصور والبيانات
+          setTimeout(() => { openItem(parseInt(targetProductId)); }, 300);
+      }
+  }
 }
+
 
 document.addEventListener('DOMContentLoaded',()=>{
   init();
@@ -1613,8 +1625,50 @@ function openCO(){ if(!S.cart.length){toast('⚠️ السلة فارغة');retu
 function applyPromo(){ const code=document.getElementById('coPromo').value.toUpperCase(); const msg=document.getElementById('promoMsg'); if(code===S.settings.promoCode.toUpperCase()){ S.currentPromo=S.settings.promoDisc; msg.style.cssText='display:block;background:#d4edda;color:#155724;padding:.38rem .7rem;border-radius:6px;font-size:.79rem'; msg.textContent=`✅ خصم ${S.settings.promoDisc}%`; }else if(code){S.currentPromo=null;msg.style.cssText='display:block;background:#f8d7da;color:#721c24;padding:.38rem .7rem;border-radius:6px;font-size:.79rem';msg.textContent='❌ كود خاطئ';} else{S.currentPromo=null;msg.style.display='none';} }
 function placeOrder(){ const name=document.getElementById('coName').value.trim(); const phone=document.getElementById('coPhone').value.trim(); const addr=document.getElementById('coAddr').value.trim(); if(!name||!phone||!addr){toast('⚠️ الحقول المطلوبة مفقودة');return;} const c=calcCart(); const order={id:Date.now(),dateTs:Date.now(),date:new Date().toLocaleDateString('ar-IQ'),status:'preparing', customer:{name,phone,addr,notes:document.getElementById('coNotes').value}, items:S.cart.map(i=>({...i})),sub:c.sub,ship:c.ship,disc:c.disc,total:c.total, offerMsg:c.msg||'-',offersLoss:c.disc,promoUsed:document.getElementById('coPromo').value||null}; S.cart.forEach(item=>{ const p=S.products.find(x=>x.id===item.pid); if(p&&p.sizes[item.sz]!==undefined)p.sizes[item.sz]=Math.max(0,(p.sizes[item.sz]||0)-item.qty); if(p)p.salesCount=(p.salesCount||0)+item.qty; }); S.orders.push(order); let cu=S.customers.find(x=>x.phone===phone); const now=new Date().toLocaleDateString('ar-IQ'); if(cu){cu.orders++;cu.totalSpent+=c.total;cu.lastOrder=now;} else S.customers.push({id:Date.now(),name,phone,addr,orders:1,totalSpent:c.total,joinDate:now,lastOrder:now}); S.cart=[];S.currentPromo=null; save();closeM('coModal');updateCartUI();renderAllProducts();renderNewArrivals();renderBestSellers(); toast('🎉 تم تأكيد طلبك! سنتواصل معك قريباً',5000); }
 
-function renderStock(){ const q=(document.getElementById('stockSrch')?.value||'').toLowerCase(); const prods=S.products.filter(p=>p.name.toLowerCase().includes(q)||p.category?.toLowerCase().includes(q)); let tQ=0,low=0,capV=0,sellV=0,profV=0; S.products.forEach(p=>{const q2=Object.values(p.sizes||{}).reduce((a,b)=>a+b,0);tQ+=q2;if(q2>0&&q2<=3)low++;const bp=p.buyPrice||0;const sp=effPrice(p);capV+=q2*bp;sellV+=q2*sp;profV+=q2*(sp-bp);}); document.getElementById('stockStats').innerHTML=`<div class="sc2"><div class="sv">${tQ.toLocaleString()}</div><div class="sl2">إجمالي القطع</div></div><div class="sc2"><div class="sv">${low}</div><div class="sl2">مخزون منخفض</div></div><div class="sc2"><div class="sv">${capV.toLocaleString('ar-IQ')}</div><div class="sl2">رأس المال (د.ع)</div><div class="ss2">بأسعار الشراء</div></div><div class="sc2"><div class="sv">${sellV.toLocaleString('ar-IQ')}</div><div class="sl2">قيمة المخزون (د.ع)</div><div class="ss2">بأسعار البيع</div></div><div class="sc2"><div class="sv">${profV.toLocaleString('ar-IQ')}</div><div class="sl2">الأرباح المتوقعة</div></div><div class="sc2"><div class="sv">${new Set(S.products.map(p=>p.category)).size}</div><div class="sl2">الفئات</div></div>`; const tbody=document.getElementById('stockBody');if(!tbody)return; tbody.innerHTML=prods.map(p=>{ const qty=Object.values(p.sizes||{}).reduce((a,b)=>a+b,0); const ep=effPrice(p);const dl=discLabel(p);const profit=ep-(p.buyPrice||0); const imgs=S.prodImgs[p.id]||[];const cov=S.prodCoverIdx[p.id]||0;const src=imgs[cov]||null; const sz=Object.entries(p.sizes||{}).map(([s,q])=>`<span style="font-size:.68rem">${s}:<b>${q}</b></span>`).join(' '); const st=qty===0?'<span class="badge berr">نفد</span>':qty<=3?'<span class="badge bwarn">منخفض</span>':'<span class="badge bok">متوفر</span>'; return `<tr><td>${src?`<img src="${src}" style="width:36px;height:36px;border-radius:5px;object-fit:cover">`:'<span style="font-size:1.3rem">👗</span>'}</td><td><strong>${p.name}</strong></td><td>${p.category||''}</td><td>${p.ageGroup||'-'}</td><td style="font-size:.72rem">${sz} ${st}</td><td><strong>${cur(ep)}</strong>${dl?`<br><span style="font-size:.68rem;color:var(--er)">${dl}</span>`:''}</td><td>${cur(p.buyPrice||0)}</td><td>${dl?`<span class="badge berr">${dl}</span>`:'—'}</td><td style="color:var(--ok)">${cur(profit)}</td><td style="font-weight:700">${qty}</td><td style="display:flex;gap:.22rem;flex-wrap:wrap"><button class="ab ae" onclick="openEditProd(${p.id})">✏️</button><button class="ab ad" onclick="delProd(${p.id})">🗑️</button></td></tr>`; }).join(''); }
-
+function renderStock(){ 
+  const q=(document.getElementById('stockSrch')?.value||'').toLowerCase(); 
+  const prods=S.products.filter(p=>p.name.toLowerCase().includes(q)||p.category?.toLowerCase().includes(q)); 
+  let tQ=0,low=0,capV=0,sellV=0,profV=0; 
+  S.products.forEach(p=>{
+    const q2=Object.values(p.sizes||{}).reduce((a,b)=>a+b,0);
+    tQ+=q2;
+    if(q2>0&&q2<=3)low++;
+    const bp=p.buyPrice||0;
+    const sp=effPrice(p);
+    capV+=q2*bp;
+    sellV+=q2*sp;
+    profV+=q2*(sp-bp);
+  }); 
+  document.getElementById('stockStats').innerHTML=`<div class="sc2"><div class="sv">${tQ.toLocaleString()}</div><div class="sl2">إجمالي القطع</div></div><div class="sc2"><div class="sv">${low}</div><div class="sl2">مخزون منخفض</div></div><div class="sc2"><div class="sv">${capV.toLocaleString('ar-IQ')}</div><div class="sl2">رأس المال (د.ع)</div><div class="ss2">بأسعار الشراء</div></div><div class="sc2"><div class="sv">${sellV.toLocaleString('ar-IQ')}</div><div class="sl2">قيمة المخزون (د.ع)</div><div class="ss2">بأسعار البيع</div></div><div class="sc2"><div class="sv">${profV.toLocaleString('ar-IQ')}</div><div class="sl2">الأرباح المتوقعة</div></div><div class="sc2"><div class="sv">${new Set(S.products.map(p=>p.category)).size}</div><div class="sl2">الفئات</div></div>`; 
+  
+  const tbody=document.getElementById('stockBody');if(!tbody)return; 
+  
+  tbody.innerHTML=prods.map(p=>{ 
+    const qty=Object.values(p.sizes||{}).reduce((a,b)=>a+b,0); 
+    const ep=effPrice(p);const dl=discLabel(p);const profit=ep-(p.buyPrice||0); 
+    const imgs=S.prodImgs[p.id]||[];const cov=S.prodCoverIdx[p.id]||0;const src=imgs[cov]||null; 
+    const sz=Object.entries(p.sizes||{}).map(([s,q])=>`<span style="font-size:.68rem">${s}:<b>${q}</b></span>`).join(' '); 
+    const st=qty===0?'<span class="badge berr">نفد</span>':qty<=3?'<span class="badge bwarn">منخفض</span>':'<span class="badge bok">متوفر</span>'; 
+    
+    return `<tr>
+      <td>${src?`<img src="${src}" style="width:36px;height:36px;border-radius:5px;object-fit:cover">`:'<span style="font-size:1.3rem">👗</span>'}</td>
+      <td><strong>${p.name}</strong></td>
+      <td>${p.category||''}</td>
+      <td>${p.ageGroup||'-'}</td>
+      <td style="font-size:.72rem">${sz} ${st}</td>
+      <td><strong>${cur(ep)}</strong>${dl?`<br><span style="font-size:.68rem;color:var(--er)">${dl}</span>`:''}</td>
+      <td>${cur(p.buyPrice||0)}</td>
+      <td>${dl?`<span class="badge berr">${dl}</span>`:'—'}</td>
+      <td style="color:var(--ok)">${cur(profit)}</td>
+      <td style="font-weight:700">${qty}</td>
+      <td style="display:flex;gap:.22rem;flex-wrap:wrap">
+        <button class="ab v" onclick="copyProdLink(${p.id})" title="نسخ رابط القطعة للستوري">🔗</button>
+        <button class="ab ae" onclick="openEditProd(${p.id})">✏️</button>
+        <button class="ab ad" onclick="delProd(${p.id})">🗑️</button>
+      </td>
+    </tr>`; 
+  }).join(''); 
+}
 function renderProdCatSel(){document.getElementById('pmCat').innerHTML=S.categories.map(c=>`<option value="${c.name}">${c.icon} ${c.name}</option>`).join('');}
 function renderProdAgeSel(){document.getElementById('pmAge').innerHTML=`<option value="">— بدون —</option>`+S.ageGroups.map(ag=>`<option value="${ag.name}">${ag.icon} ${ag.name}</option>`).join('');}
 function loadProdSizes(){ const ageName=document.getElementById('pmAge').value; const ag=S.ageGroups.find(a=>a.name===ageName); const sizes=ag?.sizes||['XS','S','M','L','XL','XXL']; const grid=document.getElementById('pmSizes'); const existing={};grid.querySelectorAll('[data-sz]').forEach(i=>{existing[i.dataset.sz]=i.value;}); grid.innerHTML=sizes.map(sz=>`<div class="szbox"><label>${sz}</label><input type="number" min="0" placeholder="0" data-sz="${sz}" value="${existing[sz]||0}"></div>`).join(''); }
@@ -2077,6 +2131,19 @@ function printData(divId) {
     window.print();
     document.body.innerHTML = originalContent;
     location.reload(); // إعادة تحميل الصفحة لإرجاع الـ Events بشكل سليم بعد الطباعة
+}
+  function copyProdLink(id) {
+    // بناء الرابط المباشر للقطعة
+    const link = window.location.href.split('?')[0] + '?p=' + id;
+    
+    // نسخ الرابط للحافظة
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(link).then(() => {
+            toast('🔗 تم نسخ الرابط! تكدرين تلصقيه بالستوري أو البايو');
+        }).catch(() => prompt('انسخي هذا الرابط:', link));
+    } else {
+        prompt('انسخي هذا الرابط:', link);
+    }
 }
 </script>
 </body>
