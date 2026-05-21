@@ -1348,9 +1348,9 @@ async function init(){
   applyHeroContent();
   applyStoryContent();
   applyLogo();
-  initDnD(); 
+ initDnD(); 
 
-// === فتح القطعة من الرابط - بعد اكتمال تحميل البيانات ===
+  // === فتح القطعة من الرابط ===
   const urlParams = new URLSearchParams(window.location.search);
   const targetProductId = urlParams.get('p');
   if (targetProductId) {
@@ -1359,7 +1359,7 @@ async function init(){
           openItem(parseInt(targetProductId));
       }
   }
-
+}
 
 document.addEventListener('DOMContentLoaded',()=>{
   init();
