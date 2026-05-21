@@ -1437,7 +1437,16 @@ function hideLock(){document.getElementById('lockScreen').classList.remove('show
 function checkPin(){ const v=document.getElementById('lockPin').value; if(v==='Mays1988'){ S.sellerUnlocked=true; hideLock();goSeller(); }else{ document.getElementById('lockErr').style.display='block'; document.getElementById('lockPin').value=''; document.getElementById('lockPin').focus(); document.getElementById('lockPin').style.borderColor='var(--er)'; setTimeout(()=>document.getElementById('lockPin').style.borderColor='',800); } }
 function goSeller(){ document.querySelectorAll('.page').forEach(x=>x.classList.remove('active')); document.getElementById('page-seller').classList.add('active'); }
 function lockSeller(){ S.sellerUnlocked=false; document.querySelectorAll('.page').forEach(x=>x.classList.remove('active')); document.getElementById('page-buyer').classList.add('active'); toast('🔒 تم قفل واجهة البائع'); }
-function goHome(){ S.prevPage=null; document.querySelectorAll('.page').forEach(x=>x.classList.remove('active')); document.getElementById('page-buyer').classList.add('active'); }
+function goHome(preventPushState = false){ 
+  S.prevPage=null; 
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active')); 
+  document.getElementById('page-buyer').classList.add('active'); 
+  
+  // إرجاع الرابط بدون ?p=
+  if(!preventPushState) {
+      window.history.pushState({page: 'home'}, '', window.location.pathname);
+  }
+}
 function showPage(p){ document.querySelectorAll('.page').forEach(x=>x.classList.remove('active')); document.getElementById('page-'+p).classList.add('active'); }
 function goBack(){showPage(S.prevPage||'buyer');}
 function showPanel(p,el){ document.querySelectorAll('.sp').forEach(x=>x.classList.remove('active')); document.getElementById('panel-'+p).classList.add('active'); document.querySelectorAll('.sni').forEach(x=>x.classList.remove('active')); el.classList.add('active'); if(p==='reports')renderReports(); if(p==='stock')renderStock(); if(p==='banners'){renderBanners();renderProdImgTbl();} }
@@ -1535,8 +1544,12 @@ function renderBestSellers(){ const g=document.getElementById('bestSellersGrid')
 function renderAllProducts(){ const g=document.getElementById('allGrid');if(!g)return; const q=(document.getElementById('buyerSearch')?.value||'').toLowerCase(); const ps=S.products.filter(p=>{ const ms=p.name.toLowerCase().includes(q)||(p.desc||'').toLowerCase().includes(q); const mc=S.activeCat==='all'||p.category===S.activeCat; const ma=S.activeAge==='all'||p.ageGroup===S.activeAge; return ms&&mc&&ma; }); g.innerHTML=ps.length?ps.map(buildCard).join(''):'<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--mt)">🔍 لا توجد منتجات</div>'; }
 
 
-function openItem(id){
+function openItem(id), preventPushState = false){ // أضفنا parameter جديد
   const p=S.products.find(x=>x.id===id);if(!p)return; S.prevPage='buyer';showPage('item');
+    if(!preventPushState) {
+      window.history.pushState({page: 'item', id: id}, '', '?p=' + id);
+  }
+
   const imgs=S.prodImgs[id]||[];const cov=S.prodCoverIdx[id]||0; const ep=effPrice(p);const dl=discLabel(p); const ag=S.ageGroups.find(a=>a.name===p.ageGroup);
   const mainDiv=document.getElementById('idMainImg');
   mainDiv.innerHTML=imgs[cov]?`<img src="${imgs[cov]}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover">`:'<span style="font-size:6rem">👗</span>';
@@ -2096,6 +2109,21 @@ function exportToCSV(tableId, filename) {
     // مسح الأزرار والأعمدة اللي ما نحتاجها (مثل عمود "إجراءات")
     clone.querySelectorAll('.no-print').forEach(el => el.remove());
 
+    // 🌟 التعديل الجديد: إجبار الإكسل على الالتزام بحجم الصورة وارتفاع الصف
+    clone.querySelectorAll('img').forEach(img => {
+        // تحديد الحجم بخصائص الـ HTML المباشرة (الإكسل يفهمها أفضل من الـ CSS)
+        img.setAttribute('width', '60');
+        img.setAttribute('height', '60');
+        // تنسيق إضافي لضمان توسيط الصورة
+        img.style.cssText = 'width:60px; height:60px; display:block; margin:auto;';
+    });
+
+    // إجبار صفوف الجدول (tr) على أخذ ارتفاع مناسب حتى لا تتداخل الصور
+    clone.querySelectorAll('tr').forEach(tr => {
+        tr.setAttribute('height', '75'); // ارتفاع الصف 75 بيكسل
+        tr.style.height = '75px';
+    });
+
     // بناء ملف إكسل (بصيغة HTML) يدعم اللغة العربية، اتجاه اليمين، والأعمدة المنفصلة 100%
     let excelData = `
     <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
@@ -2117,7 +2145,7 @@ function exportToCSV(tableId, filename) {
     // تحويل الملف بصيغة Excel (xls)
     let blob = new Blob([excelData], { type: 'application/vnd.ms-excel' });
     let downloadLink = document.createElement("a");
-    downloadLink.download = filename + ".xls"; // تغيير الصيغة إلى إكسل
+    downloadLink.download = filename + ".xls"; 
     downloadLink.href = window.URL.createObjectURL(blob);
     downloadLink.style.display = "none";
     
@@ -2162,6 +2190,16 @@ function printData(divId) {
         prompt('انسخي هذا الرابط:', link);
     }
 }
+window.addEventListener('popstate', (e) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetProductId = urlParams.get('p');
+    if (targetProductId) {
+        openItem(parseInt(targetProductId), true); 
+    } else {
+        goHome(true);
+    }
+});
+  
 </script>
 </body>
 </html>
