@@ -1774,7 +1774,105 @@ function viewOrder(id){
 function renderCustomers(){ const q=(document.getElementById('custSrch')?.value||'').toLowerCase(); const custs=S.customers.filter(c=>c.name?.toLowerCase().includes(q)||c.phone?.includes(q)).sort((a,b)=>b.totalSpent-a.totalSpent); document.getElementById('custCnt').textContent=`${S.customers.length} عميل`; const el=document.getElementById('custList');if(!el)return; if(!custs.length){el.innerHTML='<div style="text-align:center;padding:2rem;color:var(--mt)">لا توجد عملاء</div>';return;} el.innerHTML=custs.map(c=>{const isVip=c.orders>=S.settings.vipOrders; return `<div style="background:#fff;border-radius:9px;padding:.82rem 1rem;box-shadow:0 2px 9px var(--sh);display:flex;gap:.8rem;align-items:center;margin-bottom:.6rem;cursor:pointer" onclick="viewCust('${c.phone}')"><div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--c4),var(--c3));display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">👤</div><div style="flex:1"><div style="display:flex;align-items:center;gap:.4rem"><strong>${c.name}</strong>${isVip?'<span class="vip">⭐ VIP</span>':''}</div><div style="font-size:.75rem;color:var(--mt)">${c.phone} | ${c.addr||''}</div><div style="font-size:.75rem;margin-top:.15rem"><span style="color:var(--wb);font-weight:600">${c.orders} طلب</span> | إجمالي: <strong>${cur(c.totalSpent)}</strong> | آخر طلب: ${c.lastOrder}</div></div></div>`;}).join(''); }
 function viewCust(phone){ const c=S.customers.find(x=>x.phone===phone);if(!c)return; const orders=S.orders.filter(o=>o.customer?.phone===phone).reverse(); const isVip=c.orders>=S.settings.vipOrders; const ords=orders.length?orders.map(o=>{ const items=o.items?.map(item=>{ const imgs=S.prodImgs[item.pid]||[];const cov=S.prodCoverIdx[item.pid]||0;const src=imgs[cov]||null; return `<div style="display:flex;gap:.5rem;align-items:center;background:#fff;border-radius:7px;padding:.42rem;margin-bottom:.3rem"><div style="width:36px;height:44px;border-radius:5px;background:var(--c4);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center">${src?`<img src="${src}" style="width:100%;height:100%;object-fit:cover">`:'👗'}</div><div style="flex:1;font-size:.78rem"><div style="font-weight:600">${item.name}</div><div style="color:var(--mt)">مقاس: ${item.sz} | كمية: ${item.qty} | ${cur(item.price*item.qty)}</div></div></div>`;}).join(''); const sts={preparing:'⏳',delivering:'🚚',done:'✅',rejected:'❌',returned:'↩️'}; return `<div style="background:var(--c1);border-radius:8px;padding:.78rem;margin-bottom:.6rem;border-right:3px solid var(--ac)"><div style="display:flex;justify-content:space-between;margin-bottom:.4rem"><div style="font-weight:600;font-size:.83rem">${sts[o.status]||''} طلب ${o.date}</div><div style="font-weight:700;color:var(--wb)">${cur(o.total)}</div></div>${items}<div style="font-size:.72rem;color:var(--mt);margin-top:.25rem">شحن: ${cur(o.ship)} | خصم: -${cur(o.disc)} ${o.offerMsg!=='-'?'| '+o.offerMsg:''}</div></div>`; }).join(''):'<div style="text-align:center;color:var(--mt);padding:1rem">لا توجد طلبات</div>'; document.getElementById('custDetail').innerHTML=`<div style="background:linear-gradient(135deg,var(--c4),var(--c3));border-radius:9px;padding:.88rem;margin-bottom:.88rem;display:flex;gap:.88rem;align-items:center"><div style="font-size:2rem">👤</div><div><div style="font-size:1.02rem;font-weight:700">${c.name} ${isVip?'<span class="vip">⭐ VIP</span>':''}</div><div style="font-size:.82rem">${c.phone}</div><div style="font-size:.78rem;opacity:.8">${c.addr||''}</div></div></div><div class="g3" style="margin-bottom:.88rem"><div style="background:#fff;border-radius:7px;padding:.62rem;text-align:center;box-shadow:0 2px 7px var(--sh)"><div style="font-size:1.25rem;font-weight:700;color:var(--wb)">${c.orders}</div><div style="font-size:.7rem;color:var(--mt)">طلب</div></div><div style="background:#fff;border-radius:7px;padding:.62rem;text-align:center;box-shadow:0 2px 7px var(--sh)"><div style="font-size:.88rem;font-weight:700;color:var(--wb)">${cur(c.totalSpent)}</div><div style="font-size:.7rem;color:var(--mt)">إجمالي الإنفاق</div></div><div style="background:#fff;border-radius:7px;padding:.62rem;text-align:center;box-shadow:0 2px 7px var(--sh)"><div style="font-size:.8rem;font-weight:600;color:var(--wb)">${c.lastOrder}</div><div style="font-size:.7rem;color:var(--mt)">آخر طلب</div></div></div><div style="font-weight:700;color:var(--wb);margin-bottom:.5rem">📋 سجل الطلبات (${orders.length})</div>${ords}`; openM('custModal'); }
 
-function renderReports(){ const m=parseInt(document.getElementById('repM')?.value);const y=parseInt(document.getElementById('repY')?.value);const key=`${y}-${m}`; const exp=S.expenses[key]||{ads:0,ship:0,pack:0}; document.getElementById('eA').value=exp.ads||0;document.getElementById('eS').value=exp.ship||0;document.getElementById('eP').value=exp.pack||0; const ords=S.orders.filter(o=>{const d=new Date(o.dateTs||o.id);return d.getMonth()===m&&d.getFullYear()===y&&o.status!=='rejected'&&o.status!=='returned';}); const useOrds=ords.length>0?ords:S.orders.filter(o=>o.status!=='rejected'&&o.status!=='returned'); const sales=useOrds.reduce((a,o)=>a+(o.total||0),0); const cogs=useOrds.reduce((a,o)=>a+(o.items?.reduce((x,i)=>{const p=S.products.find(px=>px.id===i.pid);return x+(p?.buyPrice||0)*i.qty;},0)||0),0); const offL=useOrds.reduce((a,o)=>a+(o.offersLoss||0),0); const net=sales-cogs-(exp.ads||0)-(exp.ship||0)-(exp.pack||0)-offL; document.getElementById('rpS').textContent=sales.toLocaleString('ar-IQ');document.getElementById('rpC').textContent=cogs.toLocaleString('ar-IQ'); document.getElementById('rpA').textContent=(exp.ads||0).toLocaleString('ar-IQ');document.getElementById('rpSh').textContent=(exp.ship||0).toLocaleString('ar-IQ'); document.getElementById('rpPk').textContent=(exp.pack||0).toLocaleString('ar-IQ');document.getElementById('rpOf').textContent=offL.toLocaleString('ar-IQ'); document.getElementById('rpN').textContent=net.toLocaleString('ar-IQ'); const cS={};useOrds.forEach(o=>o.items?.forEach(i=>{const p=S.products.find(x=>x.id===i.pid);if(p)cS[p.category]=(cS[p.category]||0)+i.price*i.qty;})); const mx=Math.max(...Object.values(cS),1); document.getElementById('catSales').innerHTML=Object.entries(cS).map(([cat,v])=>`<div style="margin-bottom:.6rem"><div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:.2rem"><span>${cat}</span><span>${cur(v)}</span></div><div class="pb2"><div class="pf2" style="width:${(v/mx)*100}%"></div></div></div>`).join('')||'<p style="font-size:.78rem;color:var(--mt)">لا مبيعات</p>'; const sM={};useOrds.forEach(o=>o.items?.forEach(i=>{if(!sM[i.name])sM[i.name]={qty:0,rev:0,cost:0,bp:(S.products.find(p=>p.id===i.pid)?.buyPrice||0)};sM[i.name].qty+=i.qty;sM[i.name].rev+=i.price*i.qty;sM[i.name].cost+=sM[i.name].bp*i.qty;})); document.getElementById('saleDetail').innerHTML=Object.entries(sM).map(([n,d])=>`<tr><td>${n}</td><td>${d.qty}</td><td>${cur(d.rev)}</td><td>${cur(d.cost)}</td><td style="color:var(--ok)">${cur(d.rev-d.cost)}</td></tr>`).join('')||'<tr><td colspan="5" style="text-align:center;color:var(--mt)">لا مبيعات</td></tr>'; }
+function renderReports() {
+  const m = parseInt(document.getElementById('repM')?.value);
+  const y = parseInt(document.getElementById('repY')?.value);
+  const key = `${y}-${m}`;
+  const exp = S.expenses[key] || { ads: 0, ship: 0, pack: 0 };
+  
+  document.getElementById('eA').value = exp.ads || 0;
+  document.getElementById('eS').value = exp.ship || 0;
+  document.getElementById('eP').value = exp.pack || 0;
+
+  // جلب الطلبات الخاصة بالشهر المحدد (نستثني المرفوض والراجع لحساب الأرباح)
+  const ords = S.orders.filter(o => {
+    const d = new Date(o.dateTs || o.id);
+    return d.getMonth() === m && d.getFullYear() === y && o.status !== 'rejected' && o.status !== 'returned';
+  });
+
+  const useOrds = ords.length > 0 ? ords : S.orders.filter(o => o.status !== 'rejected' && o.status !== 'returned');
+
+  // 1. المبيعات الفعلية (مجموع المبالغ اللي دفعوها الزبائن بعد الخصومات)
+  const sales = useOrds.reduce((a, o) => a + (parseFloat(o.total) || 0), 0);
+
+  // 2. تكلفة البضاعة (رأس المال للقطع اللي انباعت)
+  const cogs = useOrds.reduce((a, o) => a + (o.items?.reduce((x, i) => {
+    const p = S.products.find(px => px.id === i.pid);
+    return x + (parseFloat(p?.buyPrice) || 0) * i.qty;
+  }, 0) || 0), 0);
+
+  // 3. خسائر العروض (إجمالي الخصومات وقيمة القطع المجانية اللي تم خصمها بالطلبات)
+  const totalDiscounts = useOrds.reduce((a, o) => a + (parseFloat(o.disc) || 0), 0);
+
+  // 4. الربح الصافي = المبيعات المقبوضة - تكلفة البضاعة - المصاريف التشغيلية
+  // (لا نخصم العروض هنا، لأن المبيعات أعلاه هي أصلاً صافية بعد العروض)
+  const net = sales - cogs - (exp.ads || 0) - (exp.ship || 0) - (exp.pack || 0);
+
+  // تحديث الأرقام بالشاشات
+  document.getElementById('rpS').textContent = sales.toLocaleString('ar-IQ');
+  document.getElementById('rpC').textContent = cogs.toLocaleString('ar-IQ');
+  document.getElementById('rpA').textContent = (exp.ads || 0).toLocaleString('ar-IQ');
+  document.getElementById('rpSh').textContent = (exp.ship || 0).toLocaleString('ar-IQ');
+  document.getElementById('rpPk').textContent = (exp.pack || 0).toLocaleString('ar-IQ');
+  document.getElementById('rpOf').textContent = totalDiscounts.toLocaleString('ar-IQ');
+  document.getElementById('rpN').textContent = net.toLocaleString('ar-IQ');
+
+  // حساب المبيعات حسب الفئة
+  const cS = {};
+  useOrds.forEach(o => o.items?.forEach(i => {
+    const p = S.products.find(x => x.id === i.pid);
+    if (p) cS[p.category] = (cS[p.category] || 0) + (i.price * i.qty);
+  }));
+  const mx = Math.max(...Object.values(cS), 1);
+  document.getElementById('catSales').innerHTML = Object.entries(cS).map(([cat, v]) => `<div style="margin-bottom:.6rem"><div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:.2rem"><span>${cat}</span><span>${cur(v)}</span></div><div class="pb2"><div class="pf2" style="width:${(v / mx) * 100}%"></div></div></div>`).join('') || '<p style="font-size:.78rem;color:var(--mt)">لا مبيعات</p>';
+
+  // تفاصيل مبيعات القطع
+  const sM = {};
+  useOrds.forEach(o => o.items?.forEach(i => {
+    if (!sM[i.name]) sM[i.name] = { qty: 0, rev: 0, cost: 0, bp: (parseFloat(S.products.find(p => p.id === i.pid)?.buyPrice) || 0) };
+    sM[i.name].qty += i.qty;
+    sM[i.name].rev += i.price * i.qty;
+    sM[i.name].cost += sM[i.name].bp * i.qty;
+  }));
+  document.getElementById('saleDetail').innerHTML = Object.entries(sM).map(([n, d]) => `<tr><td>${n}</td><td>${d.qty}</td><td>${cur(d.rev)}</td><td>${cur(d.cost)}</td><td style="color:var(--ok)">${cur(d.rev - d.cost)}</td></tr>`).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--mt)">لا مبيعات</td></tr>';
+
+  // ==========================================
+  // إضافة جدول "الطلبات الواصلة (تم الاستلام)"
+  // ==========================================
+  let delSec = document.getElementById('delOrdSec');
+  if (!delSec) {
+    const parentTable = document.getElementById('reportsPrintArea').closest('.pc2');
+    parentTable.insertAdjacentHTML('afterend', `
+      <div class="pc2" id="delOrdSec" style="margin-top: 1.5rem; border-top: 3px solid var(--ok);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.8rem; padding-bottom:.35rem; border-bottom:1.5px solid var(--c4)">
+          <div class="pct" style="margin-bottom:0; border-bottom:none; padding-bottom:0; color:var(--ok)">✅ الطلبات المستلمة والواصلة</div>
+          <button class="ab ao" onclick="exportToCSV('deliveredOrdersTable', 'Valentina_Delivered_Orders')">📊 تصدير Excel</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="tbl" id="deliveredOrdersTable">
+            <thead><tr><th>اسم العميل</th><th>رقم الهاتف</th><th>العرض / الخصم الممنوح</th><th>المبلغ المدفوع (د.ع)</th></tr></thead>
+            <tbody id="deliveredOrdersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    `);
+  }
+
+  // فرز الطلبات اللي حالتها 'done' فقط
+  const doneOrds = useOrds.filter(o => o.status === 'done');
+  const dBody = document.getElementById('deliveredOrdersBody');
+  if (doneOrds.length === 0) {
+    dBody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--mt);padding:1.5rem">لا توجد طلبات واصلة في هذا الشهر</td></tr>';
+  } else {
+    dBody.innerHTML = doneOrds.map(o => `<tr>
+      <td><strong>${o.customer?.name || '-'}</strong></td>
+      <td style="direction:ltr; text-align:right">${o.customer?.phone || '-'}</td>
+      <td style="color:var(--er)">${o.disc > 0 ? cur(o.disc) : '-'}</td>
+      <td style="font-weight:700; color:var(--ok)">${cur(o.total)}</td>
+    </tr>`).join('');
+  }
+}
+  
 function saveExp(){const m=parseInt(document.getElementById('repM').value);const y=parseInt(document.getElementById('repY').value);S.expenses[`${y}-${m}`]={ads:parseFloat(document.getElementById('eA').value)||0,ship:parseFloat(document.getElementById('eS').value)||0,pack:parseFloat(document.getElementById('eP').value)||0};save();renderReports();toast('✅ تم حفظ المصاريف');}
 
 function renderCatList(){ const el=document.getElementById('catList');if(!el)return; el.innerHTML=S.categories.map((c,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:.48rem .7rem;background:var(--c1);border-radius:6px;margin-bottom:.32rem"><span>${c.icon} ${c.name}</span><div style="display:flex;gap:.3rem"><input type="text" value="${c.icon}" onchange="S.categories[${i}].icon=this.value;save();renderFilters();renderCatStrip()" style="width:40px;padding:.26rem;border:1px solid var(--bd);border-radius:5px;text-align:center"><input type="text" value="${c.name}" onchange="S.categories[${i}].name=this.value;save();renderAll()" style="width:108px;padding:.26rem .48rem;border:1px solid var(--bd);border-radius:5px;direction:rtl;font-family:'Tajawal',sans-serif"><button class="ab ad" onclick="delCat(${i})">🗑️</button></div></div>`).join(''); }
