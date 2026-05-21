@@ -395,6 +395,9 @@ body{font-family:'Tajawal',sans-serif;background:var(--c1);color:var(--dt);min-h
 .insta-follow-btn{display:inline-flex;align-items:center;gap:.6rem;background:#e1306c;color:#fff;padding:.68rem 1.8rem;border-radius:4px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;border:none;margin-top:.5rem;transition:background .2s;text-decoration:none}
 .insta-follow-btn:hover{background:#c1175a}
 .insta-error{text-align:center;padding:1.2rem;color:var(--mt);font-size:.82rem}
+.mov { align-items: flex-start !important; padding-top: 3rem !important; }
+.modal { margin: auto; }
+  
 </style>
 </head>
 <body>
@@ -1654,8 +1657,120 @@ function renderOrders(){ const from=document.getElementById('oFrom').value;const
 function updOrd(id,status){const o=S.orders.find(x=>x.id===id);if(!o)return;o.status=status;save();renderOrders();toast(status==='done'?'✅ تم الاستلام':status==='delivering'?'🚚 قيد التوصيل':'تم التحديث');}
 function openRej(id){document.getElementById('rejId').value=id;document.getElementById('rejReason').value='';openM('rejModal');}
 function doReject(){ const id=parseInt(document.getElementById('rejId').value);const o=S.orders.find(x=>x.id===id);if(!o)return; o.status=document.getElementById('retSt').value;o.rejectReason=document.getElementById('rejReason').value; o.items?.forEach(item=>{const p=S.products.find(x=>x.id===item.pid);if(p){if(!p.sizes)p.sizes={};p.sizes[item.sz]=(p.sizes[item.sz]||0)+item.qty;}}); save();closeM('rejModal');renderOrders();renderStock();toast('↩️ تم الرفض وإرجاع القطع للمخزون'); }
-function viewOrder(id){ const o=S.orders.find(x=>x.id===id);if(!o)return; const sts={preparing:'⏳ قيد التجهيز',delivering:'🚚 قيد التوصيل',done:'✅ تم الاستلام',rejected:'❌ تم الرفض',returned:'↩️ راجع للمخزن'}; const items=o.items?.map(item=>{ const p=S.products.find(x=>x.id===item.pid);const imgs=S.prodImgs[item.pid]||[];const cov=S.prodCoverIdx[item.pid]||0;const src=imgs[cov]||null; return `<div style="display:flex;gap:.7rem;align-items:center;background:var(--c1);border-radius:8px;padding:.6rem;margin-bottom:.5rem"><div style="width:48px;height:58px;border-radius:6px;background:var(--c4);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center">${src?`<img src="${src}" style="width:100%;height:100%;object-fit:cover">`:'👗'}</div><div style="flex:1"><div style="font-weight:600;font-size:.85rem">${item.name}</div><div style="font-size:.76rem;color:var(--mt)">مقاس: <strong>${item.sz}</strong> | كمية: <strong>${item.qty}</strong></div><div style="font-size:.8rem;font-weight:700;color:var(--wb)">${cur(item.price)} / قطعة — إجمالي: ${cur(item.price*item.qty)}</div>${p?`<div style="font-size:.7rem;color:var(--mt)">${p.category||''} ${p.ageGroup?'— '+p.ageGroup:''}</div>`:''}</div></div>`;}).join(''); document.getElementById('ordDetail').innerHTML=`<div class="g2" style="margin-bottom:.9rem"><div style="background:var(--c1);border-radius:8px;padding:.8rem"><div style="font-size:.74rem;color:var(--mt);margin-bottom:.25rem">معلومات العميل</div><div style="font-weight:600">${o.customer?.name}</div><div style="font-size:.82rem">${o.customer?.phone}</div><div style="font-size:.78rem;color:var(--mt)">${o.customer?.addr}</div>${o.customer?.notes?`<div style="font-size:.76rem;margin-top:.3rem;font-style:italic">${o.customer.notes}</div>`:''}</div><div style="background:var(--c1);border-radius:8px;padding:.8rem"><div style="font-size:.74rem;color:var(--mt);margin-bottom:.25rem">المالية</div><div style="font-size:.82rem">المجموع: <strong>${cur(o.sub)}</strong></div><div style="font-size:.82rem">الشحن: <strong>${cur(o.ship)}</strong></div><div style="font-size:.82rem">الخصم: <strong>-${cur(o.disc)}</strong></div><div style="font-size:.98rem;font-weight:700;color:var(--wb);margin-top:.25rem">الإجمالي: ${cur(o.total)}</div><div style="margin-top:.3rem">${sts[o.status]||o.status}</div>${o.offerMsg&&o.offerMsg!=='-'?`<div style="font-size:.74rem;color:var(--ok)">${o.offerMsg}</div>`:''}</div></div><div style="font-weight:700;margin-bottom:.5rem;color:var(--wb)">📦 القطع (${o.items?.length||0})</div>${items}${o.rejectReason?`<div style="background:#fde8e8;border-radius:7px;padding:.5rem;font-size:.78rem;color:var(--er);margin-top:.5rem">سبب الرفض: ${o.rejectReason}</div>`:''}`; openM('ordModal'); }
+// دوال مساعدة لتحديث الأسعار والمصاريف تلقائياً
+function updateOrderItemPrice(orderId, sz, pid, newPrice) {
+    let pVal = parseFloat(newPrice) || 0;
+    let o = S.orders.find(x => x.id === orderId);
+    if(!o) return;
+    let item = o.items.find(i => i.pid === pid && i.sz === sz);
+    if(item) item.price = pVal;
+    
+    o.sub = o.items.reduce((a, b) => a + (b.price * b.qty), 0);
+    o.total = o.sub + (parseFloat(o.ship) || 0) - (parseFloat(o.disc) || 0);
+    
+    recountCustomerTotal(o.customer?.phone);
+    save(); renderOrders(); if(document.getElementById('panel-reports').classList.contains('active')) renderReports();
+    viewOrder(orderId); toast('✅ تم تحديث سعر القطعة والمجاميع');
+}
 
+function updateOrderShip(orderId, val) {
+    let o = S.orders.find(x => x.id === orderId);
+    if(!o) return;
+    o.ship = parseFloat(val) || 0;
+    o.total = o.sub + o.ship - (parseFloat(o.disc) || 0);
+    
+    recountCustomerTotal(o.customer?.phone);
+    save(); renderOrders(); if(document.getElementById('panel-reports').classList.contains('active')) renderReports();
+    viewOrder(orderId); toast('✅ تم تحديث أجور الشحن');
+}
+
+function updateOrderDisc(orderId, val) {
+    let o = S.orders.find(x => x.id === orderId);
+    if(!o) return;
+    o.disc = parseFloat(val) || 0;
+    o.total = o.sub + (parseFloat(o.ship) || 0) - o.disc;
+    
+    recountCustomerTotal(o.customer?.phone);
+    save(); renderOrders(); if(document.getElementById('panel-reports').classList.contains('active')) renderReports();
+    viewOrder(orderId); toast('✅ تم تحديث الخصم');
+}
+
+function recountCustomerTotal(phone) {
+    if(!phone) return;
+    let cust = S.customers.find(c => c.phone === phone);
+    if(!cust) return;
+    let cOrders = S.orders.filter(x => x.customer?.phone === phone && x.status !== 'rejected' && x.status !== 'returned');
+    cust.totalSpent = cOrders.reduce((sum, ord) => sum + (ord.total || 0), 0);
+}
+
+// واجهة تفاصيل الطلب المعدلة والمطورة
+function viewOrder(id){ 
+    const o=S.orders.find(x=>x.id===id); if(!o) return; 
+    const sts={preparing:'⏳ قيد التجهيز',delivering:'🚚 قيد التوصيل',done:'✅ تم الاستلام',rejected:'❌ تم الرفض',returned:'↩️ راجع للمخزن'}; 
+    
+    const items=o.items?.map(item=>{ 
+        const p=S.products.find(x=>x.id===item.pid);
+        const imgs=S.prodImgs[item.pid]||[];
+        const cov=S.prodCoverIdx[item.pid]||0;
+        const src=imgs[cov]||null; 
+        
+        return `<div style="display:flex;gap:.7rem;align-items:flex-start;background:var(--c1);border-radius:8px;padding:.6rem;margin-bottom:.5rem">
+            <div style="width:48px;height:58px;border-radius:6px;background:var(--c4);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center">
+                ${src?`<img src="${src}" style="width:100%;height:100%;object-fit:cover">`:'👗'}
+            </div>
+            <div style="flex:1">
+                <div style="font-weight:600;font-size:.85rem">${item.name}</div>
+                <div style="font-size:.76rem;color:var(--mt)">مقاس: <strong>${item.sz}</strong> | كمية: <strong>${item.qty}</strong></div>
+                
+                <div style="display:flex; align-items:center; gap:.4rem; margin-top:.4rem; flex-wrap:wrap">
+                    <span style="font-size:.72rem; color:var(--mt)">السعر:</span>
+                    <input type="number" value="${item.price}" onchange="updateOrderItemPrice(${o.id}, '${item.sz}', ${item.pid}, this.value)" style="width:75px; padding:.25rem; border:1px solid var(--bd); border-radius:5px; font-size:.8rem; text-align:center; font-family:'Tajawal',sans-serif">
+                    <span style="font-size:.78rem; font-weight:700; color:var(--wb); margin-right:auto">الإجمالي: ${cur(item.price*item.qty)}</span>
+                </div>
+                
+                ${p?`<div style="font-size:.7rem;color:var(--mt); margin-top:.3rem">${p.category||''} ${p.ageGroup?'— '+p.ageGroup:''}</div>`:''}
+            </div>
+        </div>`;
+    }).join(''); 
+    
+    document.getElementById('ordDetail').innerHTML=`
+    <div class="g2" style="margin-bottom:.9rem">
+        <div style="background:var(--c1);border-radius:8px;padding:.8rem">
+            <div style="font-size:.74rem;color:var(--mt);margin-bottom:.25rem">معلومات العميل</div>
+            <div style="font-weight:600">${o.customer?.name}</div>
+            <div style="font-size:.82rem">${o.customer?.phone}</div>
+            <div style="font-size:.78rem;color:var(--mt)">${o.customer?.addr}</div>
+            ${o.customer?.notes?`<div style="font-size:.76rem;margin-top:.3rem;font-style:italic">${o.customer.notes}</div>`:''}
+        </div>
+        <div style="background:var(--c1);border-radius:8px;padding:.8rem">
+            <div style="font-size:.74rem;color:var(--mt);margin-bottom:.35rem;font-weight:700">المالية (قابلة للتعديل)</div>
+            <div style="display:flex; justify-content:space-between; font-size:.82rem; margin-bottom:.3rem"><span>المجموع:</span> <strong>${cur(o.sub)}</strong></div>
+            <div style="display:flex; justify-content:space-between; font-size:.82rem; margin-bottom:.3rem; align-items:center"><span>الشحن:</span> <input type="number" value="${o.ship||0}" onchange="updateOrderShip(${o.id}, this.value)" style="width:70px; padding:.2rem; border:1px solid var(--bd); border-radius:4px; text-align:center; font-size:.75rem"></div>
+            <div style="display:flex; justify-content:space-between; font-size:.82rem; margin-bottom:.3rem; align-items:center"><span>الخصم:</span> <input type="number" value="${o.disc||0}" onchange="updateOrderDisc(${o.id}, this.value)" style="width:70px; padding:.2rem; border:1px solid var(--bd); border-radius:4px; text-align:center; font-size:.75rem"></div>
+            <div style="display:flex; justify-content:space-between; font-size:.95rem; font-weight:700; color:var(--wb); margin-top:.4rem; border-top:1px solid var(--bd); padding-top:.4rem"><span>الإجمالي:</span> <span>${cur(o.total)}</span></div>
+            
+            <div style="margin-top:.4rem; font-size:.85rem; font-weight:600">${sts[o.status]||o.status}</div>
+            ${o.offerMsg&&o.offerMsg!=='-'?`<div style="font-size:.74rem;color:var(--ok);margin-top:.2rem">${o.offerMsg}</div>`:''}
+        </div>
+    </div>
+    
+    <div style="font-weight:700;margin-bottom:.6rem;color:var(--wb)">📦 القطع (${o.items?.length||0}) <span style="font-size:.7rem; font-weight:normal; color:var(--mt)">(تعديل الأسعار أعلاه)</span></div>
+    ${items}
+    ${o.rejectReason?`<div style="background:#fde8e8;border-radius:7px;padding:.5rem;font-size:.78rem;color:var(--er);margin-top:.5rem">سبب الرفض: ${o.rejectReason}</div>`:''}
+    
+    <div style="display:flex; gap:.4rem; margin-top:1rem; flex-wrap:wrap; border-top:1px solid var(--bd); padding-top:.8rem">
+        <button class="ab aship" style="flex:1; padding:.65rem; font-size:.85rem; min-width:80px" onclick="updOrd(${o.id},'delivering'); setTimeout(()=>viewOrder(${o.id}), 100)">🚚 توصيل</button>
+        <button class="ab ao" style="flex:1; padding:.65rem; font-size:.85rem; min-width:80px" onclick="updOrd(${o.id},'done'); setTimeout(()=>viewOrder(${o.id}), 100)">✅ استلام</button>
+        <button class="ab arej" style="flex:1; padding:.65rem; font-size:.85rem; min-width:80px" onclick="closeM('ordModal'); openRej(${o.id})">❌ رفض</button>
+    </div>
+    `; 
+    
+    // تعديل زر الإغلاق ليكون متناسقاً
+    const maDiv = document.querySelector('#ordModal .ma');
+    if(maDiv) maDiv.innerHTML = `<button class="bs" style="width:100%; margin-top:.5rem" onclick="closeM('ordModal')">إغلاق وتطبيق التحديثات</button>`;
+    
+    openM('ordModal'); 
+}
 function renderCustomers(){ const q=(document.getElementById('custSrch')?.value||'').toLowerCase(); const custs=S.customers.filter(c=>c.name?.toLowerCase().includes(q)||c.phone?.includes(q)).sort((a,b)=>b.totalSpent-a.totalSpent); document.getElementById('custCnt').textContent=`${S.customers.length} عميل`; const el=document.getElementById('custList');if(!el)return; if(!custs.length){el.innerHTML='<div style="text-align:center;padding:2rem;color:var(--mt)">لا توجد عملاء</div>';return;} el.innerHTML=custs.map(c=>{const isVip=c.orders>=S.settings.vipOrders; return `<div style="background:#fff;border-radius:9px;padding:.82rem 1rem;box-shadow:0 2px 9px var(--sh);display:flex;gap:.8rem;align-items:center;margin-bottom:.6rem;cursor:pointer" onclick="viewCust('${c.phone}')"><div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--c4),var(--c3));display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">👤</div><div style="flex:1"><div style="display:flex;align-items:center;gap:.4rem"><strong>${c.name}</strong>${isVip?'<span class="vip">⭐ VIP</span>':''}</div><div style="font-size:.75rem;color:var(--mt)">${c.phone} | ${c.addr||''}</div><div style="font-size:.75rem;margin-top:.15rem"><span style="color:var(--wb);font-weight:600">${c.orders} طلب</span> | إجمالي: <strong>${cur(c.totalSpent)}</strong> | آخر طلب: ${c.lastOrder}</div></div></div>`;}).join(''); }
 function viewCust(phone){ const c=S.customers.find(x=>x.phone===phone);if(!c)return; const orders=S.orders.filter(o=>o.customer?.phone===phone).reverse(); const isVip=c.orders>=S.settings.vipOrders; const ords=orders.length?orders.map(o=>{ const items=o.items?.map(item=>{ const imgs=S.prodImgs[item.pid]||[];const cov=S.prodCoverIdx[item.pid]||0;const src=imgs[cov]||null; return `<div style="display:flex;gap:.5rem;align-items:center;background:#fff;border-radius:7px;padding:.42rem;margin-bottom:.3rem"><div style="width:36px;height:44px;border-radius:5px;background:var(--c4);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center">${src?`<img src="${src}" style="width:100%;height:100%;object-fit:cover">`:'👗'}</div><div style="flex:1;font-size:.78rem"><div style="font-weight:600">${item.name}</div><div style="color:var(--mt)">مقاس: ${item.sz} | كمية: ${item.qty} | ${cur(item.price*item.qty)}</div></div></div>`;}).join(''); const sts={preparing:'⏳',delivering:'🚚',done:'✅',rejected:'❌',returned:'↩️'}; return `<div style="background:var(--c1);border-radius:8px;padding:.78rem;margin-bottom:.6rem;border-right:3px solid var(--ac)"><div style="display:flex;justify-content:space-between;margin-bottom:.4rem"><div style="font-weight:600;font-size:.83rem">${sts[o.status]||''} طلب ${o.date}</div><div style="font-weight:700;color:var(--wb)">${cur(o.total)}</div></div>${items}<div style="font-size:.72rem;color:var(--mt);margin-top:.25rem">شحن: ${cur(o.ship)} | خصم: -${cur(o.disc)} ${o.offerMsg!=='-'?'| '+o.offerMsg:''}</div></div>`; }).join(''):'<div style="text-align:center;color:var(--mt);padding:1rem">لا توجد طلبات</div>'; document.getElementById('custDetail').innerHTML=`<div style="background:linear-gradient(135deg,var(--c4),var(--c3));border-radius:9px;padding:.88rem;margin-bottom:.88rem;display:flex;gap:.88rem;align-items:center"><div style="font-size:2rem">👤</div><div><div style="font-size:1.02rem;font-weight:700">${c.name} ${isVip?'<span class="vip">⭐ VIP</span>':''}</div><div style="font-size:.82rem">${c.phone}</div><div style="font-size:.78rem;opacity:.8">${c.addr||''}</div></div></div><div class="g3" style="margin-bottom:.88rem"><div style="background:#fff;border-radius:7px;padding:.62rem;text-align:center;box-shadow:0 2px 7px var(--sh)"><div style="font-size:1.25rem;font-weight:700;color:var(--wb)">${c.orders}</div><div style="font-size:.7rem;color:var(--mt)">طلب</div></div><div style="background:#fff;border-radius:7px;padding:.62rem;text-align:center;box-shadow:0 2px 7px var(--sh)"><div style="font-size:.88rem;font-weight:700;color:var(--wb)">${cur(c.totalSpent)}</div><div style="font-size:.7rem;color:var(--mt)">إجمالي الإنفاق</div></div><div style="background:#fff;border-radius:7px;padding:.62rem;text-align:center;box-shadow:0 2px 7px var(--sh)"><div style="font-size:.8rem;font-weight:600;color:var(--wb)">${c.lastOrder}</div><div style="font-size:.7rem;color:var(--mt)">آخر طلب</div></div></div><div style="font-weight:700;color:var(--wb);margin-bottom:.5rem">📋 سجل الطلبات (${orders.length})</div>${ords}`; openM('custModal'); }
 
